@@ -1,97 +1,108 @@
-import { useState } from "react";
-import { Header } from "@/components/Header";
-import { TabNavigation } from "@/components/TabNavigation";
-import { Calculator } from "@/components/Calculator";
-import { Projects } from "@/components/Projects";
-import { Dashboard } from "@/components/Dashboard";
+import { useState, useEffect } from "react";
+import { LandingPage } from "@/components/LandingPage";
+import { LoginPage } from "@/components/LoginPage";
+import { SignupPage } from "@/components/SignupPage";
+import { PricingPage } from "@/components/PricingPage";
+import { MainApp } from "@/components/MainApp";
+import { toast } from "@/hooks/use-toast";
 
-type TabType = "calculator" | "projects" | "dashboard";
+type Page = "landing" | "login" | "signup" | "pricing" | "app";
 
-interface CalculatedResults {
-  valorBase: number;
-  custosTotais: number;
-  subtotal: number;
-  lucro: number;
-  antesImpostos: number;
-  impostos: number;
-  valorFinal: number;
-  valorHoraEfetivo: number;
-}
-
-interface Project {
-  id: number;
-  clientName: string;
-  projectName: string;
-  serviceType: string;
-  hoursEstimated: number;
-  desiredHourlyRate: number;
-  fixedCosts: number;
-  variableCosts: number;
-  taxType: string;
-  profitMargin: number;
-  results: CalculatedResults;
-  status: "pending" | "approved" | "rejected" | "completed";
-  createdAt: string;
-  updatedAt: string;
+interface UserSession {
+  name: string;
+  email: string;
+  plan: "free" | "pro" | "business";
 }
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState<TabType>("calculator");
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [currentPage, setCurrentPage] = useState<Page>("landing");
+  const [user, setUser] = useState<UserSession | null>(null);
 
-  const handleEditProject = (project: Project) => {
-    setEditingProject(project);
-    setActiveTab("calculator");
-  };
+  // Carregar sessão do usuário ao iniciar
+  useEffect(() => {
+    const storedSession = localStorage.getItem("user:session");
+    if (storedSession) {
+      try {
+        const userData = JSON.parse(storedSession);
+        setUser(userData);
+        setCurrentPage("app");
+      } catch (error) {
+        console.error("Erro ao carregar sessão:", error);
+        localStorage.removeItem("user:session");
+      }
+    }
+  }, []);
 
-  const handleEditComplete = () => {
-    setEditingProject(null);
-    setActiveTab("projects");
-  };
-
-  const handleNavigateToCalculator = () => {
-    setEditingProject(null);
-    setActiveTab("calculator");
-  };
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case "calculator":
-        return (
-          <Calculator 
-            editingProject={editingProject} 
-            onEditComplete={handleEditComplete}
-          />
-        );
-      case "projects":
-        return (
-          <Projects 
-            onNavigateToCalculator={handleNavigateToCalculator} 
-            onEditProject={handleEditProject}
-          />
-        );
-      case "dashboard":
-        return <Dashboard />;
-      default:
-        return <Calculator />;
+  const handleLogin = (email: string, plan: string) => {
+    const storedUser = localStorage.getItem("user:session");
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-white">
-      <Header />
-      
-      <main className="container mx-auto px-6 pt-32 pb-16 max-w-7xl">
-        <div className="mb-8">
-          <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
-        </div>
+  const handleSignup = (email: string, name: string, plan: string) => {
+    const userData: UserSession = {
+      name,
+      email,
+      plan: plan as "free" | "pro" | "business",
+    };
+    setUser(userData);
+  };
 
-        <div className="animate-in fade-in duration-500">
-          {renderContent()}
-        </div>
-      </main>
-    </div>
-  );
+  const handleLogout = () => {
+    localStorage.removeItem("user:session");
+    setUser(null);
+    setCurrentPage("landing");
+    toast({
+      title: "Até logo!",
+      description: "Você foi desconectado com sucesso.",
+    });
+  };
+
+  const handleNavigate = (page: string) => {
+    setCurrentPage(page as Page);
+  };
+
+  // Roteamento
+  if (currentPage === "landing" && !user) {
+    return <LandingPage onNavigate={handleNavigate} />;
+  }
+
+  if (currentPage === "login" && !user) {
+    return <LoginPage onNavigate={handleNavigate} onLogin={handleLogin} />;
+  }
+
+  if (currentPage === "signup" && !user) {
+    return <SignupPage onNavigate={handleNavigate} onSignup={handleSignup} />;
+  }
+
+  if (currentPage === "pricing") {
+    return <PricingPage onNavigate={handleNavigate} />;
+  }
+
+  if (currentPage === "app" && user) {
+    return (
+      <MainApp
+        userName={user.name}
+        userPlan={user.plan}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  // Fallback - redirecionar para landing ou app baseado na autenticação
+  if (user) {
+    return (
+      <MainApp
+        userName={user.name}
+        userPlan={user.plan}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  return <LandingPage onNavigate={handleNavigate} />;
 };
 
 export default Index;
