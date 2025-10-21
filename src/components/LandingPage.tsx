@@ -5,12 +5,49 @@ import { Badge } from "@/components/ui/badge";
 import { AnimatedDotGrid } from "@/components/AnimatedDotGrid";
 import { RippleButton } from "@/components/ui/ripple-button";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { ScrollProgressBar } from "@/components/ScrollProgressBar";
+import { useParallax } from "@/hooks/useParallax";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useEffect, useRef, useState } from "react";
 
 interface LandingPageProps {
   onNavigate: (page: string) => void;
 }
 
 export const LandingPage = ({ onNavigate }: LandingPageProps) => {
+  const [isHeaderScrolled, setIsHeaderScrolled] = useState(false);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const mockupRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLElement>(null);
+  const featureRefs = [
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+    useRef<HTMLDivElement>(null),
+  ];
+  const sectionTitleRef = useRef<HTMLDivElement>(null);
+  
+  // Parallax effects
+  useParallax(bgRef, { speed: 0.5 });
+  useParallax(mockupRef, { speed: -0.3, direction: "both" });
+  
+  // Scroll reveal effects
+  useScrollReveal([sectionTitleRef], { direction: "up" });
+  useScrollReveal([featureRefs[0], featureRefs[2], featureRefs[4]], { direction: "left" });
+  useScrollReveal([featureRefs[1], featureRefs[3], featureRefs[5]], { direction: "right" });
+  
+  // Header scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsHeaderScrolled(window.scrollY > 100);
+    };
+    
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const features = [
     {
       icon: Calculator,
@@ -36,12 +73,14 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ScrollProgressBar />
+      
       {/* Header */}
-      <header className="border-b border-white/10 glass-card sticky top-0 z-50">
+      <header className={`border-b border-white/10 glass-card sticky top-0 z-50 transition-all duration-300 ${isHeaderScrolled ? 'header-scrolled' : ''}`}>
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary via-secondary to-tertiary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+              <div className={`logo w-10 h-10 bg-gradient-to-br from-primary via-secondary to-tertiary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30 transition-transform duration-300 ${isHeaderScrolled ? 'scale-90' : ''}`}>
                 <Calculator className="w-6 h-6 text-white" />
               </div>
               <span className="text-xl font-bold gradient-text">
@@ -84,8 +123,10 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Animated Dot Grid Background */}
-        <AnimatedDotGrid />
+        {/* Animated Dot Grid Background with Parallax */}
+        <div ref={bgRef} className="absolute inset-0" style={{ willChange: "transform" }}>
+          <AnimatedDotGrid />
+        </div>
         
         {/* Floating Particles */}
         <div className="particle particle-1 w-3 h-3 bg-primary/40 top-[10%] left-[15%]" style={{ zIndex: 1 }}></div>
@@ -171,7 +212,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             </div>
 
             {/* Coluna Direita - 40% */}
-            <div className="lg:col-span-2 relative animate-fade-in-scale z-10" style={{ animationDelay: "0.5s" }}>
+            <div ref={mockupRef} className="lg:col-span-2 relative animate-fade-in-scale z-10" style={{ animationDelay: "0.5s", willChange: "transform" }}>
               {/* Main Card - Mockup da Interface */}
               <Card className="card-glow shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_48px_rgba(99,102,241,0.6)]">
                 <CardContent className="p-6 space-y-4">
@@ -237,22 +278,24 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-6 py-24 relative">
+      <section ref={featuresRef} className="container mx-auto px-6 py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background"></div>
         <div className="text-center mb-16 relative z-10">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 animate-fade-up">
-            Tudo que você precisa para profissionalizar seu trabalho
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-up" style={{ animationDelay: "0.1s" }}>
-            Ferramentas poderosas, simples de usar
-          </p>
+          <div ref={sectionTitleRef}>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+              Tudo que você precisa para profissionalizar seu trabalho
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Ferramentas poderosas, simples de usar
+            </p>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10">
           {/* Feature 1 */}
           <Card
-            className="card-glow hover:shadow-[0_12px_40px_rgba(99,102,241,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
-            style={{ animationDelay: "0.15s" }}
+            ref={featureRefs[0]}
+            className="card-glow hover:shadow-[0_12px_40px_rgba(99,102,241,0.5)] transition-all duration-300 group cursor-pointer"
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-primary via-secondary to-tertiary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-primary/30">
@@ -269,8 +312,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 2 */}
           <Card
-            className="card-glow hover:shadow-[0_12px_40px_rgba(16,185,129,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
-            style={{ animationDelay: "0.25s" }}
+            ref={featureRefs[1]}
+            className="card-glow hover:shadow-[0_12px_40px_rgba(16,185,129,0.5)] transition-all duration-300 group cursor-pointer"
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-green-500/30">
@@ -287,8 +330,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 3 */}
           <Card
-            className="card-glow hover:shadow-[0_12px_40px_rgba(59,130,246,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
-            style={{ animationDelay: "0.35s" }}
+            ref={featureRefs[2]}
+            className="card-glow hover:shadow-[0_12px_40px_rgba(59,130,246,0.5)] transition-all duration-300 group cursor-pointer"
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/30">
@@ -305,8 +348,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 4 */}
           <Card
-            className="hover:shadow-[0_12px_40px_rgba(168,85,247,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
-            style={{ animationDelay: "0.45s" }}
+            ref={featureRefs[3]}
+            className="card-glow hover:shadow-[0_12px_40px_rgba(168,85,247,0.5)] transition-all duration-300 group cursor-pointer"
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-tertiary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-purple-500/30">
@@ -323,8 +366,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 5 */}
           <Card
-            className="hover:shadow-[0_12px_40px_rgba(249,115,22,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
-            style={{ animationDelay: "0.55s" }}
+            ref={featureRefs[4]}
+            className="card-glow hover:shadow-[0_12px_40px_rgba(249,115,22,0.5)] transition-all duration-300 group cursor-pointer"
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-orange-500/30">
@@ -341,8 +384,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 6 */}
           <Card
-            className="hover:shadow-[0_12px_40px_rgba(234,179,8,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
-            style={{ animationDelay: "0.65s" }}
+            ref={featureRefs[5]}
+            className="card-glow hover:shadow-[0_12px_40px_rgba(234,179,8,0.5)] transition-all duration-300 group cursor-pointer"
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-yellow-500/30">

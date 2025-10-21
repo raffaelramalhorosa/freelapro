@@ -239,6 +239,50 @@ All colors MUST be HSL.
   .particle-4 { animation-delay: 3s; }
   .particle-5 { animation-delay: 4s; }
   
+  /* Scroll Reveal Animations */
+  .reveal-hidden {
+    opacity: 0;
+  }
+  
+  .reveal-hidden.reveal-up {
+    transform: translateY(50px);
+  }
+  
+  .reveal-hidden.reveal-down {
+    transform: translateY(-50px);
+  }
+  
+  .reveal-hidden.reveal-left {
+    transform: translateX(50px);
+  }
+  
+  .reveal-hidden.reveal-right {
+    transform: translateX(-50px);
+  }
+  
+  .reveal-hidden.reveal-scale {
+    transform: scale(0.9);
+  }
+  
+  .reveal-visible {
+    opacity: 1 !important;
+    transform: translate(0) scale(1) !important;
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  /* Sticky Header Styles */
+  .header-scrolled {
+    background: rgba(19, 19, 26, 0.95) !important;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+  }
+  
+  .header-scrolled .logo {
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+  }
+  
   /* Ripple Effect */
   .ripple-container {
     position: relative;
