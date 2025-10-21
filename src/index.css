@@ -239,6 +239,16 @@ All colors MUST be HSL.
   .particle-4 { animation-delay: 3s; }
   .particle-5 { animation-delay: 4s; }
   
+  /* 3D Tilt Effect */
+  .tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+  }
+  
+  .tilt-card > * {
+    transform: translateZ(20px);
+  }
+  
   /* Custom Cursor */
   .custom-cursor-hover {
     transform: translate(-50%, -50%) scale(1.5) !important;

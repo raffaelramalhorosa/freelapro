@@ -108,7 +108,7 @@ export const AnimatedDotGrid = () => {
         ctx.fillStyle = `rgba(99, 102, 241, ${finalOpacity})`;
         ctx.fill();
 
-        // Optional: draw connecting lines to nearby dots (for mouse interaction)
+        // Draw connecting lines to nearby dots
         if (distance < 80 && mouseGlow > 0) {
           dotsRef.current.forEach((otherDot, otherIndex) => {
             if (otherIndex <= index) return;
@@ -123,6 +123,27 @@ export const AnimatedDotGrid = () => {
               ctx.lineTo(otherDot.x, otherDot.y);
               ctx.strokeStyle = `rgba(99, 102, 241, ${mouseGlow * 0.3})`;
               ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          });
+        }
+        
+        // Draw connections between all nearby dots (ambient connections)
+        if (frameRef.current % 3 === 0) { // Only draw every 3 frames for performance
+          dotsRef.current.forEach((otherDot, otherIndex) => {
+            if (otherIndex <= index) return;
+
+            const odx = otherDot.x - dot.x;
+            const ody = otherDot.y - dot.y;
+            const oDist = Math.sqrt(odx * odx + ody * ody);
+
+            if (oDist < 60) {
+              const connectionOpacity = (1 - oDist / 60) * 0.1;
+              ctx.beginPath();
+              ctx.moveTo(dot.x, dot.y);
+              ctx.lineTo(otherDot.x, otherDot.y);
+              ctx.strokeStyle = `rgba(99, 102, 241, ${connectionOpacity})`;
+              ctx.lineWidth = 0.5;
               ctx.stroke();
             }
           });
