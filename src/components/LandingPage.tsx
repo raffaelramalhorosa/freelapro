@@ -48,18 +48,18 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             </div>
 
             <nav className="hidden md:flex items-center gap-8">
-              <button className="text-muted-foreground hover:text-foreground transition-colors font-medium">
+              <button className="text-muted-foreground hover:text-foreground transition-colors font-medium link-underline">
                 Funcionalidades
               </button>
               <button
                 onClick={() => onNavigate("pricing")}
-                className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+                className="text-muted-foreground hover:text-foreground transition-colors font-medium link-underline"
               >
                 Preços
               </button>
               <button
                 onClick={() => onNavigate("login")}
-                className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+                className="text-muted-foreground hover:text-foreground transition-colors font-medium link-underline"
               >
                 Login
               </button>
@@ -96,13 +96,13 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
         <div className="container mx-auto px-6 py-20 lg:py-32">
           <div className="grid lg:grid-cols-5 gap-12 items-center">
             {/* Coluna Esquerda - 60% */}
-            <div className="lg:col-span-3 space-y-8 animate-fade-in relative z-10">
-              <Badge className="glass-card text-primary border-primary/20 shadow-lg hover:shadow-primary/30 transition-shadow">
+            <div className="lg:col-span-3 space-y-8 relative z-10">
+              <Badge className="glass-card text-primary border-primary/20 shadow-lg hover:shadow-primary/30 transition-shadow animate-fade-up" style={{ animationDelay: "0.1s" }}>
                 <Sparkles className="w-3 h-3 mr-1" />
                 Ferramenta #1 para Freelancers no Brasil
               </Badge>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight animate-fade-up" style={{ animationDelay: "0.15s" }}>
                 Precifique seus projetos com{" "}
                 <span className="gradient-text">
                   inteligência
@@ -110,11 +110,11 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                 e feche mais contratos
               </h1>
 
-              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl">
+              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl animate-fade-up" style={{ animationDelay: "0.2s" }}>
                 Calcule valores justos em segundos, gere contratos profissionais e acompanhe todos os seus projetos em um só lugar.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: "0.3s" }}>
                 <Button
                   onClick={() => onNavigate("signup")}
                   size="lg"
@@ -134,7 +134,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
               </div>
 
               {/* Mini Estatísticas */}
-              <div className="flex flex-wrap gap-6 pt-4">
+              <div className="flex flex-wrap gap-6 pt-4 animate-fade-up" style={{ animationDelay: "0.4s" }}>
                 <div className="flex items-center gap-2 text-foreground">
                   <Users className="w-5 h-5 text-primary" />
                   <span className="font-semibold">+2.500</span>
@@ -154,9 +154,9 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             </div>
 
             {/* Coluna Direita - 40% */}
-            <div className="lg:col-span-2 relative animate-fade-in z-10" style={{ animationDelay: "200ms" }}>
+            <div className="lg:col-span-2 relative animate-fade-in-scale z-10" style={{ animationDelay: "0.5s" }}>
               {/* Main Card - Mockup da Interface */}
-              <Card className="gradient-border shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_40px_rgba(99,102,241,0.4)] transition-shadow duration-300">
+              <Card className="gradient-border shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_48px_rgba(99,102,241,0.6)]">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -201,7 +201,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
               </Card>
 
               {/* Floating Card - Exemplo de Cálculo */}
-              <Card className="absolute -bottom-6 -left-6 w-48 gradient-border shadow-[0_8px_32px_rgba(0,0,0,0.4)] animate-scale-in" style={{ animationDelay: "400ms" }}>
+              <Card className="absolute -bottom-6 -left-6 w-48 gradient-border shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.4)] animate-fade-in-scale" style={{ animationDelay: "0.7s" }}>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <TrendingUp className="w-4 h-4 text-green-500" />
@@ -222,11 +222,11 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
       {/* Features Section */}
       <section className="container mx-auto px-6 py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background"></div>
-        <div className="text-center mb-16 animate-fade-in relative z-10">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+        <div className="text-center mb-16 relative z-10">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 animate-fade-up">
             Tudo que você precisa para profissionalizar seu trabalho
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-up" style={{ animationDelay: "0.1s" }}>
             Ferramentas poderosas, simples de usar
           </p>
         </div>
@@ -234,8 +234,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10">
           {/* Feature 1 */}
           <Card
-            className="hover:shadow-[0_8px_32px_rgba(99,102,241,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
-            style={{ animationDelay: "0ms" }}
+            className="hover:shadow-[0_12px_40px_rgba(99,102,241,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
+            style={{ animationDelay: "0.15s" }}
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-primary via-secondary to-tertiary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-primary/30">
@@ -252,8 +252,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 2 */}
           <Card
-            className="hover:shadow-[0_8px_32px_rgba(168,85,247,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
-            style={{ animationDelay: "100ms" }}
+            className="hover:shadow-[0_12px_40px_rgba(16,185,129,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
+            style={{ animationDelay: "0.25s" }}
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-green-500/30">
@@ -270,8 +270,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 3 */}
           <Card
-            className="hover:shadow-[0_8px_32px_rgba(59,130,246,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
-            style={{ animationDelay: "200ms" }}
+            className="hover:shadow-[0_12px_40px_rgba(59,130,246,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
+            style={{ animationDelay: "0.35s" }}
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/30">
@@ -288,8 +288,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 4 */}
           <Card
-            className="hover:shadow-[0_8px_32px_rgba(168,85,247,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
-            style={{ animationDelay: "300ms" }}
+            className="hover:shadow-[0_12px_40px_rgba(168,85,247,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
+            style={{ animationDelay: "0.45s" }}
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-tertiary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-purple-500/30">
@@ -306,8 +306,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 5 */}
           <Card
-            className="hover:shadow-[0_8px_32px_rgba(249,115,22,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
-            style={{ animationDelay: "400ms" }}
+            className="hover:shadow-[0_12px_40px_rgba(249,115,22,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
+            style={{ animationDelay: "0.55s" }}
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-orange-500/30">
@@ -324,8 +324,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 6 */}
           <Card
-            className="hover:shadow-[0_8px_32px_rgba(234,179,8,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
-            style={{ animationDelay: "500ms" }}
+            className="hover:shadow-[0_12px_40px_rgba(234,179,8,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
+            style={{ animationDelay: "0.65s" }}
           >
             <CardContent className="p-8">
               <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-yellow-500/30">
