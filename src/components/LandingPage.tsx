@@ -215,36 +215,124 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-6 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Tudo que você precisa para crescer
+      <section className="container mx-auto px-6 py-24 bg-white">
+        <div className="text-center mb-16 animate-fade-in">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Tudo que você precisa para profissionalizar seu trabalho
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Ferramentas profissionais para freelancers que querem crescer
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Ferramentas poderosas, simples de usar
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
-            <Card
-              key={index}
-              className="border-2 hover:shadow-lg transition-all duration-300 animate-fade-in"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <CardContent className="pt-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center mb-4">
-                  <feature.icon className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {feature.description}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {/* Feature 1 */}
+          <Card
+            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            style={{ animationDelay: "0ms" }}
+          >
+            <CardContent className="p-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Calculator className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                🧮 Calculadora Inteligente
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Calcule preços justos considerando todos os custos, impostos e margem de lucro
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Feature 2 */}
+          <Card
+            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            style={{ animationDelay: "100ms" }}
+          >
+            <CardContent className="p-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                📄 Contratos Profissionais
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Gere contratos personalizados em segundos, prontos para assinar
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Feature 3 */}
+          <Card
+            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            style={{ animationDelay: "200ms" }}
+          >
+            <CardContent className="p-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                📊 Dashboard Completo
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Visualize estatísticas, projetos aprovados e faturamento total
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Feature 4 */}
+          <Card
+            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            style={{ animationDelay: "300ms" }}
+          >
+            <CardContent className="p-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                💾 Histórico de Projetos
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Mantenha registro de todos os orçamentos e contratos gerados
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Feature 5 */}
+          <Card
+            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            style={{ animationDelay: "400ms" }}
+          >
+            <CardContent className="p-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                📱 Acesse de Qualquer Lugar
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Interface responsiva funciona perfeitamente em mobile e desktop
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Feature 6 */}
+          <Card
+            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            style={{ animationDelay: "500ms" }}
+          >
+            <CardContent className="p-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                🔒 Dados Seguros
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Suas informações protegidas com criptografia e backup automático
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
