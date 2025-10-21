@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 
 interface UserDropdownProps {
   userName: string;
@@ -27,6 +28,10 @@ export const UserDropdown = ({
   onNavigateToPricing,
 }: UserDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { plan: subscriptionPlan, openCustomerPortal } = useSubscription();
+  
+  // Use subscription plan from Stripe if available, otherwise fallback to userPlan
+  const activePlan = subscriptionPlan || userPlan;
 
   const getInitials = (name: string) => {
     return name
@@ -38,7 +43,7 @@ export const UserDropdown = ({
   };
 
   const getPlanBadgeClass = () => {
-    switch (userPlan.toLowerCase()) {
+    switch (activePlan.toLowerCase()) {
       case "pro":
         return "bg-gradient-to-r from-amber-500 to-yellow-500 text-white";
       case "business":
@@ -52,7 +57,7 @@ export const UserDropdown = ({
     <div className="flex items-center gap-3">
       {/* Plan Badge */}
       <Badge className={`${getPlanBadgeClass()} font-semibold px-3 py-1 shadow-md`}>
-        {userPlan.toUpperCase()}
+        {activePlan.toUpperCase()}
       </Badge>
 
       {/* User Dropdown */}
@@ -84,6 +89,12 @@ export const UserDropdown = ({
             <CreditCard className="w-4 h-4 mr-2" />
             Meu Plano
           </DropdownMenuItem>
+          {(activePlan === "pro" || activePlan === "business") && (
+            <DropdownMenuItem onClick={openCustomerPortal} className="cursor-pointer">
+              <Settings className="w-4 h-4 mr-2" />
+              Gerenciar Assinatura
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem className="cursor-pointer">
             <Settings className="w-4 h-4 mr-2" />
             Configurações
