@@ -4,6 +4,7 @@ import { LoginPage } from "@/components/LoginPage";
 import { SignupPage } from "@/components/SignupPage";
 import { PricingPage } from "@/components/PricingPage";
 import { MainApp } from "@/components/MainApp";
+import { OnboardingModal } from "@/components/OnboardingModal";
 import { toast } from "@/hooks/use-toast";
 
 type Page = "landing" | "login" | "signup" | "pricing" | "app";
@@ -18,6 +19,7 @@ interface UserSession {
 const Index = () => {
   const [currentPage, setCurrentPage] = useState<Page>("landing");
   const [user, setUser] = useState<UserSession | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Carregar sessão do usuário ao iniciar
   useEffect(() => {
@@ -39,6 +41,12 @@ const Index = () => {
     if (storedUser) {
       const userData = JSON.parse(storedUser);
       setUser(userData);
+      
+      // Check if user has seen onboarding
+      const hasSeenOnboarding = localStorage.getItem(`user:${userData.email}:onboarding`);
+      if (!hasSeenOnboarding) {
+        setShowOnboarding(true);
+      }
     }
   };
 
@@ -49,6 +57,16 @@ const Index = () => {
       plan: plan as "free" | "pro" | "business",
     };
     setUser(userData);
+    
+    // Show onboarding for new users
+    setShowOnboarding(true);
+  };
+
+  const handleCloseOnboarding = () => {
+    setShowOnboarding(false);
+    if (user) {
+      localStorage.setItem(`user:${user.email}:onboarding`, "true");
+    }
   };
 
   const handleLogout = () => {
@@ -70,6 +88,14 @@ const Index = () => {
   };
 
   // Roteamento
+  return (
+    <>
+      <OnboardingModal isOpen={showOnboarding} onClose={handleCloseOnboarding} />
+      {renderPage()}
+    </>
+  );
+
+  function renderPage() {
   if (currentPage === "landing" && !user) {
     return <LandingPage onNavigate={handleNavigate} />;
   }
@@ -113,7 +139,8 @@ const Index = () => {
     );
   }
 
-  return <LandingPage onNavigate={handleNavigate} />;
+    return <LandingPage onNavigate={handleNavigate} />;
+  }
 };
 
 export default Index;
