@@ -15,7 +15,7 @@ const Index = () => {
       case "calculator":
         return <Calculator />;
       case "projects":
-        return <Projects />;
+        return <Projects onNavigateToCalculator={() => setActiveTab("calculator")} />;
       case "dashboard":
         return <Dashboard />;
       default:
