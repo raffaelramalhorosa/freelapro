@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { DollarSign, Clock, Briefcase, TrendingUp, Calculator as CalculatorIcon, User, FileText, Percent, Save, X } from "lucide-react";
+import { DollarSign, Clock, Briefcase, TrendingUp, Calculator as CalculatorIcon, User, FileText, Percent, Save, X, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { formatCurrency } from "@/lib/formatters";
 
 const serviceTypes = [
   "Design Gráfico",
@@ -75,6 +76,27 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
   const [calculatedResults, setCalculatedResults] = useState<CalculatedResults | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [currentEditingId, setCurrentEditingId] = useState<number | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Validar campos obrigatórios
+  const validateFields = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!estimatedHours || parseFloat(estimatedHours) <= 0) {
+      newErrors.estimatedHours = "Horas estimadas são obrigatórias";
+    }
+    if (!hourlyRate || parseFloat(hourlyRate) <= 0) {
+      newErrors.hourlyRate = "Valor por hora é obrigatório";
+    }
+    if (!taxRegime) {
+      newErrors.taxRegime = "Selecione um regime tributário";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const isCalculateDisabled = !estimatedHours || !hourlyRate || !taxRegime;
 
   // Carregar dados do projeto para edição
   useEffect(() => {
@@ -114,6 +136,15 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
   }, []);
 
   const handleCalculate = () => {
+    if (!validateFields()) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Preencha todos os campos obrigatórios antes de calcular.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const hours = parseFloat(estimatedHours) || 0;
     const rate = parseFloat(hourlyRate) || 0;
     const fixed = parseFloat(fixedCosts) || 0;
@@ -327,35 +358,55 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
             <div className="space-y-2">
               <Label htmlFor="estimated-hours" className="text-gray-700 font-medium flex items-center gap-2">
                 <Clock className="w-4 h-4 text-primary" />
-                Horas Estimadas
+                Horas Estimadas *
               </Label>
               <Input
                 id="estimated-hours"
                 type="number"
                 placeholder="Ex: 40"
                 value={estimatedHours}
-                onChange={(e) => setEstimatedHours(e.target.value)}
-                className="border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary"
+                onChange={(e) => {
+                  setEstimatedHours(e.target.value);
+                  if (errors.estimatedHours) {
+                    setErrors({ ...errors, estimatedHours: "" });
+                  }
+                }}
+                className={`border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all ${
+                  errors.estimatedHours ? "border-red-500 focus:ring-red-500" : ""
+                }`}
                 min="0"
                 step="0.5"
               />
+              {errors.estimatedHours && (
+                <p className="text-xs text-red-600 animate-fade-in">{errors.estimatedHours}</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="hourly-rate" className="text-gray-700 font-medium flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-primary" />
-                Valor por Hora (R$)
+                Valor por Hora (R$) *
               </Label>
               <Input
                 id="hourly-rate"
                 type="number"
                 placeholder="Ex: 150.00"
                 value={hourlyRate}
-                onChange={(e) => setHourlyRate(e.target.value)}
-                className="border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary"
+                onChange={(e) => {
+                  setHourlyRate(e.target.value);
+                  if (errors.hourlyRate) {
+                    setErrors({ ...errors, hourlyRate: "" });
+                  }
+                }}
+                className={`border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all ${
+                  errors.hourlyRate ? "border-red-500 focus:ring-red-500" : ""
+                }`}
                 min="0"
                 step="0.01"
               />
+              {errors.hourlyRate && (
+                <p className="text-xs text-red-600 animate-fade-in">{errors.hourlyRate}</p>
+              )}
             </div>
           </div>
 
@@ -400,10 +451,20 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
           <div className="space-y-2">
             <Label htmlFor="tax-regime" className="text-gray-700 font-medium flex items-center gap-2">
               <FileText className="w-4 h-4 text-primary" />
-              Regime Tributário
+              Regime Tributário *
             </Label>
-            <Select value={taxRegime} onValueChange={setTaxRegime}>
-              <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary">
+            <Select 
+              value={taxRegime} 
+              onValueChange={(value) => {
+                setTaxRegime(value);
+                if (errors.taxRegime) {
+                  setErrors({ ...errors, taxRegime: "" });
+                }
+              }}
+            >
+              <SelectTrigger className={`border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all ${
+                errors.taxRegime ? "border-red-500 focus:ring-red-500" : ""
+              }`}>
                 <SelectValue placeholder="Selecione o regime tributário" />
               </SelectTrigger>
               <SelectContent className="bg-white z-50">
@@ -414,6 +475,9 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
                 ))}
               </SelectContent>
             </Select>
+            {errors.taxRegime && (
+              <p className="text-xs text-red-600 animate-fade-in">{errors.taxRegime}</p>
+            )}
           </div>
 
           {/* Margem de Lucro */}
@@ -441,8 +505,10 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
 
           <Button 
             onClick={handleCalculate}
-            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-lg text-white font-medium py-6 text-lg"
+            disabled={isCalculateDisabled}
+            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-lg text-white font-medium py-6 text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
+            <CalculatorIcon className="w-5 h-5 mr-2" />
             Calcular Preço
           </Button>
         </CardContent>
@@ -457,58 +523,58 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
         </CardHeader>
         <CardContent className="space-y-4">
           {calculatedResults ? (
-            <>
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+            <div className="space-y-4 animate-fade-in">
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
                 <p className="text-sm text-gray-600 mb-1">Valor Base (Horas × Taxa)</p>
                 <p className="text-2xl font-bold text-foreground">
-                  R$ {calculatedResults.valorBase.toFixed(2)}
+                  {formatCurrency(calculatedResults.valorBase)}
                 </p>
               </div>
 
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
                 <p className="text-sm text-gray-600 mb-1">Custos Totais (Fixos + Variáveis)</p>
                 <p className="text-2xl font-bold text-foreground">
-                  R$ {calculatedResults.custosTotais.toFixed(2)}
+                  {formatCurrency(calculatedResults.custosTotais)}
                 </p>
               </div>
 
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
                 <p className="text-sm text-gray-600 mb-1">Subtotal (Base + Custos)</p>
                 <p className="text-2xl font-bold text-foreground">
-                  R$ {calculatedResults.subtotal.toFixed(2)}
+                  {formatCurrency(calculatedResults.subtotal)}
                 </p>
               </div>
 
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
                 <p className="text-sm text-gray-600 mb-1">Lucro ({profitMargin[0]}%)</p>
                 <p className="text-2xl font-bold text-green-600">
-                  R$ {calculatedResults.lucro.toFixed(2)}
+                  {formatCurrency(calculatedResults.lucro)}
                 </p>
               </div>
 
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
                 <p className="text-sm text-gray-600 mb-1">Antes dos Impostos</p>
                 <p className="text-2xl font-bold text-foreground">
-                  R$ {calculatedResults.antesImpostos.toFixed(2)}
+                  {formatCurrency(calculatedResults.antesImpostos)}
                 </p>
               </div>
 
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
                 <p className="text-sm text-gray-600 mb-1">Impostos</p>
                 <p className="text-2xl font-bold text-orange-600">
-                  R$ {calculatedResults.impostos.toFixed(2)}
+                  {formatCurrency(calculatedResults.impostos)}
                 </p>
               </div>
 
-              <div className="p-6 bg-gradient-to-r from-primary to-secondary rounded-xl shadow-lg">
+              <div className="p-6 bg-gradient-to-r from-primary to-secondary rounded-xl shadow-lg hover:shadow-xl transition-shadow animate-scale-in">
                 <p className="text-sm text-white/90 mb-1">💰 Valor Final do Projeto</p>
                 <p className="text-4xl font-bold text-white mb-3">
-                  R$ {calculatedResults.valorFinal.toFixed(2)}
+                  {formatCurrency(calculatedResults.valorFinal)}
                 </p>
                 <div className="pt-3 border-t border-white/20">
                   <p className="text-xs text-white/70 mb-1">Valor por Hora Efetivo</p>
                   <p className="text-xl font-bold text-white">
-                    R$ {calculatedResults.valorHoraEfetivo.toFixed(2)}/hora
+                    {formatCurrency(calculatedResults.valorHoraEfetivo)}/hora
                   </p>
                 </div>
               </div>
@@ -524,7 +590,7 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
                 <Button 
                   onClick={handleSaveProject}
                   disabled={!clientName.trim() || !projectName.trim()}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-6 text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-6 text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <Save className="w-5 h-5 mr-2" />
                   {currentEditingId ? "Atualizar Projeto" : "Salvar Projeto"}
@@ -534,13 +600,14 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
                   <Button 
                     onClick={handleCancel}
                     variant="outline"
-                    className="w-full font-medium py-6 text-lg"
+                    className="w-full font-medium py-6 text-lg hover:bg-muted transition-all"
                   >
+                    <X className="w-5 h-5 mr-2" />
                     Cancelar
                   </Button>
                 )}
               </div>
-            </>
+            </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center mb-4">
