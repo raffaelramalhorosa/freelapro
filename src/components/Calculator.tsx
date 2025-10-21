@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { DollarSign, Clock, Briefcase, TrendingUp, Calculator as CalculatorIcon, User, FileText, Percent } from "lucide-react";
+import { useState, useEffect } from "react";
+import { DollarSign, Clock, Briefcase, TrendingUp, Calculator as CalculatorIcon, User, FileText, Percent, Save } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,23 @@ interface CalculatedResults {
   valorHoraEfetivo: number;
 }
 
+interface Project {
+  id: number;
+  clientName: string;
+  projectName: string;
+  serviceType: string;
+  hoursEstimated: number;
+  desiredHourlyRate: number;
+  fixedCosts: number;
+  variableCosts: number;
+  taxType: string;
+  profitMargin: number;
+  results: CalculatedResults;
+  status: "pending" | "approved" | "rejected" | "completed";
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const Calculator = () => {
   const [clientName, setClientName] = useState("");
   const [projectName, setProjectName] = useState("");
@@ -50,6 +68,27 @@ export const Calculator = () => {
   const [taxRegime, setTaxRegime] = useState("");
   const [profitMargin, setProfitMargin] = useState([20]);
   const [calculatedResults, setCalculatedResults] = useState<CalculatedResults | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  // Carregar projetos do localStorage ao montar o componente
+  useEffect(() => {
+    try {
+      const loadedProjects: Project[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("project:")) {
+          const projectData = localStorage.getItem(key);
+          if (projectData) {
+            loadedProjects.push(JSON.parse(projectData));
+          }
+        }
+      }
+      setProjects(loadedProjects);
+    } catch (error) {
+      console.error("Erro ao carregar projetos:", error);
+      alert("Erro ao carregar projetos salvos.");
+    }
+  }, []);
 
   const handleCalculate = () => {
     const hours = parseFloat(estimatedHours) || 0;
@@ -81,6 +120,63 @@ export const Calculator = () => {
       valorFinal,
       valorHoraEfetivo,
     });
+  };
+
+  const handleSaveProject = () => {
+    if (!clientName.trim() || !projectName.trim()) {
+      toast({
+        title: "Erro",
+        description: "Nome do cliente e do projeto são obrigatórios.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!calculatedResults) {
+      toast({
+        title: "Erro",
+        description: "Calcule o preço antes de salvar.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const timestamp = Date.now();
+      const now = new Date().toISOString();
+      
+      const project: Project = {
+        id: timestamp,
+        clientName,
+        projectName,
+        serviceType,
+        hoursEstimated: parseFloat(estimatedHours) || 0,
+        desiredHourlyRate: parseFloat(hourlyRate) || 0,
+        fixedCosts: parseFloat(fixedCosts) || 0,
+        variableCosts: parseFloat(variableCosts) || 0,
+        taxType: taxRegime,
+        profitMargin: profitMargin[0],
+        results: calculatedResults,
+        status: "pending",
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      localStorage.setItem(`project:${timestamp}`, JSON.stringify(project));
+      setProjects([...projects, project]);
+      
+      toast({
+        title: "Sucesso!",
+        description: "Projeto salvo com sucesso.",
+      });
+    } catch (error) {
+      console.error("Erro ao salvar projeto:", error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível salvar o projeto.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -343,6 +439,15 @@ export const Calculator = () => {
                   Seu valor efetivo por hora considera todos os custos, impostos e margem de lucro.
                 </p>
               </div>
+
+              <Button 
+                onClick={handleSaveProject}
+                disabled={!clientName.trim() || !projectName.trim()}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-6 text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Save className="w-5 h-5 mr-2" />
+                Salvar Projeto
+              </Button>
             </>
           ) : (
             <div className="flex flex-col items-center justify-center py-12 text-center">
