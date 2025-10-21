@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { formatCurrency } from "@/lib/formatters";
+import { PlanLimitModal } from "@/components/PlanLimitModal";
 
 const serviceTypes = [
   "Design Gráfico",
@@ -61,9 +62,11 @@ interface Project {
 interface CalculatorProps {
   editingProject?: Project | null;
   onEditComplete?: () => void;
+  userPlan?: string;
+  onNavigateToPricing?: () => void;
 }
 
-export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) => {
+export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", onNavigateToPricing }: CalculatorProps) => {
   const [clientName, setClientName] = useState("");
   const [projectName, setProjectName] = useState("");
   const [serviceType, setServiceType] = useState("");
@@ -77,6 +80,7 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
   const [projects, setProjects] = useState<Project[]>([]);
   const [currentEditingId, setCurrentEditingId] = useState<number | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showLimitModal, setShowLimitModal] = useState(false);
 
   // Validar campos obrigatórios
   const validateFields = (): boolean => {
@@ -238,6 +242,12 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
         }
       } else {
         // Modo de criação - novo projeto
+        // Check plan limits
+        if (userPlan.toLowerCase() === "free" && projects.length >= 2) {
+          setShowLimitModal(true);
+          return;
+        }
+
         const timestamp = Date.now();
         
         const project: Project = {
@@ -291,7 +301,18 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
   };
 
   return (
-    <div className="grid lg:grid-cols-2 gap-6">
+    <>
+      <PlanLimitModal
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        onUpgrade={() => {
+          setShowLimitModal(false);
+          if (onNavigateToPricing) {
+            onNavigateToPricing();
+          }
+        }}
+      />
+      <div className="grid lg:grid-cols-2 gap-6">
       <Card className="border-2 shadow-lg bg-white">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-2xl">
@@ -622,5 +643,6 @@ export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) 
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
