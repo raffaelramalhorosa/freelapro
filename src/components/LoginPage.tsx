@@ -6,13 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
-  onLogin: (email: string, plan: string) => void;
 }
 
-export const LoginPage = ({ onNavigate, onLogin }: LoginPageProps) => {
+export const LoginPage = ({ onNavigate }: LoginPageProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,36 +33,27 @@ export const LoginPage = ({ onNavigate, onLogin }: LoginPageProps) => {
 
     setIsLoading(true);
 
-    // Simular login (em produção, fazer chamada para API)
-    setTimeout(() => {
-      const storedUser = localStorage.getItem("user:session");
-      
-      if (storedUser) {
-        const userData = JSON.parse(storedUser);
-        if (userData.email === email) {
-          onLogin(email, userData.plan || "free");
-          toast({
-            title: "Bem-vindo de volta!",
-            description: "Login realizado com sucesso.",
-          });
-          onNavigate("app");
-        } else {
-          toast({
-            title: "Erro no login",
-            description: "Email ou senha incorretos.",
-            variant: "destructive",
-          });
-        }
-      } else {
-        toast({
-          title: "Usuário não encontrado",
-          description: "Crie uma conta primeiro.",
-          variant: "destructive",
-        });
-      }
-      
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Bem-vindo de volta!",
+        description: "Login realizado com sucesso.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro no login",
+        description: error.message || "Verifique suas credenciais.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (

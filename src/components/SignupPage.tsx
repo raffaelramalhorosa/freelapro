@@ -7,13 +7,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SignupPageProps {
   onNavigate: (page: string) => void;
-  onSignup: (email: string, name: string, plan: string) => void;
 }
 
-export const SignupPage = ({ onNavigate, onSignup }: SignupPageProps) => {
+export const SignupPage = ({ onNavigate }: SignupPageProps) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -63,36 +63,45 @@ export const SignupPage = ({ onNavigate, onSignup }: SignupPageProps) => {
       return;
     }
 
+    if (!acceptedTerms) {
+      toast({
+        title: "Termos não aceitos",
+        description: "Você precisa aceitar os termos para continuar.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
-    // Simular cadastro (em produção, fazer chamada para API)
-    setTimeout(() => {
-      const now = new Date();
-      const trialEndsAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 dias
-
-      const userData = {
-        id: now.getTime(),
-        name,
+    try {
+      const { error } = await supabase.auth.signUp({
         email,
-        plan: selectedPlan,
-        createdAt: now.toISOString(),
-        trialEndsAt: selectedPlan !== "free" ? trialEndsAt.toISOString() : null,
-      };
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            name,
+            plan: selectedPlan,
+          },
+        },
+      });
 
-      localStorage.setItem("user:session", JSON.stringify(userData));
-      
-      onSignup(email, name, selectedPlan);
-      
+      if (error) throw error;
+
       toast({
         title: "Conta criada com sucesso!",
-        description: selectedPlan !== "free" 
-          ? `Bem-vindo ao FreelaPro! Seu período de teste de 7 dias começou.`
-          : "Bem-vindo ao FreelaPro.",
+        description: "Bem-vindo ao FreelaPro.",
       });
-      
-      onNavigate("app");
+    } catch (error: any) {
+      toast({
+        title: "Erro ao criar conta",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (

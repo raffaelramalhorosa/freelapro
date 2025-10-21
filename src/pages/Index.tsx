@@ -1,83 +1,53 @@
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { LandingPage } from "@/components/LandingPage";
 import { LoginPage } from "@/components/LoginPage";
 import { SignupPage } from "@/components/SignupPage";
 import { PricingPage } from "@/components/PricingPage";
-import { MainApp } from "@/components/MainApp";
-import { OnboardingModal } from "@/components/OnboardingModal";
+import { AuthenticatedApp } from "@/components/AuthenticatedApp";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
-import { toast } from "@/hooks/use-toast";
 
 type Page = "landing" | "login" | "signup" | "pricing" | "app";
 
-interface UserSession {
-  name: string;
-  email: string;
-  plan: "free" | "pro" | "business";
-  trialEndsAt?: string;
-}
-
 const Index = () => {
   const [currentPage, setCurrentPage] = useState<Page>("landing");
-  const [user, setUser] = useState<UserSession | null>(null);
-  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Carregar sessão do usuário ao iniciar
+  // Check authentication status on mount
   useEffect(() => {
-    const storedSession = localStorage.getItem("user:session");
-    if (storedSession) {
-      try {
-        const userData = JSON.parse(storedSession);
-        setUser(userData);
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+      if (session) {
         setCurrentPage("app");
-      } catch (error) {
-        console.error("Erro ao carregar sessão:", error);
-        localStorage.removeItem("user:session");
+      } else if (event === "SIGNED_OUT") {
+        setCurrentPage("landing");
       }
-    }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const handleLogin = (email: string, plan: string) => {
-    const storedUser = localStorage.getItem("user:session");
-    if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      setUser(userData);
-      
-      // Check if user has seen onboarding
-      const hasSeenOnboarding = localStorage.getItem(`user:${userData.email}:onboarding`);
-      if (!hasSeenOnboarding) {
-        setShowOnboarding(true);
+  const checkAuth = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+      if (session) {
+        setCurrentPage("app");
       }
-    }
-  };
-
-  const handleSignup = (email: string, name: string, plan: string) => {
-    const userData: UserSession = {
-      name,
-      email,
-      plan: plan as "free" | "pro" | "business",
-    };
-    setUser(userData);
-    
-    // Show onboarding for new users
-    setShowOnboarding(true);
-  };
-
-  const handleCloseOnboarding = () => {
-    setShowOnboarding(false);
-    if (user) {
-      localStorage.setItem(`user:${user.email}:onboarding`, "true");
+    } catch (error) {
+      console.error("Error checking auth:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user:session");
-    setUser(null);
+    setIsAuthenticated(false);
     setCurrentPage("landing");
-    toast({
-      title: "Até logo!",
-      description: "Você foi desconectado com sucesso.",
-    });
   };
 
   const handleNavigate = (page: string) => {
@@ -88,58 +58,48 @@ const Index = () => {
     setCurrentPage("pricing");
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   // Roteamento
   return (
     <SubscriptionProvider>
-      <OnboardingModal isOpen={showOnboarding} onClose={handleCloseOnboarding} />
       {renderPage()}
     </SubscriptionProvider>
   );
 
   function renderPage() {
-  if (currentPage === "landing" && !user) {
-    return <LandingPage onNavigate={handleNavigate} />;
-  }
+    if (currentPage === "landing" && !isAuthenticated) {
+      return <LandingPage onNavigate={handleNavigate} />;
+    }
 
-  if (currentPage === "login" && !user) {
-    return <LoginPage onNavigate={handleNavigate} onLogin={handleLogin} />;
-  }
+    if (currentPage === "login" && !isAuthenticated) {
+      return <LoginPage onNavigate={handleNavigate} />;
+    }
 
-  if (currentPage === "signup" && !user) {
-    return <SignupPage onNavigate={handleNavigate} onSignup={handleSignup} />;
-  }
+    if (currentPage === "signup" && !isAuthenticated) {
+      return <SignupPage onNavigate={handleNavigate} />;
+    }
 
-  if (currentPage === "pricing") {
-    return <PricingPage onNavigate={handleNavigate} />;
-  }
+    if (currentPage === "pricing") {
+      return <PricingPage onNavigate={handleNavigate} />;
+    }
 
-  if (currentPage === "app" && user) {
-    return (
-      <MainApp
-        userName={user.name}
-        userEmail={user.email}
-        userPlan={user.plan}
-        trialEndsAt={user.trialEndsAt}
-        onLogout={handleLogout}
-        onNavigateToPricing={handleNavigateToPricing}
-      />
-    );
-  }
+    if (isAuthenticated) {
+      return (
+        <AuthenticatedApp
+          onLogout={handleLogout}
+          onNavigateToPricing={handleNavigateToPricing}
+        />
+      );
+    }
 
-  // Fallback - redirecionar para landing ou app baseado na autenticação
-  if (user) {
-    return (
-      <MainApp
-        userName={user.name}
-        userEmail={user.email}
-        userPlan={user.plan}
-        trialEndsAt={user.trialEndsAt}
-        onLogout={handleLogout}
-        onNavigateToPricing={handleNavigateToPricing}
-      />
-    );
-  }
-
+    // Fallback - redirecionar para landing
     return <LandingPage onNavigate={handleNavigate} />;
   }
 };
