@@ -1,59 +1,92 @@
-import { Calculator, Check, ArrowLeft } from "lucide-react";
+import { Calculator, Check, X, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 
 interface PricingPageProps {
   onNavigate: (page: string) => void;
 }
 
 export const PricingPage = ({ onNavigate }: PricingPageProps) => {
+  const [isAnnual, setIsAnnual] = useState(false);
+
   const plans = [
     {
       name: "Free",
-      price: "R$ 0",
+      priceMonthly: "R$ 0",
+      priceAnnual: "R$ 0",
       period: "/mês",
-      description: "Perfeito para começar",
+      description: "Começar",
+      badge: "Começar",
       features: [
-        "Até 5 projetos",
-        "Calculadora de preços",
-        "Geração de contratos",
-        "Dashboard básico",
+        { text: "5 projetos por mês", included: true },
+        { text: "Calculadora completa", included: true },
+        { text: "Contratos básicos", included: true },
+        { text: "Histórico de 30 dias", included: true },
+        { text: "Dashboard avançado", included: false },
+        { text: "Múltiplos impostos", included: false },
+        { text: "Suporte prioritário", included: false },
       ],
       cta: "Começar Grátis",
       popular: false,
+      buttonVariant: "outline" as const,
     },
     {
       name: "Pro",
-      price: "R$ 49",
-      period: "/mês",
-      description: "Para freelancers profissionais",
+      priceMonthly: "R$ 29",
+      priceAnnual: "R$ 290",
+      period: isAnnual ? "/ano" : "/mês",
+      description: "Recomendado",
+      badge: "Mais Popular",
       features: [
-        "Projetos ilimitados",
-        "Todas as funcionalidades Free",
-        "Relatórios avançados",
-        "Exportação em PDF",
-        "Suporte prioritário",
-        "Múltiplos clientes",
+        { text: "Projetos ilimitados", included: true },
+        { text: "Todos os recursos Free", included: true },
+        { text: "Dashboard completo", included: true },
+        { text: "Múltiplos regimes tributários", included: true },
+        { text: "Histórico ilimitado", included: true },
+        { text: "Exportar relatórios PDF", included: true },
+        { text: "Suporte por email", included: true },
       ],
       cta: "Começar Teste Grátis",
+      subtitle: "7 dias grátis, cancele quando quiser",
       popular: true,
+      buttonVariant: "default" as const,
     },
     {
       name: "Business",
-      price: "R$ 99",
-      period: "/mês",
-      description: "Para agências e times",
+      priceMonthly: "R$ 79",
+      priceAnnual: "R$ 790",
+      period: isAnnual ? "/ano" : "/mês",
+      description: "Empresas",
+      badge: "Empresas",
       features: [
-        "Tudo do plano Pro",
-        "Múltiplos usuários",
-        "API de integração",
-        "White label",
-        "Suporte dedicado",
-        "Treinamento incluído",
+        { text: "Tudo do Pro", included: true },
+        { text: "Múltiplos usuários (até 5)", included: true },
+        { text: "White-label nos contratos", included: true },
+        { text: "Integrações (Trello, Notion)", included: true },
+        { text: "API de acesso", included: true },
+        { text: "Suporte prioritário", included: true },
+        { text: "Gerente de conta", included: true },
       ],
       cta: "Falar com Vendas",
       popular: false,
+      buttonVariant: "secondary" as const,
+    },
+  ];
+
+  const faqs = [
+    {
+      question: "Posso mudar de plano?",
+      answer: "Sim, a qualquer momento",
+    },
+    {
+      question: "Preciso de cartão para testar?",
+      answer: "Não, período grátis sem cartão",
+    },
+    {
+      question: "Como funciona o pagamento?",
+      answer: "PIX, cartão ou boleto",
     },
   ];
 
@@ -94,9 +127,32 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 animate-fade-in">
           Escolha o plano ideal para você
         </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Comece grátis e faça upgrade quando quiser. Sem pegadinhas.
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+          Comece grátis, faça upgrade quando precisar
         </p>
+
+        {/* Billing Toggle */}
+        <div className="flex items-center justify-center gap-4 mt-8">
+          <span className={`text-sm font-medium transition-colors ${!isAnnual ? 'text-foreground' : 'text-muted-foreground'}`}>
+            Mensal
+          </span>
+          <button
+            onClick={() => setIsAnnual(!isAnnual)}
+            className="relative inline-flex h-6 w-11 items-center rounded-full bg-muted transition-colors hover:bg-muted/80"
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-primary transition-transform ${
+                isAnnual ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
+          <span className={`text-sm font-medium transition-colors ${isAnnual ? 'text-foreground' : 'text-muted-foreground'}`}>
+            Anual
+          </span>
+          {isAnnual && (
+            <Badge className="bg-green-500 text-white">20% off</Badge>
+          )}
+        </div>
       </section>
 
       {/* Pricing Cards */}
@@ -112,15 +168,19 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
             >
               {plan.popular && (
                 <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-primary to-secondary text-white">
-                  Mais Popular
+                  {plan.badge}
                 </Badge>
               )}
 
               <CardHeader className="text-center pb-8">
+                {!plan.popular && (
+                  <Badge variant="outline" className="w-fit mx-auto mb-2">{plan.badge}</Badge>
+                )}
                 <CardTitle className="text-2xl mb-2">{plan.name}</CardTitle>
-                <CardDescription className="text-sm">{plan.description}</CardDescription>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold text-foreground">{plan.price}</span>
+                  <span className="text-4xl font-bold text-foreground">
+                    {isAnnual ? plan.priceAnnual : plan.priceMonthly}
+                  </span>
                   <span className="text-muted-foreground">{plan.period}</span>
                 </div>
               </CardHeader>
@@ -129,25 +189,52 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
                 <ul className="space-y-3 mb-6">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-muted-foreground">{feature}</span>
+                      {feature.included ? (
+                        <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      ) : (
+                        <X className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                      )}
+                      <span className={`text-sm ${feature.included ? 'text-foreground' : 'text-muted-foreground'}`}>
+                        {feature.text}
+                      </span>
                     </li>
                   ))}
                 </ul>
 
                 <Button
                   onClick={() => onNavigate("signup")}
+                  variant={plan.buttonVariant}
                   className={`w-full py-6 ${
-                    plan.popular
-                      ? "bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-                      : "bg-muted hover:bg-muted/80 text-foreground"
+                    plan.popular ? "bg-gradient-to-r from-primary to-secondary hover:opacity-90" : ""
                   }`}
                 >
                   {plan.cta}
                 </Button>
+                {plan.subtitle && (
+                  <p className="text-xs text-muted-foreground text-center mt-3">
+                    {plan.subtitle}
+                  </p>
+                )}
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* FAQ Section */}
+        <div className="max-w-3xl mx-auto mt-20">
+          <h2 className="text-3xl font-bold text-center mb-12">Perguntas Frequentes</h2>
+          <div className="space-y-6">
+            {faqs.map((faq, index) => (
+              <Card key={index} className="border-2 hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="text-lg">{faq.question}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{faq.answer}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
 
         <div className="text-center mt-12">
