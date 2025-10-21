@@ -32,39 +32,38 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-white/95 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+      <header className="border-b border-white/10 glass-card sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary via-secondary to-tertiary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
                 <Calculator className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <span className="text-xl font-bold gradient-text">
                 FreelaPro
               </span>
             </div>
 
             <nav className="hidden md:flex items-center gap-8">
-              <button className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
+              <button className="text-muted-foreground hover:text-foreground transition-colors font-medium">
                 Funcionalidades
               </button>
               <button
                 onClick={() => onNavigate("pricing")}
-                className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+                className="text-muted-foreground hover:text-foreground transition-colors font-medium"
               >
                 Preços
               </button>
               <button
                 onClick={() => onNavigate("login")}
-                className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+                className="text-muted-foreground hover:text-foreground transition-colors font-medium"
               >
                 Login
               </button>
               <Button 
-                onClick={() => onNavigate("signup")} 
-                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-lg"
+                onClick={() => onNavigate("signup")}
               >
                 Começar Grátis
               </Button>
@@ -72,7 +71,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
             <Button 
               onClick={() => onNavigate("signup")} 
-              className="md:hidden bg-gradient-to-r from-primary to-secondary"
+              className="md:hidden"
             >
               Começar
             </Button>
@@ -81,31 +80,32 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/20 to-tertiary/20 opacity-30"></div>
         
         {/* Decorative Elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-tertiary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }}></div>
         
         <div className="container mx-auto px-6 py-20 lg:py-32">
           <div className="grid lg:grid-cols-5 gap-12 items-center">
             {/* Coluna Esquerda - 60% */}
-            <div className="lg:col-span-3 space-y-8 animate-fade-in">
-              <Badge className="bg-white/90 text-primary border-primary/20 shadow-sm hover:shadow-md transition-shadow">
+            <div className="lg:col-span-3 space-y-8 animate-fade-in relative z-10">
+              <Badge className="glass-card text-primary border-primary/20 shadow-lg hover:shadow-primary/30 transition-shadow">
                 <Sparkles className="w-3 h-3 mr-1" />
                 Ferramenta #1 para Freelancers no Brasil
               </Badge>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                 Precifique seus projetos com{" "}
-                <span className="bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="gradient-text">
                   inteligência
                 </span>{" "}
                 e feche mais contratos
               </h1>
 
-              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed max-w-2xl">
+              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl">
                 Calcule valores justos em segundos, gere contratos profissionais e acompanhe todos os seus projetos em um só lugar.
               </p>
 
@@ -113,7 +113,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                 <Button
                   onClick={() => onNavigate("signup")}
                   size="lg"
-                  className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-xl hover:shadow-2xl transition-all text-lg px-8 py-7"
+                  className="text-lg px-8 py-7"
                 >
                   Começar Gratuitamente
                   <ArrowRight className="ml-2 w-5 h-5" />
@@ -121,7 +121,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="text-lg px-8 py-7 border-2 hover:bg-gray-50"
+                  className="text-lg px-8 py-7"
                 >
                   <Play className="mr-2 w-5 h-5" />
                   Ver Como Funciona
@@ -130,28 +130,28 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
               {/* Mini Estatísticas */}
               <div className="flex flex-wrap gap-6 pt-4">
-                <div className="flex items-center gap-2 text-gray-700">
+                <div className="flex items-center gap-2 text-foreground">
                   <Users className="w-5 h-5 text-primary" />
                   <span className="font-semibold">+2.500</span>
-                  <span className="text-gray-600">freelancers</span>
+                  <span className="text-muted-foreground">freelancers</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-700">
+                <div className="flex items-center gap-2 text-foreground">
                   <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
                   <span className="font-semibold">4.9/5</span>
-                  <span className="text-gray-600">avaliação</span>
+                  <span className="text-muted-foreground">avaliação</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-700">
+                <div className="flex items-center gap-2 text-foreground">
                   <DollarSign className="w-5 h-5 text-green-600" />
                   <span className="font-semibold">R$ 12M+</span>
-                  <span className="text-gray-600">em projetos</span>
+                  <span className="text-muted-foreground">em projetos</span>
                 </div>
               </div>
             </div>
 
             {/* Coluna Direita - 40% */}
-            <div className="lg:col-span-2 relative animate-fade-in" style={{ animationDelay: "200ms" }}>
+            <div className="lg:col-span-2 relative animate-fade-in z-10" style={{ animationDelay: "200ms" }}>
               {/* Main Card - Mockup da Interface */}
-              <Card className="border-2 shadow-2xl bg-white/95 backdrop-blur-sm hover:shadow-3xl transition-shadow duration-300">
+              <Card className="gradient-border shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_40px_rgba(99,102,241,0.4)] transition-shadow duration-300">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -161,84 +161,85 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Nome do Projeto</span>
-                      <Badge variant="secondary" className="text-xs">Website</Badge>
+                      <span className="text-sm text-muted-foreground">Nome do Projeto</span>
+                      <Badge variant="secondary" className="text-xs glass-card">Website</Badge>
                     </div>
-                    <div className="h-3 bg-gray-200 rounded-full w-3/4 animate-pulse"></div>
+                    <div className="h-3 bg-muted rounded-full w-3/4 animate-pulse"></div>
                     
                     <div className="grid grid-cols-2 gap-3 pt-2">
                       <div className="space-y-1">
-                        <span className="text-xs text-gray-500">Horas</span>
-                        <div className="h-8 bg-gradient-to-r from-primary/10 to-primary/5 rounded flex items-center px-3">
+                        <span className="text-xs text-muted-foreground">Horas</span>
+                        <div className="h-8 glass-card rounded flex items-center px-3">
                           <span className="text-sm font-semibold text-primary">40h</span>
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <span className="text-xs text-gray-500">Valor/Hora</span>
-                        <div className="h-8 bg-gradient-to-r from-secondary/10 to-secondary/5 rounded flex items-center px-3">
+                        <span className="text-xs text-muted-foreground">Valor/Hora</span>
+                        <div className="h-8 glass-card rounded flex items-center px-3">
                           <span className="text-sm font-semibold text-secondary">R$ 150</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t">
+                    <div className="pt-4 border-t border-white/10">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700">Valor Final</span>
+                        <span className="text-sm font-medium text-foreground">Valor Final</span>
                         <Calculator className="w-4 h-4 text-primary" />
                       </div>
-                      <div className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                      <div className="text-3xl font-bold gradient-text">
                         R$ 8.280,00
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">R$ 207,00/hora efetiva</p>
+                      <p className="text-xs text-muted-foreground mt-1">R$ 207,00/hora efetiva</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Floating Card - Exemplo de Cálculo */}
-              <Card className="absolute -bottom-6 -left-6 w-48 border-2 shadow-xl bg-white animate-scale-in" style={{ animationDelay: "400ms" }}>
+              <Card className="absolute -bottom-6 -left-6 w-48 gradient-border shadow-[0_8px_32px_rgba(0,0,0,0.4)] animate-scale-in" style={{ animationDelay: "400ms" }}>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="w-4 h-4 text-green-600" />
-                    <span className="text-xs font-semibold text-gray-700">Lucro</span>
+                    <TrendingUp className="w-4 h-4 text-green-500" />
+                    <span className="text-xs font-semibold text-foreground">Lucro</span>
                   </div>
-                  <p className="text-xl font-bold text-green-600">+45%</p>
-                  <p className="text-xs text-gray-500">vs. média do mercado</p>
+                  <p className="text-xl font-bold text-green-500">+45%</p>
+                  <p className="text-xs text-muted-foreground">vs. média do mercado</p>
                 </CardContent>
               </Card>
 
               {/* Decorative Circle */}
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full blur-2xl"></div>
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-full blur-2xl"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-6 py-24 bg-white">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+      <section className="container mx-auto px-6 py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background"></div>
+        <div className="text-center mb-16 animate-fade-in relative z-10">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             Tudo que você precisa para profissionalizar seu trabalho
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Ferramentas poderosas, simples de usar
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10">
           {/* Feature 1 */}
           <Card
-            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            className="hover:shadow-[0_8px_32px_rgba(99,102,241,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
             style={{ animationDelay: "0ms" }}
           >
             <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary via-secondary to-tertiary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-primary/30">
                 <Calculator className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold text-foreground mb-3">
                 🧮 Calculadora Inteligente
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Calcule preços justos considerando todos os custos, impostos e margem de lucro
               </p>
             </CardContent>
@@ -246,17 +247,17 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 2 */}
           <Card
-            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            className="hover:shadow-[0_8px_32px_rgba(168,85,247,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
             style={{ animationDelay: "100ms" }}
           >
             <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-green-500/30">
                 <Shield className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold text-foreground mb-3">
                 📄 Contratos Profissionais
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Gere contratos personalizados em segundos, prontos para assinar
               </p>
             </CardContent>
@@ -264,17 +265,17 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 3 */}
           <Card
-            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            className="hover:shadow-[0_8px_32px_rgba(59,130,246,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
             style={{ animationDelay: "200ms" }}
           >
             <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/30">
                 <TrendingUp className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold text-foreground mb-3">
                 📊 Dashboard Completo
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Visualize estatísticas, projetos aprovados e faturamento total
               </p>
             </CardContent>
@@ -282,17 +283,17 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 4 */}
           <Card
-            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            className="hover:shadow-[0_8px_32px_rgba(168,85,247,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
             style={{ animationDelay: "300ms" }}
           >
             <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-tertiary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-purple-500/30">
                 <Zap className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold text-foreground mb-3">
                 💾 Histórico de Projetos
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Mantenha registro de todos os orçamentos e contratos gerados
               </p>
             </CardContent>
@@ -300,17 +301,17 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 5 */}
           <Card
-            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            className="hover:shadow-[0_8px_32px_rgba(249,115,22,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
             style={{ animationDelay: "400ms" }}
           >
             <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-orange-500/30">
                 <Users className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold text-foreground mb-3">
                 📱 Acesse de Qualquer Lugar
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Interface responsiva funciona perfeitamente em mobile e desktop
               </p>
             </CardContent>
@@ -318,17 +319,17 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 6 */}
           <Card
-            className="border-2 hover:shadow-2xl transition-all duration-300 group cursor-pointer animate-fade-in bg-white"
+            className="hover:shadow-[0_8px_32px_rgba(234,179,8,0.3)] transition-all duration-300 group cursor-pointer animate-fade-in hover:scale-105"
             style={{ animationDelay: "500ms" }}
           >
             <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-yellow-500/30">
                 <Shield className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold text-foreground mb-3">
                 🔒 Dados Seguros
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Suas informações protegidas com criptografia e backup automático
               </p>
             </CardContent>
@@ -458,15 +459,15 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             {/* Logo e Descrição */}
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-10 h-10 bg-gradient-to-br from-primary via-secondary to-tertiary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
                   <Calculator className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-xl font-bold text-white">FreelaPro</span>
+                <span className="text-xl font-bold gradient-text">FreelaPro</span>
               </div>
-              <p className="text-gray-400 max-w-md mb-4">
+              <p className="text-muted-foreground max-w-md mb-4">
                 A plataforma completa para freelancers precificarem projetos, gerarem contratos e acompanharem seu crescimento.
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground/60">
                 © 2024 FreelaPro. Feito por{" "}
                 <a
                   href="https://www.r3d3s.com.br"
@@ -481,12 +482,12 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
             {/* Links */}
             <div>
-              <h4 className="text-white font-semibold mb-4">Links</h4>
+              <h4 className="text-foreground font-semibold mb-4">Links</h4>
               <ul className="space-y-2">
                 <li>
                   <button
                     onClick={() => onNavigate("pricing")}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Preços
                   </button>
