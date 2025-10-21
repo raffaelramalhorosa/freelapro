@@ -34,8 +34,8 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
     },
     {
       name: "Pro",
-      priceMonthly: "R$ 29",
-      priceAnnual: "R$ 290",
+      priceMonthly: "R$ 10",
+      priceAnnual: "R$ 100",
       period: isAnnual ? "/ano" : "/mês",
       description: "Recomendado",
       badge: "Mais Popular",
@@ -55,8 +55,8 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
     },
     {
       name: "Business",
-      priceMonthly: "R$ 79",
-      priceAnnual: "R$ 790",
+      priceMonthly: "R$ 22",
+      priceAnnual: "R$ 220",
       period: isAnnual ? "/ano" : "/mês",
       description: "Empresas",
       badge: "Empresas",
@@ -133,7 +133,9 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
 
         {/* Billing Toggle */}
         <div className="flex items-center justify-center gap-4 mt-8">
-          <span className={`text-sm font-medium transition-colors ${!isAnnual ? 'text-foreground' : 'text-muted-foreground'}`}>
+          <span
+            className={`text-sm font-medium transition-colors ${!isAnnual ? "text-foreground" : "text-muted-foreground"}`}
+          >
             Mensal
           </span>
           <button
@@ -142,16 +144,16 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
           >
             <span
               className={`inline-block h-4 w-4 transform rounded-full bg-primary transition-transform ${
-                isAnnual ? 'translate-x-6' : 'translate-x-1'
+                isAnnual ? "translate-x-6" : "translate-x-1"
               }`}
             />
           </button>
-          <span className={`text-sm font-medium transition-colors ${isAnnual ? 'text-foreground' : 'text-muted-foreground'}`}>
+          <span
+            className={`text-sm font-medium transition-colors ${isAnnual ? "text-foreground" : "text-muted-foreground"}`}
+          >
             Anual
           </span>
-          {isAnnual && (
-            <Badge className="bg-green-500 text-white">20% off</Badge>
-          )}
+          {isAnnual && <Badge className="bg-green-500 text-white">20% off</Badge>}
         </div>
       </section>
 
@@ -174,7 +176,9 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
 
               <CardHeader className="text-center pb-8">
                 {!plan.popular && (
-                  <Badge variant="outline" className="w-fit mx-auto mb-2">{plan.badge}</Badge>
+                  <Badge variant="outline" className="w-fit mx-auto mb-2">
+                    {plan.badge}
+                  </Badge>
                 )}
                 <CardTitle className="text-2xl mb-2">{plan.name}</CardTitle>
                 <div className="mt-4">
@@ -194,7 +198,7 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
                       ) : (
                         <X className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                       )}
-                      <span className={`text-sm ${feature.included ? 'text-foreground' : 'text-muted-foreground'}`}>
+                      <span className={`text-sm ${feature.included ? "text-foreground" : "text-muted-foreground"}`}>
                         {feature.text}
                       </span>
                     </li>
@@ -210,11 +214,7 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
                 >
                   {plan.cta}
                 </Button>
-                {plan.subtitle && (
-                  <p className="text-xs text-muted-foreground text-center mt-3">
-                    {plan.subtitle}
-                  </p>
-                )}
+                {plan.subtitle && <p className="text-xs text-muted-foreground text-center mt-3">{plan.subtitle}</p>}
               </CardContent>
             </Card>
           ))}
@@ -238,9 +238,7 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-muted-foreground mb-4">
-            Tem dúvidas? Estamos aqui para ajudar.
-          </p>
+          <p className="text-muted-foreground mb-4">Tem dúvidas? Estamos aqui para ajudar.</p>
           <Button variant="outline" size="lg">
             Falar com nosso time
           </Button>
