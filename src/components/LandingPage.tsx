@@ -8,6 +8,9 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ScrollProgressBar } from "@/components/ScrollProgressBar";
 import { CustomCursor } from "@/components/CustomCursor";
 import { MouseTrail } from "@/components/MouseTrail";
+import { FloatingShapes } from "@/components/FloatingShapes";
+import { RisingParticles } from "@/components/RisingParticles";
+import { AnimatedGradient } from "@/components/AnimatedGradient";
 import { useParallax } from "@/hooks/useParallax";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useMagneticEffect } from "@/hooks/useMagneticEffect";
@@ -22,6 +25,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false);
   const bgRef = useRef<HTMLDivElement>(null);
   const mockupRef = useRef<HTMLDivElement>(null);
+  const mockupCardRef = useRef<HTMLDivElement>(null);
   const heroSectionRef = useRef<HTMLElement>(null);
   const featuresRef = useRef<HTMLElement>(null);
   const ctaButtonRef = useRef<HTMLButtonElement>(null);
@@ -49,6 +53,30 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
   useScrollReveal([sectionTitleRef], { direction: "up" });
   useScrollReveal([featureRefs[0], featureRefs[2], featureRefs[4]], { direction: "left" });
   useScrollReveal([featureRefs[1], featureRefs[3], featureRefs[5]], { direction: "right" });
+  
+  // 3D Tilt effect on mockup card
+  const handleMockupMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = mockupCardRef.current;
+    if (!card) return;
+
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = (y - centerY) / 20;
+    const rotateY = (centerX - x) / 20;
+
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+  };
+
+  const handleMockupMouseLeave = () => {
+    const card = mockupCardRef.current;
+    if (!card) return;
+    card.style.transform = "perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)";
+  };
   
   // Header scroll effect
   useEffect(() => {
@@ -137,7 +165,15 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
       {/* Hero Section */}
       <section ref={heroSectionRef} className="relative overflow-hidden">
-        {/* Mouse-following gradient spotlight */}
+        {/* Layer 1: Animated Dot Grid Background with Parallax */}
+        <div ref={bgRef} className="absolute inset-0" style={{ willChange: "transform", zIndex: 0 }}>
+          <AnimatedDotGrid />
+        </div>
+        
+        {/* Layer 2: Animated Gradient Overlay */}
+        <AnimatedGradient />
+        
+        {/* Layer 3: Mouse-following gradient spotlight */}
         <div
           className="absolute inset-0 pointer-events-none transition-opacity duration-300"
           style={{
@@ -146,10 +182,11 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
           }}
         />
         
-        {/* Animated Dot Grid Background with Parallax */}
-        <div ref={bgRef} className="absolute inset-0" style={{ willChange: "transform" }}>
-          <AnimatedDotGrid />
-        </div>
+        {/* Layer 4: Floating Geometric Shapes */}
+        <FloatingShapes />
+        
+        {/* Layer 5: Rising Particles */}
+        <RisingParticles />
         
         {/* Floating Particles */}
         <div className="particle particle-1 w-3 h-3 bg-primary/40 top-[10%] left-[15%]" style={{ zIndex: 1 }}></div>
@@ -238,7 +275,12 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             {/* Coluna Direita - 40% */}
             <div ref={mockupRef} className="lg:col-span-2 relative animate-fade-in-scale z-10" style={{ animationDelay: "0.5s", willChange: "transform" }}>
               {/* Main Card - Mockup da Interface */}
-              <Card className="card-glow shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_48px_rgba(99,102,241,0.6)]">
+              <Card 
+                ref={mockupCardRef}
+                className="card-glow shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_48px_rgba(99,102,241,0.6)] tilt-card transition-all duration-200"
+                onMouseMove={handleMockupMouseMove}
+                onMouseLeave={handleMockupMouseLeave}
+              >
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>

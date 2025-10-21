@@ -196,6 +196,32 @@ export default {
             opacity: "0",
             transform: "translate(-50%, -50%) scale(0.5)"
           }
+        },
+        "float-slow": {
+          "0%, 100%": {
+            transform: "translateY(0) rotate(0deg)"
+          },
+          "50%": {
+            transform: "translateY(-30px) rotate(5deg)"
+          }
+        },
+        "spin-slow": {
+          "0%": {
+            transform: "rotate(0deg)"
+          },
+          "100%": {
+            transform: "rotate(360deg)"
+          }
+        },
+        "rise": {
+          "0%": {
+            transform: "translateY(0) scale(1)",
+            opacity: "1"
+          },
+          "100%": {
+            transform: "translateY(-100vh) scale(0.5)",
+            opacity: "0"
+          }
         }
       },
       animation: {
@@ -215,6 +241,9 @@ export default {
         "progress-shine": "progress-shine 2s infinite",
         "bounce-in": "bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
         "trail-fade": "trail-fade 1s ease-out forwards",
+        "float-slow": "float-slow 20s ease-in-out infinite",
+        "spin-slow": "spin-slow 30s linear infinite",
+        "rise": "rise 10s linear infinite",
       },
     },
   },
