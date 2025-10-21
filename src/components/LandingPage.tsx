@@ -85,6 +85,13 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
         {/* Animated Dot Grid Background */}
         <AnimatedDotGrid />
         
+        {/* Floating Particles */}
+        <div className="particle particle-1 w-3 h-3 bg-primary/40 top-[10%] left-[15%]" style={{ zIndex: 1 }}></div>
+        <div className="particle particle-2 w-4 h-4 bg-secondary/40 top-[30%] right-[20%]" style={{ zIndex: 1 }}></div>
+        <div className="particle particle-3 w-2 h-2 bg-tertiary/40 bottom-[25%] left-[25%]" style={{ zIndex: 1 }}></div>
+        <div className="particle particle-4 w-3 h-3 bg-primary/40 top-[60%] right-[15%]" style={{ zIndex: 1 }}></div>
+        <div className="particle particle-5 w-4 h-4 bg-secondary/40 bottom-[15%] right-[30%]" style={{ zIndex: 1 }}></div>
+        
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-tertiary/10 opacity-50" style={{ zIndex: 1 }}></div>
         
@@ -102,7 +109,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                 Ferramenta #1 para Freelancers no Brasil
               </Badge>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight animate-fade-up" style={{ animationDelay: "0.15s" }}>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight animate-fade-up text-glow" style={{ animationDelay: "0.15s" }}>
                 Precifique seus projetos com{" "}
                 <span className="gradient-text">
                   inteligência
@@ -118,7 +125,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                 <Button
                   onClick={() => onNavigate("signup")}
                   size="lg"
-                  className="text-lg px-8 py-7"
+                  className="text-lg px-8 py-7 neon-button"
                 >
                   Começar Gratuitamente
                   <ArrowRight className="ml-2 w-5 h-5" />
@@ -156,7 +163,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             {/* Coluna Direita - 40% */}
             <div className="lg:col-span-2 relative animate-fade-in-scale z-10" style={{ animationDelay: "0.5s" }}>
               {/* Main Card - Mockup da Interface */}
-              <Card className="gradient-border shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_48px_rgba(99,102,241,0.6)]">
+              <Card className="card-glow shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_48px_rgba(99,102,241,0.6)]">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
@@ -191,7 +198,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                         <span className="text-sm font-medium text-foreground">Valor Final</span>
                         <Calculator className="w-4 h-4 text-primary" />
                       </div>
-                      <div className="text-3xl font-bold gradient-text">
+                      <div className="text-3xl font-bold gradient-text text-glow-purple">
                         R$ 8.280,00
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">R$ 207,00/hora efetiva</p>
@@ -234,7 +241,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10">
           {/* Feature 1 */}
           <Card
-            className="hover:shadow-[0_12px_40px_rgba(99,102,241,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
+            className="card-glow hover:shadow-[0_12px_40px_rgba(99,102,241,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
             style={{ animationDelay: "0.15s" }}
           >
             <CardContent className="p-8">
@@ -252,7 +259,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 2 */}
           <Card
-            className="hover:shadow-[0_12px_40px_rgba(16,185,129,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
+            className="card-glow hover:shadow-[0_12px_40px_rgba(16,185,129,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
             style={{ animationDelay: "0.25s" }}
           >
             <CardContent className="p-8">
@@ -270,7 +277,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
           {/* Feature 3 */}
           <Card
-            className="hover:shadow-[0_12px_40px_rgba(59,130,246,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
+            className="card-glow hover:shadow-[0_12px_40px_rgba(59,130,246,0.5)] transition-all duration-300 group cursor-pointer animate-fade-in-scale"
             style={{ animationDelay: "0.35s" }}
           >
             <CardContent className="p-8">
