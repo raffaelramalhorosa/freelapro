@@ -120,6 +120,36 @@ export default {
             opacity: "1"
           }
         },
+        "glow-rotate": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" }
+        },
+        "badge-pulse": {
+          "0%, 100%": { 
+            boxShadow: "0 0 20px rgba(99, 102, 241, 0.4)" 
+          },
+          "50%": { 
+            boxShadow: "0 0 40px rgba(99, 102, 241, 0.8), 0 0 60px rgba(168, 85, 247, 0.6)" 
+          }
+        },
+        "float": {
+          "0%, 100%": { 
+            transform: "translateY(0px) translateX(0px)",
+            opacity: "0.3"
+          },
+          "25%": { 
+            transform: "translateY(-20px) translateX(10px)",
+            opacity: "0.6"
+          },
+          "50%": { 
+            transform: "translateY(-40px) translateX(-10px)",
+            opacity: "0.4"
+          },
+          "75%": { 
+            transform: "translateY(-20px) translateX(-15px)",
+            opacity: "0.5"
+          }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -128,6 +158,9 @@ export default {
         "fade-up": "fade-up 0.6s ease-out",
         "fade-in-scale": "fade-in-scale 0.5s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
+        "glow-rotate": "glow-rotate 3s linear infinite",
+        "badge-pulse": "badge-pulse 2s ease-in-out infinite",
+        "float": "float 8s ease-in-out infinite",
       },
     },
   },

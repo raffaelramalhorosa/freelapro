@@ -122,4 +122,120 @@ All colors MUST be HSL.
   .link-underline:hover::after {
     transform: scaleX(1);
   }
+  
+  /* Card Glow Effect */
+  .card-glow {
+    position: relative;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+  
+  .card-glow::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #6366F1, #A855F7, #EC4899, #6366F1);
+    background-size: 300% 300%;
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    filter: blur(20px);
+    animation: glowRotate 3s linear infinite;
+    transition: opacity 0.3s;
+  }
+  
+  .card-glow:hover::before {
+    opacity: 0.6;
+  }
+  
+  /* Animated Border Glow */
+  .border-glow {
+    position: relative;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  
+  .border-glow::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #6366F1, #A855F7, #EC4899, #6366F1);
+    background-size: 300% 300%;
+    border-radius: inherit;
+    z-index: -1;
+    animation: glowRotate 3s linear infinite;
+  }
+  
+  /* Text Glow */
+  .text-glow {
+    text-shadow: 
+      0 0 10px rgba(99, 102, 241, 0.5),
+      0 0 20px rgba(99, 102, 241, 0.3),
+      0 0 30px rgba(99, 102, 241, 0.2);
+  }
+  
+  .text-glow-pink {
+    text-shadow: 
+      0 0 10px rgba(236, 72, 153, 0.5),
+      0 0 20px rgba(236, 72, 153, 0.3),
+      0 0 30px rgba(236, 72, 153, 0.2);
+  }
+  
+  .text-glow-purple {
+    text-shadow: 
+      0 0 10px rgba(168, 85, 247, 0.5),
+      0 0 20px rgba(168, 85, 247, 0.3),
+      0 0 30px rgba(168, 85, 247, 0.2);
+  }
+  
+  /* Badge Glow Pulse */
+  .badge-glow {
+    position: relative;
+    animation: badgePulse 2s ease-in-out infinite;
+  }
+  
+  .badge-glow::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    background: linear-gradient(45deg, #6366F1, #A855F7, #EC4899);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0.4;
+    filter: blur(12px);
+    animation: glowRotate 3s linear infinite;
+  }
+  
+  /* Neon Button */
+  .neon-button {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .neon-button::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #6366F1, #A855F7, #EC4899, #6366F1);
+    background-size: 300% 300%;
+    border-radius: inherit;
+    z-index: -1;
+    animation: glowRotate 3s linear infinite;
+    opacity: 0.8;
+    filter: blur(8px);
+  }
+  
+  /* Floating Particles */
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.4;
+    animation: float 8s ease-in-out infinite;
+  }
+  
+  .particle-1 { animation-delay: 0s; }
+  .particle-2 { animation-delay: 1s; }
+  .particle-3 { animation-delay: 2s; }
+  .particle-4 { animation-delay: 3s; }
+  .particle-5 { animation-delay: 4s; }
 }
