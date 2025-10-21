@@ -42,9 +42,10 @@ interface Project {
 
 interface ProjectsProps {
   onNavigateToCalculator: () => void;
+  onEditProject: (project: Project) => void;
 }
 
-export const Projects = ({ onNavigateToCalculator }: ProjectsProps) => {
+export const Projects = ({ onNavigateToCalculator, onEditProject }: ProjectsProps) => {
   const [projects, setProjects] = useState<Project[]>([]);
 
   // Carregar projetos do localStorage
@@ -473,7 +474,11 @@ TESTEMUNHAS (opcional):
                   Contrato
                 </Button>
 
-                <Button variant="default" className="bg-primary hover:bg-primary/90">
+                <Button 
+                  variant="default" 
+                  className="bg-primary hover:bg-primary/90"
+                  onClick={() => onEditProject(project)}
+                >
                   <Pencil className="w-4 h-4 mr-2" />
                   Editar
                 </Button>
