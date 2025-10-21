@@ -359,193 +359,217 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10">
           {/* Feature 1 */}
-          <Card
-            ref={featureRefs[0]}
-            className="card-glow hover:shadow-[0_12px_40px_rgba(99,102,241,0.5)] transition-all duration-300 group cursor-pointer"
-          >
-            <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary via-secondary to-tertiary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-primary/30">
-                <Calculator className="w-8 h-8 text-white" />
+          <div ref={featureRefs[0]} className="group relative">
+            {/* Background gradient glow */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-tertiary rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+            
+            {/* Card principal */}
+            <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300 hover:scale-105">
+              {/* Ícone com glow */}
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/50">
+                <Calculator className="text-white" size={28} />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">
-                🧮 Calculadora Inteligente
+              
+              {/* Título com gradient text */}
+              <h3 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-3">
+                Calculadora Inteligente
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              
+              {/* Descrição */}
+              <p className="text-gray-400 leading-relaxed">
                 Calcule preços justos considerando todos os custos, impostos e margem de lucro
               </p>
-            </CardContent>
-          </Card>
+              
+              {/* Linha decorativa animada */}
+              <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary to-secondary w-0 group-hover:w-full transition-all duration-500 rounded-b-2xl"></div>
+            </div>
+          </div>
 
           {/* Feature 2 */}
-          <Card
-            ref={featureRefs[1]}
-            className="card-glow hover:shadow-[0_12px_40px_rgba(16,185,129,0.5)] transition-all duration-300 group cursor-pointer"
-          >
-            <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-green-500/30">
-                <Shield className="w-8 h-8 text-white" />
+          <div ref={featureRefs[1]} className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+            <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300 hover:scale-105">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-green-500/50">
+                <Shield className="text-white" size={28} />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">
-                📄 Contratos Profissionais
+              <h3 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-3">
+                Contratos Profissionais
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-gray-400 leading-relaxed">
                 Gere contratos personalizados em segundos, prontos para assinar
               </p>
-            </CardContent>
-          </Card>
+              <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-green-500 to-emerald-600 w-0 group-hover:w-full transition-all duration-500 rounded-b-2xl"></div>
+            </div>
+          </div>
 
           {/* Feature 3 */}
-          <Card
-            ref={featureRefs[2]}
-            className="card-glow hover:shadow-[0_12px_40px_rgba(59,130,246,0.5)] transition-all duration-300 group cursor-pointer"
-          >
-            <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/30">
-                <TrendingUp className="w-8 h-8 text-white" />
+          <div ref={featureRefs[2]} className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+            <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300 hover:scale-105">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/50">
+                <TrendingUp className="text-white" size={28} />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">
-                📊 Dashboard Completo
+              <h3 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-3">
+                Dashboard Completo
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-gray-400 leading-relaxed">
                 Visualize estatísticas, projetos aprovados e faturamento total
               </p>
-            </CardContent>
-          </Card>
+              <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-600 w-0 group-hover:w-full transition-all duration-500 rounded-b-2xl"></div>
+            </div>
+          </div>
 
           {/* Feature 4 */}
-          <Card
-            ref={featureRefs[3]}
-            className="card-glow hover:shadow-[0_12px_40px_rgba(168,85,247,0.5)] transition-all duration-300 group cursor-pointer"
-          >
-            <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-tertiary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-purple-500/30">
-                <Zap className="w-8 h-8 text-white" />
+          <div ref={featureRefs[3]} className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+            <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300 hover:scale-105">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-purple-500/50">
+                <Zap className="text-white" size={28} />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">
-                💾 Histórico de Projetos
+              <h3 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-3">
+                Histórico de Projetos
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-gray-400 leading-relaxed">
                 Mantenha registro de todos os orçamentos e contratos gerados
               </p>
-            </CardContent>
-          </Card>
+              <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-purple-500 to-pink-600 w-0 group-hover:w-full transition-all duration-500 rounded-b-2xl"></div>
+            </div>
+          </div>
 
           {/* Feature 5 */}
-          <Card
-            ref={featureRefs[4]}
-            className="card-glow hover:shadow-[0_12px_40px_rgba(249,115,22,0.5)] transition-all duration-300 group cursor-pointer"
-          >
-            <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-orange-500/30">
-                <Users className="w-8 h-8 text-white" />
+          <div ref={featureRefs[4]} className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+            <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300 hover:scale-105">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-orange-500/50">
+                <Users className="text-white" size={28} />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">
-                📱 Acesse de Qualquer Lugar
+              <h3 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-3">
+                Acesse de Qualquer Lugar
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-gray-400 leading-relaxed">
                 Interface responsiva funciona perfeitamente em mobile e desktop
               </p>
-            </CardContent>
-          </Card>
+              <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-orange-500 to-red-600 w-0 group-hover:w-full transition-all duration-500 rounded-b-2xl"></div>
+            </div>
+          </div>
 
           {/* Feature 6 */}
-          <Card
-            ref={featureRefs[5]}
-            className="card-glow hover:shadow-[0_12px_40px_rgba(234,179,8,0.5)] transition-all duration-300 group cursor-pointer"
-          >
-            <CardContent className="p-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-yellow-500/30">
-                <Shield className="w-8 h-8 text-white" />
+          <div ref={featureRefs[5]} className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+            <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300 hover:scale-105">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-yellow-500/50">
+                <Shield className="text-white" size={28} />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">
-                🔒 Dados Seguros
+              <h3 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-3">
+                Dados Seguros
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-gray-400 leading-relaxed">
                 Suas informações protegidas com criptografia e backup automático
               </p>
-            </CardContent>
-          </Card>
+              <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-yellow-500 to-amber-600 w-0 group-hover:w-full transition-all duration-500 rounded-b-2xl"></div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Social Proof Section */}
-      <section className="bg-gray-50 py-24">
+      <section className="py-24">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 text-glow">
               Freelancers de todo Brasil já confiam no FreelaPro
             </h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Depoimento 1 */}
-            <Card className="bg-white border-2 hover:shadow-xl transition-all duration-300 animate-fade-in">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xl font-bold">
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-500"></div>
+              
+              <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300">
+                {/* Aspas decorativas grandes */}
+                <div className="absolute top-4 right-4 text-6xl text-primary/10 font-serif">"</div>
+                
+                <div className="flex items-center gap-4 mb-6 relative z-10">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-primary/30">
                     AS
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900">Ana Silva</h4>
-                    <p className="text-sm text-gray-600">Designer Gráfica</p>
+                    <h4 className="font-bold text-foreground">Ana Silva</h4>
+                    <p className="text-sm text-muted-foreground">Designer Gráfica</p>
                   </div>
                 </div>
+                
+                {/* Stars com glow dourado */}
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
                   ))}
                 </div>
-                <p className="text-gray-700 leading-relaxed italic">
+                
+                <p className="text-gray-300 leading-relaxed italic relative z-10">
                   "Antes eu cobrava no feeling e sempre tinha prejuízo. Agora consigo precificar com confiança e aumentei meu lucro em 40%!"
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Depoimento 2 */}
-            <Card className="bg-white border-2 hover:shadow-xl transition-all duration-300 animate-fade-in" style={{ animationDelay: "100ms" }}>
-              <CardContent className="p-8">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-xl font-bold">
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-500"></div>
+              
+              <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300">
+                <div className="absolute top-4 right-4 text-6xl text-green-500/10 font-serif">"</div>
+                
+                <div className="flex items-center gap-4 mb-6 relative z-10">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-green-500/30">
                     CM
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900">Carlos Mendes</h4>
-                    <p className="text-sm text-gray-600">Desenvolvedor Web</p>
+                    <h4 className="font-bold text-foreground">Carlos Mendes</h4>
+                    <p className="text-sm text-muted-foreground">Desenvolvedor Web</p>
                   </div>
                 </div>
+                
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
                   ))}
                 </div>
-                <p className="text-gray-700 leading-relaxed italic">
+                
+                <p className="text-gray-300 leading-relaxed italic relative z-10">
                   "Os contratos profissionais me deram muito mais credibilidade com clientes. Fechei 3 projetos grandes no último mês!"
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Depoimento 3 */}
-            <Card className="bg-white border-2 hover:shadow-xl transition-all duration-300 animate-fade-in" style={{ animationDelay: "200ms" }}>
-              <CardContent className="p-8">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white text-xl font-bold">
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-500"></div>
+              
+              <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300">
+                <div className="absolute top-4 right-4 text-6xl text-blue-500/10 font-serif">"</div>
+                
+                <div className="flex items-center gap-4 mb-6 relative z-10">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-blue-500/30">
                     MC
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900">Mariana Costa</h4>
-                    <p className="text-sm text-gray-600">Redatora</p>
+                    <h4 className="font-bold text-foreground">Mariana Costa</h4>
+                    <p className="text-sm text-muted-foreground">Redatora</p>
                   </div>
                 </div>
+                
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
                   ))}
                 </div>
-                <p className="text-gray-700 leading-relaxed italic">
+                
+                <p className="text-gray-300 leading-relaxed italic relative z-10">
                   "Interface simples e intuitiva. Em 5 minutos já estava usando. Economizo horas toda semana!"
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
       </section>
