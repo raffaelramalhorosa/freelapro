@@ -12,6 +12,7 @@ interface UserSession {
   name: string;
   email: string;
   plan: "free" | "pro" | "business";
+  trialEndsAt?: string;
 }
 
 const Index = () => {
@@ -64,6 +65,10 @@ const Index = () => {
     setCurrentPage(page as Page);
   };
 
+  const handleNavigateToPricing = () => {
+    setCurrentPage("pricing");
+  };
+
   // Roteamento
   if (currentPage === "landing" && !user) {
     return <LandingPage onNavigate={handleNavigate} />;
@@ -85,8 +90,11 @@ const Index = () => {
     return (
       <MainApp
         userName={user.name}
+        userEmail={user.email}
         userPlan={user.plan}
+        trialEndsAt={user.trialEndsAt}
         onLogout={handleLogout}
+        onNavigateToPricing={handleNavigateToPricing}
       />
     );
   }
@@ -96,8 +104,11 @@ const Index = () => {
     return (
       <MainApp
         userName={user.name}
+        userEmail={user.email}
         userPlan={user.plan}
+        trialEndsAt={user.trialEndsAt}
         onLogout={handleLogout}
+        onNavigateToPricing={handleNavigateToPricing}
       />
     );
   }

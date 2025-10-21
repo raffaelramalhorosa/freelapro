@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { Calculator, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { Calculator, AlertCircle, X } from "lucide-react";
 import { TabNavigation } from "@/components/TabNavigation";
 import { Calculator as CalculatorComponent } from "@/components/Calculator";
 import { Projects } from "@/components/Projects";
 import { Dashboard } from "@/components/Dashboard";
+import { UserDropdown } from "@/components/UserDropdown";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 type TabType = "calculator" | "projects" | "dashboard";
 
@@ -38,13 +40,26 @@ interface Project {
 
 interface MainAppProps {
   userName: string;
+  userEmail: string;
   userPlan: string;
+  trialEndsAt?: string;
   onLogout: () => void;
+  onNavigateToPricing: () => void;
 }
 
-export const MainApp = ({ userName, userPlan, onLogout }: MainAppProps) => {
+export const MainApp = ({ userName, userEmail, userPlan, trialEndsAt, onLogout, onNavigateToPricing }: MainAppProps) => {
   const [activeTab, setActiveTab] = useState<TabType>("calculator");
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [showTrialBanner, setShowTrialBanner] = useState(false);
+
+  // Check if trial has expired
+  useEffect(() => {
+    if (trialEndsAt && (userPlan.toLowerCase() === "pro" || userPlan.toLowerCase() === "business")) {
+      const trialEndDate = new Date(trialEndsAt);
+      const now = new Date();
+      setShowTrialBanner(now > trialEndDate);
+    }
+  }, [trialEndsAt, userPlan]);
 
   const handleEditProject = (project: Project) => {
     setEditingProject(project);
@@ -68,6 +83,8 @@ export const MainApp = ({ userName, userPlan, onLogout }: MainAppProps) => {
           <CalculatorComponent
             editingProject={editingProject}
             onEditComplete={handleEditComplete}
+            userPlan={userPlan}
+            onNavigateToPricing={onNavigateToPricing}
           />
         );
       case "projects":
@@ -75,12 +92,13 @@ export const MainApp = ({ userName, userPlan, onLogout }: MainAppProps) => {
           <Projects
             onNavigateToCalculator={handleNavigateToCalculator}
             onEditProject={handleEditProject}
+            userPlan={userPlan}
           />
         );
       case "dashboard":
-        return <Dashboard />;
+        return <Dashboard userPlan={userPlan} />;
       default:
-        return <CalculatorComponent />;
+        return <CalculatorComponent userPlan={userPlan} onNavigateToPricing={onNavigateToPricing} />;
     }
   };
 
@@ -102,25 +120,44 @@ export const MainApp = ({ userName, userPlan, onLogout }: MainAppProps) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-foreground">{userName}</p>
-                <p className="text-xs text-muted-foreground">
-                  Plano: <span className="capitalize font-medium">{userPlan}</span>
-                </p>
-              </div>
-              <Button
-                onClick={onLogout}
-                variant="outline"
-                className="hover:bg-destructive hover:text-destructive-foreground transition-colors"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Sair</span>
-              </Button>
-            </div>
+            <UserDropdown
+              userName={userName}
+              userEmail={userEmail}
+              userPlan={userPlan}
+              onLogout={onLogout}
+              onNavigateToPricing={onNavigateToPricing}
+            />
           </div>
         </div>
       </header>
+
+      {/* Trial Expired Banner */}
+      {showTrialBanner && (
+        <Alert className="mx-6 mt-4 border-amber-500 bg-amber-50">
+          <AlertCircle className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="flex items-center justify-between w-full">
+            <span className="text-amber-800">
+              Seu período de teste acabou. Adicione forma de pagamento para continuar.
+            </span>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                onClick={onNavigateToPricing}
+                className="bg-amber-600 hover:bg-amber-700 text-white"
+              >
+                Adicionar Pagamento
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setShowTrialBanner(false)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
 
       <main className="container mx-auto px-6 pt-8 pb-16 max-w-7xl">
         <div className="mb-8 animate-fade-in">

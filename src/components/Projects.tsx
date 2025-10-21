@@ -43,9 +43,10 @@ interface Project {
 interface ProjectsProps {
   onNavigateToCalculator: () => void;
   onEditProject: (project: Project) => void;
+  userPlan?: string;
 }
 
-export const Projects = ({ onNavigateToCalculator, onEditProject }: ProjectsProps) => {
+export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "free" }: ProjectsProps) => {
   const [projects, setProjects] = useState<Project[]>([]);
 
   // Carregar projetos do localStorage
@@ -362,6 +363,11 @@ TESTEMUNHAS (opcional):
           <div>
             <h2 className="text-3xl font-bold text-foreground">Meus Projetos</h2>
             <p className="text-muted-foreground">Gerencie seus projetos freelance</p>
+            {userPlan.toLowerCase() === "free" && (
+              <p className="text-sm text-amber-600 mt-1">
+                📊 0/2 projetos usados (Plano Free)
+              </p>
+            )}
           </div>
           <Button 
             onClick={onNavigateToCalculator}
@@ -400,6 +406,11 @@ TESTEMUNHAS (opcional):
         <div>
           <h2 className="text-3xl font-bold text-foreground">Meus Projetos</h2>
           <p className="text-muted-foreground">Gerencie seus projetos freelance</p>
+          {userPlan.toLowerCase() === "free" && (
+            <p className="text-sm text-amber-600 mt-1">
+              📊 {projects.length}/2 projetos usados (Plano Free)
+            </p>
+          )}
         </div>
         <Button 
           onClick={onNavigateToCalculator}

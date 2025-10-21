@@ -30,7 +30,7 @@ interface Project {
   updatedAt: string;
 }
 
-export const Dashboard = () => {
+export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
   const [projects, setProjects] = useState<Project[]>([]);
 
   // Carregar projetos do localStorage
@@ -174,6 +174,15 @@ export const Dashboard = () => {
                   </span>
                 </div>
               </div>
+
+              {/* Business Plan Message */}
+              {userPlan.toLowerCase() === "business" && (
+                <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-lg">
+                  <p className="text-sm text-purple-900 font-medium">
+                    💼 Gerente de conta: <a href="mailto:contato@freelapro.com" className="text-purple-600 hover:underline">contato@freelapro.com</a>
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-12 text-center">
