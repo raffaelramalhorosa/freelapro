@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DollarSign, Clock, Briefcase, TrendingUp, Calculator as CalculatorIcon, User, FileText } from "lucide-react";
+import { DollarSign, Clock, Briefcase, TrendingUp, Calculator as CalculatorIcon, User, FileText, Percent } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 
 const serviceTypes = [
   "Design Gráfico",
@@ -21,6 +22,23 @@ const serviceTypes = [
   "Edição de Vídeo",
 ];
 
+const taxRegimes = [
+  { label: "MEI (6%)", value: "mei", rate: 0.06 },
+  { label: "Simples Nacional (15.5%)", value: "simples", rate: 0.155 },
+  { label: "Lucro Presumido (13.5%)", value: "presumido", rate: 0.135 },
+];
+
+interface CalculatedResults {
+  valorBase: number;
+  custosTotais: number;
+  subtotal: number;
+  lucro: number;
+  antesImpostos: number;
+  impostos: number;
+  valorFinal: number;
+  valorHoraEfetivo: number;
+}
+
 export const Calculator = () => {
   const [clientName, setClientName] = useState("");
   const [projectName, setProjectName] = useState("");
@@ -29,27 +47,41 @@ export const Calculator = () => {
   const [hourlyRate, setHourlyRate] = useState("");
   const [fixedCosts, setFixedCosts] = useState("");
   const [variableCosts, setVariableCosts] = useState("");
+  const [taxRegime, setTaxRegime] = useState("");
+  const [profitMargin, setProfitMargin] = useState([20]);
+  const [calculatedResults, setCalculatedResults] = useState<CalculatedResults | null>(null);
 
-  const calculateTotal = () => {
+  const handleCalculate = () => {
     const hours = parseFloat(estimatedHours) || 0;
     const rate = parseFloat(hourlyRate) || 0;
     const fixed = parseFloat(fixedCosts) || 0;
     const variable = parseFloat(variableCosts) || 0;
+    const margin = profitMargin[0] / 100;
+    
+    const selectedTaxRegime = taxRegimes.find(t => t.value === taxRegime);
+    const taxRate = selectedTaxRegime?.rate || 0;
 
-    const labor = hours * rate;
-    const totalCosts = fixed + variable;
-    const subtotal = labor + totalCosts;
-    const withProfit = subtotal * 1.2; // 20% profit margin
+    // Cálculos conforme especificado
+    const valorBase = hours * rate;
+    const custosTotais = fixed + variable;
+    const subtotal = valorBase + custosTotais;
+    const lucro = subtotal * margin;
+    const antesImpostos = subtotal + lucro;
+    const impostos = antesImpostos * taxRate;
+    const valorFinal = antesImpostos + impostos;
+    const valorHoraEfetivo = hours > 0 ? valorFinal / hours : 0;
 
-    return {
-      labor: labor.toFixed(2),
-      costs: totalCosts.toFixed(2),
-      subtotal: subtotal.toFixed(2),
-      total: withProfit.toFixed(2),
-    };
+    setCalculatedResults({
+      valorBase,
+      custosTotais,
+      subtotal,
+      lucro,
+      antesImpostos,
+      impostos,
+      valorFinal,
+      valorHoraEfetivo,
+    });
   };
-
-  const result = calculateTotal();
 
   return (
     <div className="grid lg:grid-cols-2 gap-6">
@@ -188,8 +220,54 @@ export const Calculator = () => {
             </div>
           </div>
 
-          <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-lg text-white font-medium py-6">
-            Calcular Orçamento
+          {/* Regime Tributário */}
+          <div className="space-y-2">
+            <Label htmlFor="tax-regime" className="text-gray-700 font-medium flex items-center gap-2">
+              <FileText className="w-4 h-4 text-primary" />
+              Regime Tributário
+            </Label>
+            <Select value={taxRegime} onValueChange={setTaxRegime}>
+              <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary">
+                <SelectValue placeholder="Selecione o regime tributário" />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
+                {taxRegimes.map((regime) => (
+                  <SelectItem key={regime.value} value={regime.value}>
+                    {regime.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Margem de Lucro */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-gray-700 font-medium flex items-center gap-2">
+                <Percent className="w-4 h-4 text-primary" />
+                Margem de Lucro
+              </Label>
+              <span className="text-2xl font-bold text-primary">{profitMargin[0]}%</span>
+            </div>
+            <Slider
+              value={profitMargin}
+              onValueChange={setProfitMargin}
+              max={100}
+              step={1}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>0%</span>
+              <span>50%</span>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <Button 
+            onClick={handleCalculate}
+            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-lg text-white font-medium py-6 text-lg"
+          >
+            Calcular Preço
           </Button>
         </CardContent>
       </Card>
@@ -202,33 +280,81 @@ export const Calculator = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
-            <p className="text-sm text-gray-600 mb-1">Mão de Obra (Horas × Taxa)</p>
-            <p className="text-2xl font-bold text-foreground">R$ {result.labor}</p>
-          </div>
+          {calculatedResults ? (
+            <>
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+                <p className="text-sm text-gray-600 mb-1">Valor Base (Horas × Taxa)</p>
+                <p className="text-2xl font-bold text-foreground">
+                  R$ {calculatedResults.valorBase.toFixed(2)}
+                </p>
+              </div>
 
-          <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
-            <p className="text-sm text-gray-600 mb-1">Custos Totais (Fixos + Variáveis)</p>
-            <p className="text-2xl font-bold text-foreground">R$ {result.costs}</p>
-          </div>
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+                <p className="text-sm text-gray-600 mb-1">Custos Totais (Fixos + Variáveis)</p>
+                <p className="text-2xl font-bold text-foreground">
+                  R$ {calculatedResults.custosTotais.toFixed(2)}
+                </p>
+              </div>
 
-          <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
-            <p className="text-sm text-gray-600 mb-1">Subtotal</p>
-            <p className="text-2xl font-bold text-foreground">R$ {result.subtotal}</p>
-          </div>
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+                <p className="text-sm text-gray-600 mb-1">Subtotal (Base + Custos)</p>
+                <p className="text-2xl font-bold text-foreground">
+                  R$ {calculatedResults.subtotal.toFixed(2)}
+                </p>
+              </div>
 
-          <div className="p-6 bg-gradient-to-r from-primary to-secondary rounded-xl shadow-lg">
-            <p className="text-sm text-white/90 mb-1">Valor Total do Projeto</p>
-            <p className="text-xs text-white/70 mb-2">(com margem de lucro 20%)</p>
-            <p className="text-4xl font-bold text-white">R$ {result.total}</p>
-          </div>
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+                <p className="text-sm text-gray-600 mb-1">Lucro ({profitMargin[0]}%)</p>
+                <p className="text-2xl font-bold text-green-600">
+                  R$ {calculatedResults.lucro.toFixed(2)}
+                </p>
+              </div>
 
-          <div className="p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-dashed border-primary">
-            <p className="text-xs text-gray-600 mb-2">💡 Dica Profissional</p>
-            <p className="text-sm text-foreground">
-              Este valor já inclui uma margem de lucro de 20% sobre seus custos totais.
-            </p>
-          </div>
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+                <p className="text-sm text-gray-600 mb-1">Antes dos Impostos</p>
+                <p className="text-2xl font-bold text-foreground">
+                  R$ {calculatedResults.antesImpostos.toFixed(2)}
+                </p>
+              </div>
+
+              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border">
+                <p className="text-sm text-gray-600 mb-1">Impostos</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  R$ {calculatedResults.impostos.toFixed(2)}
+                </p>
+              </div>
+
+              <div className="p-6 bg-gradient-to-r from-primary to-secondary rounded-xl shadow-lg">
+                <p className="text-sm text-white/90 mb-1">💰 Valor Final do Projeto</p>
+                <p className="text-4xl font-bold text-white mb-3">
+                  R$ {calculatedResults.valorFinal.toFixed(2)}
+                </p>
+                <div className="pt-3 border-t border-white/20">
+                  <p className="text-xs text-white/70 mb-1">Valor por Hora Efetivo</p>
+                  <p className="text-xl font-bold text-white">
+                    R$ {calculatedResults.valorHoraEfetivo.toFixed(2)}/hora
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-dashed border-primary">
+                <p className="text-xs text-gray-600 mb-2">💡 Dica Profissional</p>
+                <p className="text-sm text-foreground">
+                  Seu valor efetivo por hora considera todos os custos, impostos e margem de lucro.
+                </p>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center mb-4">
+                <CalculatorIcon className="w-10 h-10 text-primary" />
+              </div>
+              <p className="text-gray-600 font-medium mb-2">Aguardando cálculo</p>
+              <p className="text-sm text-gray-500">
+                Preencha os campos e clique em "Calcular Preço"
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
