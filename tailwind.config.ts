@@ -149,6 +149,43 @@ export default {
             transform: "translateY(-20px) translateX(-15px)",
             opacity: "0.5"
           }
+        },
+        "ripple-animation": {
+          "to": {
+            transform: "scale(4)",
+            opacity: "0"
+          }
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" }
+        },
+        "draw-checkmark": {
+          "to": {
+            strokeDashoffset: "0"
+          }
+        },
+        "shake": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "10%, 30%, 50%, 70%, 90%": { transform: "translateX(-10px)" },
+          "20%, 40%, 60%, 80%": { transform: "translateX(10px)" }
+        },
+        "progress-shine": {
+          "0%": { left: "-100%" },
+          "100%": { left: "100%" }
+        },
+        "bounce-in": {
+          "0%": { 
+            transform: "scale(0.9)",
+            opacity: "0"
+          },
+          "50%": { 
+            transform: "scale(1.05)"
+          },
+          "100%": { 
+            transform: "scale(1)",
+            opacity: "1"
+          }
         }
       },
       animation: {
@@ -161,6 +198,12 @@ export default {
         "glow-rotate": "glow-rotate 3s linear infinite",
         "badge-pulse": "badge-pulse 2s ease-in-out infinite",
         "float": "float 8s ease-in-out infinite",
+        "ripple": "ripple-animation 0.6s ease-out",
+        "shimmer": "shimmer 1.5s infinite",
+        "checkmark": "draw-checkmark 0.6s ease-out forwards",
+        "shake": "shake 0.5s ease-in-out",
+        "progress-shine": "progress-shine 2s infinite",
+        "bounce-in": "bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
       },
     },
   },

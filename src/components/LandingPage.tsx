@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnimatedDotGrid } from "@/components/AnimatedDotGrid";
+import { RippleButton } from "@/components/ui/ripple-button";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface LandingPageProps {
   onNavigate: (page: string) => void;
@@ -122,39 +124,47 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: "0.3s" }}>
-                <Button
+                <RippleButton
                   onClick={() => onNavigate("signup")}
                   size="lg"
                   className="text-lg px-8 py-7 neon-button"
                 >
                   Começar Gratuitamente
                   <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-                <Button
+                </RippleButton>
+                <RippleButton
                   size="lg"
                   variant="outline"
                   className="text-lg px-8 py-7"
+                  rippleColor="rgba(99, 102, 241, 0.4)"
                 >
                   <Play className="mr-2 w-5 h-5" />
                   Ver Como Funciona
-                </Button>
+                </RippleButton>
               </div>
 
               {/* Mini Estatísticas */}
               <div className="flex flex-wrap gap-6 pt-4 animate-fade-up" style={{ animationDelay: "0.4s" }}>
                 <div className="flex items-center gap-2 text-foreground">
                   <Users className="w-5 h-5 text-primary" />
-                  <span className="font-semibold">+2.500</span>
+                  <span className="font-semibold">
+                    +<AnimatedCounter value={2500} />
+                  </span>
                   <span className="text-muted-foreground">freelancers</span>
                 </div>
                 <div className="flex items-center gap-2 text-foreground">
                   <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-                  <span className="font-semibold">4.9/5</span>
+                  <span className="font-semibold">
+                    <AnimatedCounter value={4.9} decimals={1} />
+                    /5
+                  </span>
                   <span className="text-muted-foreground">avaliação</span>
                 </div>
                 <div className="flex items-center gap-2 text-foreground">
                   <DollarSign className="w-5 h-5 text-green-600" />
-                  <span className="font-semibold">R$ 12M+</span>
+                  <span className="font-semibold">
+                    R$ <AnimatedCounter value={12} />M+
+                  </span>
                   <span className="text-muted-foreground">em projetos</span>
                 </div>
               </div>
@@ -198,7 +208,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                         <span className="text-sm font-medium text-foreground">Valor Final</span>
                         <Calculator className="w-4 h-4 text-primary" />
                       </div>
-                      <div className="text-3xl font-bold gradient-text text-glow-purple">
+                      <div className="text-3xl font-bold gradient-text text-glow-purple animate-bounce-in" style={{ animationDelay: "0.6s" }}>
                         R$ 8.280,00
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">R$ 207,00/hora efetiva</p>
@@ -442,14 +452,15 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             <p className="text-xl text-white/90 mb-10 leading-relaxed">
               Junte-se a milhares de freelancers que já transformaram seus negócios
             </p>
-            <Button
+            <RippleButton
               onClick={() => onNavigate("signup")}
               size="lg"
               className="bg-white text-primary hover:bg-gray-100 shadow-2xl text-lg px-12 py-8 text-xl font-semibold hover:scale-105 transition-transform"
+              rippleColor="rgba(99, 102, 241, 0.3)"
             >
               Criar Conta Grátis
               <ArrowRight className="ml-2 w-6 h-6" />
-            </Button>
+            </RippleButton>
             <div className="flex items-center justify-center gap-6 mt-8 text-white/90 text-sm">
               <span className="flex items-center gap-2">
                 <span className="text-green-400">✓</span>
