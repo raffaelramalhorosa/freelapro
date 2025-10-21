@@ -6,8 +6,12 @@ import { AnimatedDotGrid } from "@/components/AnimatedDotGrid";
 import { RippleButton } from "@/components/ui/ripple-button";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ScrollProgressBar } from "@/components/ScrollProgressBar";
+import { CustomCursor } from "@/components/CustomCursor";
+import { MouseTrail } from "@/components/MouseTrail";
 import { useParallax } from "@/hooks/useParallax";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useMagneticEffect } from "@/hooks/useMagneticEffect";
+import { useMouseGradient } from "@/hooks/useMouseGradient";
 import { useEffect, useRef, useState } from "react";
 
 interface LandingPageProps {
@@ -18,7 +22,9 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false);
   const bgRef = useRef<HTMLDivElement>(null);
   const mockupRef = useRef<HTMLDivElement>(null);
+  const heroSectionRef = useRef<HTMLElement>(null);
   const featuresRef = useRef<HTMLElement>(null);
+  const ctaButtonRef = useRef<HTMLButtonElement>(null);
   const featureRefs = [
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
@@ -32,6 +38,12 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
   // Parallax effects
   useParallax(bgRef, { speed: 0.5 });
   useParallax(mockupRef, { speed: -0.3, direction: "both" });
+  
+  // Magnetic effect on CTA button
+  useMagneticEffect(ctaButtonRef, 0.3);
+  
+  // Mouse gradient effect
+  const heroGradientPosition = useMouseGradient(heroSectionRef);
   
   // Scroll reveal effects
   useScrollReveal([sectionTitleRef], { direction: "up" });
@@ -73,6 +85,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
   return (
     <div className="min-h-screen bg-background">
+      <CustomCursor />
+      <MouseTrail />
       <ScrollProgressBar />
       
       {/* Header */}
@@ -122,7 +136,16 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section ref={heroSectionRef} className="relative overflow-hidden">
+        {/* Mouse-following gradient spotlight */}
+        <div
+          className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+          style={{
+            background: `radial-gradient(600px circle at ${heroGradientPosition.x}% ${heroGradientPosition.y}%, rgba(99, 102, 241, 0.15), transparent 40%)`,
+            zIndex: 2,
+          }}
+        />
+        
         {/* Animated Dot Grid Background with Parallax */}
         <div ref={bgRef} className="absolute inset-0" style={{ willChange: "transform" }}>
           <AnimatedDotGrid />
@@ -166,9 +189,10 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
               <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: "0.3s" }}>
                 <RippleButton
+                  ref={ctaButtonRef}
                   onClick={() => onNavigate("signup")}
                   size="lg"
-                  className="text-lg px-8 py-7 neon-button"
+                  className="text-lg px-8 py-7 neon-button magnetic"
                 >
                   Começar Gratuitamente
                   <ArrowRight className="ml-2 w-5 h-5" />

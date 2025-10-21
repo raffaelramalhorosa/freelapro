@@ -239,6 +239,24 @@ All colors MUST be HSL.
   .particle-4 { animation-delay: 3s; }
   .particle-5 { animation-delay: 4s; }
   
+  /* Custom Cursor */
+  .custom-cursor-hover {
+    transform: translate(-50%, -50%) scale(1.5) !important;
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.8);
+  }
+  
+  /* Hide default cursor on desktop */
+  @media (pointer: fine) {
+    body {
+      cursor: none;
+    }
+    
+    a, button, input, textarea, select, [role="button"] {
+      cursor: none;
+    }
+  }
+  
   /* Scroll Reveal Animations */
   .reveal-hidden {
     opacity: 0;
@@ -281,6 +299,12 @@ All colors MUST be HSL.
   .header-scrolled .logo {
     transform: scale(0.9);
     transition: transform 0.3s ease;
+  }
+  
+  /* Magnetic Effect */
+  .magnetic {
+    transition: transform 0.15s ease-out;
+    will-change: transform;
   }
   
   /* Ripple Effect */
