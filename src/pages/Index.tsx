@@ -5,6 +5,7 @@ import { SignupPage } from "@/components/SignupPage";
 import { PricingPage } from "@/components/PricingPage";
 import { MainApp } from "@/components/MainApp";
 import { OnboardingModal } from "@/components/OnboardingModal";
+import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { toast } from "@/hooks/use-toast";
 
 type Page = "landing" | "login" | "signup" | "pricing" | "app";
@@ -89,10 +90,10 @@ const Index = () => {
 
   // Roteamento
   return (
-    <>
+    <SubscriptionProvider>
       <OnboardingModal isOpen={showOnboarding} onClose={handleCloseOnboarding} />
       {renderPage()}
-    </>
+    </SubscriptionProvider>
   );
 
   function renderPage() {

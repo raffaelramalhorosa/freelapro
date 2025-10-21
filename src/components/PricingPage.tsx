@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { useSubscription, STRIPE_PRICES } from "@/contexts/SubscriptionContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface PricingPageProps {
   onNavigate: (page: string) => void;
@@ -10,6 +12,8 @@ interface PricingPageProps {
 
 export const PricingPage = ({ onNavigate }: PricingPageProps) => {
   const [isAnnual, setIsAnnual] = useState(false);
+  const { createCheckout, isLoading, plan } = useSubscription();
+  const { toast } = useToast();
 
   const plans = [
     {
@@ -74,6 +78,28 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
       buttonVariant: "secondary" as const,
     },
   ];
+
+  const handleSubscribe = async (planName: string) => {
+    if (planName === "Free") {
+      onNavigate("signup");
+      return;
+    }
+
+    let priceId = "";
+    if (planName === "Pro") {
+      priceId = isAnnual ? STRIPE_PRICES.pro_annual : STRIPE_PRICES.pro_monthly;
+    } else if (planName === "Business") {
+      priceId = isAnnual ? STRIPE_PRICES.business_annual : STRIPE_PRICES.business_monthly;
+    }
+
+    if (priceId) {
+      await createCheckout(priceId);
+      toast({
+        title: "Redirecionando para pagamento",
+        description: "Você será redirecionado para o Stripe em uma nova aba.",
+      });
+    }
+  };
 
   const faqs = [
     {
@@ -206,13 +232,14 @@ export const PricingPage = ({ onNavigate }: PricingPageProps) => {
                 </ul>
 
                 <Button
-                  onClick={() => onNavigate("signup")}
+                  onClick={() => handleSubscribe(plan.name)}
                   variant={plan.buttonVariant}
+                  disabled={isLoading}
                   className={`w-full py-6 ${
                     plan.popular ? "bg-gradient-to-r from-primary to-secondary hover:opacity-90" : ""
                   }`}
                 >
-                  {plan.cta}
+                  {isLoading ? "Processando..." : plan.cta}
                 </Button>
                 {plan.subtitle && <p className="text-xs text-muted-foreground text-center mt-3">{plan.subtitle}</p>}
               </CardContent>
