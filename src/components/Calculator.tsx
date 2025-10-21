@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { DollarSign, Clock, Briefcase, TrendingUp, Calculator as CalculatorIcon, User, FileText, Percent, Save } from "lucide-react";
+import { DollarSign, Clock, Briefcase, TrendingUp, Calculator as CalculatorIcon, User, FileText, Percent, Save, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -57,7 +57,12 @@ interface Project {
   updatedAt: string;
 }
 
-export const Calculator = () => {
+interface CalculatorProps {
+  editingProject?: Project | null;
+  onEditComplete?: () => void;
+}
+
+export const Calculator = ({ editingProject, onEditComplete }: CalculatorProps) => {
   const [clientName, setClientName] = useState("");
   const [projectName, setProjectName] = useState("");
   const [serviceType, setServiceType] = useState("");
@@ -69,6 +74,24 @@ export const Calculator = () => {
   const [profitMargin, setProfitMargin] = useState([20]);
   const [calculatedResults, setCalculatedResults] = useState<CalculatedResults | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [currentEditingId, setCurrentEditingId] = useState<number | null>(null);
+
+  // Carregar dados do projeto para edição
+  useEffect(() => {
+    if (editingProject) {
+      setClientName(editingProject.clientName);
+      setProjectName(editingProject.projectName);
+      setServiceType(editingProject.serviceType);
+      setEstimatedHours(editingProject.hoursEstimated.toString());
+      setHourlyRate(editingProject.desiredHourlyRate.toString());
+      setFixedCosts(editingProject.fixedCosts.toString());
+      setVariableCosts(editingProject.variableCosts.toString());
+      setTaxRegime(editingProject.taxType);
+      setProfitMargin([editingProject.profitMargin]);
+      setCalculatedResults(editingProject.results);
+      setCurrentEditingId(editingProject.id);
+    }
+  }, [editingProject]);
 
   // Carregar projetos do localStorage ao montar o componente
   useEffect(() => {
@@ -142,33 +165,75 @@ export const Calculator = () => {
     }
 
     try {
-      const timestamp = Date.now();
       const now = new Date().toISOString();
       
-      const project: Project = {
-        id: timestamp,
-        clientName,
-        projectName,
-        serviceType,
-        hoursEstimated: parseFloat(estimatedHours) || 0,
-        desiredHourlyRate: parseFloat(hourlyRate) || 0,
-        fixedCosts: parseFloat(fixedCosts) || 0,
-        variableCosts: parseFloat(variableCosts) || 0,
-        taxType: taxRegime,
-        profitMargin: profitMargin[0],
-        results: calculatedResults,
-        status: "pending",
-        createdAt: now,
-        updatedAt: now,
-      };
+      if (currentEditingId) {
+        // Modo de edição - atualizar projeto existente
+        const existingProject = localStorage.getItem(`project:${currentEditingId}`);
+        if (existingProject) {
+          const parsedProject = JSON.parse(existingProject);
+          
+          const updatedProject: Project = {
+            id: currentEditingId,
+            clientName,
+            projectName,
+            serviceType,
+            hoursEstimated: parseFloat(estimatedHours) || 0,
+            desiredHourlyRate: parseFloat(hourlyRate) || 0,
+            fixedCosts: parseFloat(fixedCosts) || 0,
+            variableCosts: parseFloat(variableCosts) || 0,
+            taxType: taxRegime,
+            profitMargin: profitMargin[0],
+            results: calculatedResults,
+            status: parsedProject.status,
+            createdAt: parsedProject.createdAt,
+            updatedAt: now,
+          };
 
-      localStorage.setItem(`project:${timestamp}`, JSON.stringify(project));
-      setProjects([...projects, project]);
-      
-      toast({
-        title: "Sucesso!",
-        description: "Projeto salvo com sucesso.",
-      });
+          localStorage.setItem(`project:${currentEditingId}`, JSON.stringify(updatedProject));
+          
+          toast({
+            title: "Sucesso!",
+            description: "Projeto atualizado com sucesso.",
+          });
+
+          // Limpar formulário e sair do modo de edição
+          handleCancel();
+          
+          // Voltar para a tab de projetos
+          if (onEditComplete) {
+            onEditComplete();
+          }
+        }
+      } else {
+        // Modo de criação - novo projeto
+        const timestamp = Date.now();
+        
+        const project: Project = {
+          id: timestamp,
+          clientName,
+          projectName,
+          serviceType,
+          hoursEstimated: parseFloat(estimatedHours) || 0,
+          desiredHourlyRate: parseFloat(hourlyRate) || 0,
+          fixedCosts: parseFloat(fixedCosts) || 0,
+          variableCosts: parseFloat(variableCosts) || 0,
+          taxType: taxRegime,
+          profitMargin: profitMargin[0],
+          results: calculatedResults,
+          status: "pending",
+          createdAt: now,
+          updatedAt: now,
+        };
+
+        localStorage.setItem(`project:${timestamp}`, JSON.stringify(project));
+        setProjects([...projects, project]);
+        
+        toast({
+          title: "Sucesso!",
+          description: "Projeto salvo com sucesso.",
+        });
+      }
     } catch (error) {
       console.error("Erro ao salvar projeto:", error);
       toast({
@@ -177,6 +242,21 @@ export const Calculator = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleCancel = () => {
+    // Limpar todos os campos do formulário
+    setClientName("");
+    setProjectName("");
+    setServiceType("");
+    setEstimatedHours("");
+    setHourlyRate("");
+    setFixedCosts("");
+    setVariableCosts("");
+    setTaxRegime("");
+    setProfitMargin([20]);
+    setCalculatedResults(null);
+    setCurrentEditingId(null);
   };
 
   return (
@@ -440,14 +520,26 @@ export const Calculator = () => {
                 </p>
               </div>
 
-              <Button 
-                onClick={handleSaveProject}
-                disabled={!clientName.trim() || !projectName.trim()}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-6 text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Save className="w-5 h-5 mr-2" />
-                Salvar Projeto
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleSaveProject}
+                  disabled={!clientName.trim() || !projectName.trim()}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-6 text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Save className="w-5 h-5 mr-2" />
+                  {currentEditingId ? "Atualizar Projeto" : "Salvar Projeto"}
+                </Button>
+                
+                {currentEditingId && (
+                  <Button 
+                    onClick={handleCancel}
+                    variant="outline"
+                    className="w-full font-medium py-6 text-lg"
+                  >
+                    Cancelar
+                  </Button>
+                )}
+              </div>
             </>
           ) : (
             <div className="flex flex-col items-center justify-center py-12 text-center">

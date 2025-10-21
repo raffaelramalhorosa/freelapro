@@ -7,15 +7,69 @@ import { Dashboard } from "@/components/Dashboard";
 
 type TabType = "calculator" | "projects" | "dashboard";
 
+interface CalculatedResults {
+  valorBase: number;
+  custosTotais: number;
+  subtotal: number;
+  lucro: number;
+  antesImpostos: number;
+  impostos: number;
+  valorFinal: number;
+  valorHoraEfetivo: number;
+}
+
+interface Project {
+  id: number;
+  clientName: string;
+  projectName: string;
+  serviceType: string;
+  hoursEstimated: number;
+  desiredHourlyRate: number;
+  fixedCosts: number;
+  variableCosts: number;
+  taxType: string;
+  profitMargin: number;
+  results: CalculatedResults;
+  status: "pending" | "approved" | "rejected" | "completed";
+  createdAt: string;
+  updatedAt: string;
+}
+
 const Index = () => {
   const [activeTab, setActiveTab] = useState<TabType>("calculator");
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setActiveTab("calculator");
+  };
+
+  const handleEditComplete = () => {
+    setEditingProject(null);
+    setActiveTab("projects");
+  };
+
+  const handleNavigateToCalculator = () => {
+    setEditingProject(null);
+    setActiveTab("calculator");
+  };
 
   const renderContent = () => {
     switch (activeTab) {
       case "calculator":
-        return <Calculator />;
+        return (
+          <Calculator 
+            editingProject={editingProject} 
+            onEditComplete={handleEditComplete}
+          />
+        );
       case "projects":
-        return <Projects onNavigateToCalculator={() => setActiveTab("calculator")} />;
+        return (
+          <Projects 
+            onNavigateToCalculator={handleNavigateToCalculator} 
+            onEditProject={handleEditProject}
+          />
+        );
       case "dashboard":
         return <Dashboard />;
       default:
