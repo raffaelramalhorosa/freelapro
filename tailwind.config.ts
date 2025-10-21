@@ -186,6 +186,16 @@ export default {
             transform: "scale(1)",
             opacity: "1"
           }
+        },
+        "trail-fade": {
+          "0%": {
+            opacity: "1",
+            transform: "translate(-50%, -50%) scale(1)"
+          },
+          "100%": {
+            opacity: "0",
+            transform: "translate(-50%, -50%) scale(0.5)"
+          }
         }
       },
       animation: {
@@ -204,6 +214,7 @@ export default {
         "shake": "shake 0.5s ease-in-out",
         "progress-shine": "progress-shine 2s infinite",
         "bounce-in": "bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+        "trail-fade": "trail-fade 1s ease-out forwards",
       },
     },
   },
