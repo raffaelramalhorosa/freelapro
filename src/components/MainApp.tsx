@@ -5,6 +5,7 @@ import { Calculator as CalculatorComponent } from "@/components/Calculator";
 import { Projects } from "@/components/Projects";
 import { Dashboard } from "@/components/Dashboard";
 import { UserDropdown } from "@/components/UserDropdown";
+import { UpgradeModal } from "@/components/UpgradeModal";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 
@@ -51,6 +52,8 @@ export const MainApp = ({ userName, userEmail, userPlan, trialEndsAt, onLogout, 
   const [activeTab, setActiveTab] = useState<TabType>("calculator");
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [showTrialBanner, setShowTrialBanner] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeFeatureName, setUpgradeFeatureName] = useState("");
 
   // Check if trial has expired
   useEffect(() => {
@@ -74,6 +77,11 @@ export const MainApp = ({ userName, userEmail, userPlan, trialEndsAt, onLogout, 
   const handleNavigateToCalculator = () => {
     setEditingProject(null);
     setActiveTab("calculator");
+  };
+
+  const handleShowUpgradeModal = (featureName: string) => {
+    setUpgradeFeatureName(featureName);
+    setShowUpgradeModal(true);
   };
 
   const renderContent = () => {
@@ -103,7 +111,17 @@ export const MainApp = ({ userName, userEmail, userPlan, trialEndsAt, onLogout, 
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-white">
+    <>
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        onUpgrade={() => {
+          setShowUpgradeModal(false);
+          onNavigateToPricing();
+        }}
+        featureName={upgradeFeatureName}
+      />
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-white">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-6 py-4">
@@ -168,6 +186,7 @@ export const MainApp = ({ userName, userEmail, userPlan, trialEndsAt, onLogout, 
           {renderContent()}
         </div>
       </main>
-    </div>
+      </div>
+    </>
   );
 };
