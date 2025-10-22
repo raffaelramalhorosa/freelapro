@@ -41,6 +41,7 @@ interface Project {
 
 interface ProjectCardProps {
   project: Project;
+  hasProposal?: boolean;
   onStatusChange: (projectId: number, status: string) => void;
   onEdit: (project: Project) => void;
   onDelete: (projectId: number) => void;
@@ -72,7 +73,8 @@ const getStatusBadge = (status: string) => {
 };
 
 export const ProjectCard = memo<ProjectCardProps>(({ 
-  project, 
+  project,
+  hasProposal = false,
   onStatusChange, 
   onEdit, 
   onDelete, 
@@ -150,7 +152,7 @@ export const ProjectCard = memo<ProjectCardProps>(({
             className="bg-[rgba(139,92,246,0.15)] border border-[rgba(139,92,246,0.3)] text-[#A855F7] hover:bg-[rgba(139,92,246,0.25)] hover:text-[#A855F7]"
           >
             <Globe className="w-4 h-4 mr-2" />
-            Criar Página
+            {hasProposal ? 'Editar Página' : 'Criar Página'}
           </Button>
 
           <Button

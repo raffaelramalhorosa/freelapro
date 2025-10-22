@@ -55,6 +55,8 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [generatedSlug, setGeneratedSlug] = useState<string>('');
+  const [projectProposals, setProjectProposals] = useState<Record<number, any>>({});
+  const [existingProposalId, setExistingProposalId] = useState<string | null>(null);
   const [proposalData, setProposalData] = useState({
     projectId: null as number | null,
     projectName: '',
@@ -84,10 +86,36 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
     }>,
   });
 
-  // Carregar projetos do localStorage
+  // Carregar projetos do localStorage e propostas do Supabase
   useEffect(() => {
     loadProjects();
+    loadProjectProposals();
   }, []);
+
+  const loadProjectProposals = async () => {
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) return;
+
+      const { data, error } = await supabase
+        .from('proposals')
+        .select('id, project_id, slug')
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      // Map proposals by project_id
+      const proposalsMap: Record<number, any> = {};
+      data?.forEach((proposal: any) => {
+        if (proposal.project_id) {
+          proposalsMap[proposal.project_id] = proposal;
+        }
+      });
+      setProjectProposals(proposalsMap);
+    } catch (error) {
+      console.error('Erro ao carregar propostas:', error);
+    }
+  };
 
   const loadProjects = () => {
     try {
@@ -380,20 +408,66 @@ TESTEMUNHAS (opcional):
     return `${integerPart} reais e ${decimalPart} centavos`;
   }, []);
 
-  const openProposalModal = useCallback((project: Project) => {
+  const openProposalModal = useCallback(async (project: Project) => {
     setSelectedProject(project);
-    setProposalData({
-      projectId: project.id,
-      projectName: project.projectName,
-      clientName: project.clientName,
-      projectSummary: '',
-      totalBudget: project.results.valorFinal,
-      phases: [],
-      fixedCosts: [],
-      benefits: [],
-    });
+
+    // Check if project already has a proposal
+    const existingProposal = projectProposals[project.id];
+    
+    if (existingProposal) {
+      // Load existing proposal data
+      try {
+        const { data, error } = await supabase
+          .from('proposals')
+          .select('*')
+          .eq('id', existingProposal.id)
+          .single();
+
+        if (error) throw error;
+
+        if (data) {
+          setExistingProposalId(data.id);
+          setGeneratedSlug(data.slug);
+          setProposalData({
+            projectId: project.id,
+            projectName: data.project_name,
+            clientName: data.client_name,
+            projectSummary: data.summary || '',
+            totalBudget: parseFloat(String(data.total_budget)),
+            phases: (data.phases as any[])?.map((phase: any) => ({
+              ...phase,
+              startDate: phase.startDate ? new Date(phase.startDate) : undefined,
+              endDate: phase.endDate ? new Date(phase.endDate) : undefined,
+            })) || [],
+            fixedCosts: (data.fixed_costs as any[]) || [],
+            benefits: (data.benefits as any[]) || [],
+          });
+        }
+      } catch (error) {
+        console.error('Erro ao carregar proposta:', error);
+        toast({
+          title: "Erro",
+          description: "Não foi possível carregar a proposta existente.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      // New proposal
+      setExistingProposalId(null);
+      setProposalData({
+        projectId: project.id,
+        projectName: project.projectName,
+        clientName: project.clientName,
+        projectSummary: '',
+        totalBudget: project.results.valorFinal,
+        phases: [],
+        fixedCosts: [],
+        benefits: [],
+      });
+    }
+    
     setShowProposalModal(true);
-  }, []);
+  }, [projectProposals]);
 
   // Phase management functions
   const addPhase = useCallback(() => {
@@ -485,7 +559,7 @@ TESTEMUNHAS (opcional):
     }));
   }, []);
 
-  // Generate proposal page
+  // Generate or update proposal page
   const generateProposalPage = useCallback(async () => {
     try {
       // Get current user
@@ -500,54 +574,77 @@ TESTEMUNHAS (opcional):
         return;
       }
 
-      // Generate unique slug
-      const slug = `${proposalData.projectName
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '')}-${Date.now().toString(36)}`;
+      const proposalPayload = {
+        user_id: user.id,
+        project_id: proposalData.projectId ? String(proposalData.projectId) : null,
+        project_name: proposalData.projectName,
+        client_name: proposalData.clientName,
+        summary: proposalData.projectSummary,
+        total_budget: parseFloat(String(proposalData.totalBudget)),
+        phases: proposalData.phases.map(phase => ({
+          ...phase,
+          startDate: phase.startDate ? phase.startDate.toISOString() : null,
+          endDate: phase.endDate ? phase.endDate.toISOString() : null,
+        })),
+        fixed_costs: proposalData.fixedCosts,
+        benefits: proposalData.benefits,
+        status: 'active',
+      };
 
-      // Save to Supabase
-      const { data, error } = await supabase
-        .from('proposals')
-        .insert({
-          user_id: user.id,
-          project_id: null,
-          slug,
-          project_name: proposalData.projectName,
-          client_name: proposalData.clientName,
-          summary: proposalData.projectSummary,
-          total_budget: parseFloat(String(proposalData.totalBudget)),
-          phases: proposalData.phases.map(phase => ({
-            ...phase,
-            startDate: phase.startDate ? phase.startDate.toISOString() : null,
-            endDate: phase.endDate ? phase.endDate.toISOString() : null,
-          })),
-          fixed_costs: proposalData.fixedCosts,
-          benefits: proposalData.benefits,
-          status: 'active',
-          views: 0,
-        })
-        .select()
-        .single();
+      if (existingProposalId) {
+        // Update existing proposal
+        const { error } = await supabase
+          .from('proposals')
+          .update(proposalPayload)
+          .eq('id', existingProposalId);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      // Show success modal
-      setGeneratedSlug(slug);
-      setShowProposalModal(false);
-      setShowSuccessModal(true);
+        toast({
+          title: "Sucesso!",
+          description: "Proposta atualizada com sucesso.",
+        });
+
+        setShowProposalModal(false);
+        setShowSuccessModal(true);
+      } else {
+        // Create new proposal
+        const slug = `${proposalData.projectName
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '')}-${Date.now().toString(36)}`;
+
+        const { data, error } = await supabase
+          .from('proposals')
+          .insert([{
+            ...proposalPayload,
+            slug,
+            views: 0,
+          }])
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setGeneratedSlug(slug);
+        setShowProposalModal(false);
+        setShowSuccessModal(true);
+      }
+
+      // Reload proposals to update UI
+      loadProjectProposals();
 
     } catch (error) {
-      console.error('Erro ao gerar proposta:', error);
+      console.error('Erro ao salvar proposta:', error);
       toast({
         title: "Erro",
-        description: "Ocorreu um erro ao gerar a proposta. Tente novamente.",
+        description: "Ocorreu um erro ao salvar a proposta. Tente novamente.",
         variant: "destructive",
       });
     }
-  }, [proposalData]);
+  }, [proposalData, existingProposalId]);
 
   // Calculate phase percentages for chart
   const phaseChartData = useMemo(() => {
@@ -631,6 +728,7 @@ TESTEMUNHAS (opcional):
           <ProjectCard
             key={project.id}
             project={project}
+            hasProposal={!!projectProposals[project.id]}
             onStatusChange={handleStatusChange}
             onEdit={onEditProject}
             onDelete={handleDelete}
@@ -647,7 +745,9 @@ TESTEMUNHAS (opcional):
             {/* Header do Modal */}
             <div className="flex items-center justify-between p-6 border-b border-[rgba(139,92,246,0.1)] sticky top-0 bg-[#1C1C26] z-10">
               <div>
-                <h2 className="text-2xl font-bold text-white">Criar Página de Proposta</h2>
+                <h2 className="text-2xl font-bold text-white">
+                  {existingProposalId ? 'Editar Página de Proposta' : 'Criar Página de Proposta'}
+                </h2>
                 <p className="text-gray-400 text-sm mt-1">
                   Configure sua proposta profissional para {selectedProject.clientName}
                 </p>
