@@ -112,7 +112,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background landing-page-with-custom-cursor">
       <CustomCursor />
       <MouseTrail />
       <ScrollProgressBar />
