@@ -576,7 +576,7 @@ TESTEMUNHAS (opcional):
 
       const proposalPayload = {
         user_id: user.id,
-        project_id: proposalData.projectId ? String(proposalData.projectId) : null,
+        project_id: null, // Projects use numeric IDs, not UUIDs
         project_name: proposalData.projectName,
         client_name: proposalData.clientName,
         summary: proposalData.projectSummary,
