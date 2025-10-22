@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { LayoutDashboard, TrendingUp, FileText, Calculator, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -52,45 +52,64 @@ export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
     }
   }, []);
 
-  // Calcular estatísticas
-  const totalProjects = projects.length;
-  const approvedProjects = projects.filter(p => p.status === "approved").length;
-  const completedProjects = projects.filter(p => p.status === "completed").length;
-  
-  const totalValue = projects
-    .filter(p => p.status === "approved" || p.status === "completed")
-    .reduce((sum, project) => sum + project.results.valorFinal, 0);
+  // Calcular estatísticas com useMemo
+  const stats = useMemo(() => {
+    const totalProjects = projects.length;
+    const approvedProjects = projects.filter(p => p.status === "approved").length;
+    const completedProjects = projects.filter(p => p.status === "completed").length;
+    
+    const totalValue = projects
+      .filter(p => p.status === "approved" || p.status === "completed")
+      .reduce((sum, project) => sum + project.results.valorFinal, 0);
+    
+    const pendingValue = projects
+      .filter(p => p.status === "pending")
+      .reduce((sum, p) => sum + p.results.valorFinal, 0);
+    
+    const pendingCount = projects.filter(p => p.status === "pending").length;
+    const rejectedCount = projects.filter(p => p.status === "rejected").length;
+    
+    return {
+      totalProjects,
+      approvedProjects,
+      completedProjects,
+      totalValue,
+      pendingValue,
+      pendingCount,
+      rejectedCount,
+    };
+  }, [projects]);
 
-  const stats = [
+  const statCards = useMemo(() => [
     {
       label: "Total de Projetos",
-      value: totalProjects.toString(),
+      value: stats.totalProjects.toString(),
       icon: Users,
       colorClass: "from-indigo-500/20 to-indigo-600/20",
       iconColor: "text-indigo-600",
     },
     {
       label: "Aprovados",
-      value: approvedProjects.toString(),
+      value: stats.approvedProjects.toString(),
       icon: TrendingUp,
       colorClass: "from-green-500/20 to-green-600/20",
       iconColor: "text-green-600",
     },
     {
       label: "Concluídos",
-      value: completedProjects.toString(),
+      value: stats.completedProjects.toString(),
       icon: FileText,
       colorClass: "from-blue-500/20 to-blue-600/20",
       iconColor: "text-blue-600",
     },
     {
       label: "Valor Total",
-      value: `R$ ${totalValue.toFixed(2)}`,
+      value: `R$ ${stats.totalValue.toFixed(2)}`,
       icon: Calculator,
       colorClass: "from-purple-500/20 to-purple-600/20",
       iconColor: "text-purple-600",
     },
-  ];
+  ], [stats]);
 
   return (
     <div className="space-y-6">
@@ -103,7 +122,7 @@ export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => {
+        {statCards.map((stat, index) => {
           const Icon = stat.icon;
           return (
             <Card key={index} className="bg-white border-2 shadow-sm hover:shadow-md transition-shadow">
@@ -134,25 +153,25 @@ export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
                 <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
                   <p className="text-sm text-gray-600 mb-1">Pendentes</p>
                   <p className="text-2xl font-bold text-yellow-600">
-                    {projects.filter(p => p.status === "pending").length}
+                    {stats.pendingCount}
                   </p>
                 </div>
                 <div className="p-4 rounded-lg bg-green-50 border border-green-200">
                   <p className="text-sm text-gray-600 mb-1">Aprovados</p>
                   <p className="text-2xl font-bold text-green-600">
-                    {approvedProjects}
+                    {stats.approvedProjects}
                   </p>
                 </div>
                 <div className="p-4 rounded-lg bg-red-50 border border-red-200">
                   <p className="text-sm text-gray-600 mb-1">Rejeitados</p>
                   <p className="text-2xl font-bold text-red-600">
-                    {projects.filter(p => p.status === "rejected").length}
+                    {stats.rejectedCount}
                   </p>
                 </div>
                 <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
                   <p className="text-sm text-gray-600 mb-1">Concluídos</p>
                   <p className="text-2xl font-bold text-blue-600">
-                    {completedProjects}
+                    {stats.completedProjects}
                   </p>
                 </div>
               </div>
@@ -161,16 +180,13 @@ export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-600">Valor total em negociação:</span>
                   <span className="text-lg font-bold text-gray-900">
-                    R$ {projects
-                      .filter(p => p.status === "pending")
-                      .reduce((sum, p) => sum + p.results.valorFinal, 0)
-                      .toFixed(2)}
+                    R$ {stats.pendingValue.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">Valor efetivado (aprovados + concluídos):</span>
                   <span className="text-lg font-bold text-green-600">
-                    R$ {totalValue.toFixed(2)}
+                    R$ {stats.totalValue.toFixed(2)}
                   </span>
                 </div>
               </div>

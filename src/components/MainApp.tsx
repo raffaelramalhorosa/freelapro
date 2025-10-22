@@ -1,13 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Calculator, AlertCircle, X } from "lucide-react";
 import { TabNavigation } from "@/components/TabNavigation";
-import { Calculator as CalculatorComponent } from "@/components/Calculator";
-import { Projects } from "@/components/Projects";
-import { Dashboard } from "@/components/Dashboard";
 import { UserDropdown } from "@/components/UserDropdown";
 import { UpgradeModal } from "@/components/UpgradeModal";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+
+// Lazy load tabs for better performance
+const CalculatorComponent = lazy(() => import("@/components/Calculator").then(m => ({ default: m.Calculator })));
+const Projects = lazy(() => import("@/components/Projects").then(m => ({ default: m.Projects })));
+const Dashboard = lazy(() => import("@/components/Dashboard").then(m => ({ default: m.Dashboard })));
+
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center p-12">
+    <div className="w-8 h-8 border-4 border-[#8B5CF6] border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 type TabType = "calculator" | "projects" | "dashboard";
 
@@ -85,29 +93,26 @@ export const MainApp = ({ userName, userEmail, userPlan, trialEndsAt, onLogout, 
   };
 
   const renderContent = () => {
-    switch (activeTab) {
-      case "calculator":
-        return (
+    return (
+      <Suspense fallback={<LoadingSpinner />}>
+        {activeTab === "calculator" && (
           <CalculatorComponent
             editingProject={editingProject}
             onEditComplete={handleEditComplete}
             userPlan={userPlan}
             onNavigateToPricing={onNavigateToPricing}
           />
-        );
-      case "projects":
-        return (
+        )}
+        {activeTab === "projects" && (
           <Projects
             onNavigateToCalculator={handleNavigateToCalculator}
             onEditProject={handleEditProject}
             userPlan={userPlan}
           />
-        );
-      case "dashboard":
-        return <Dashboard userPlan={userPlan} />;
-      default:
-        return <CalculatorComponent userPlan={userPlan} onNavigateToPricing={onNavigateToPricing} />;
-    }
+        )}
+        {activeTab === "dashboard" && <Dashboard userPlan={userPlan} />}
+      </Suspense>
+    );
   };
 
   return (

@@ -1,16 +1,9 @@
-import { useState, useEffect } from "react";
-import { FolderKanban, Plus, FileText, Pencil, Trash2, Clock } from "lucide-react";
+import { useState, useEffect, useMemo, useCallback, memo } from "react";
+import { FolderKanban, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import { ProjectCard } from "@/components/ProjectCard";
 
 interface CalculatedResults {
   valorBase: number;
@@ -79,7 +72,7 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
     }
   };
 
-  const handleStatusChange = (projectId: number, newStatus: string) => {
+  const handleStatusChange = useCallback((projectId: number, newStatus: string) => {
     try {
       const key = `project:${projectId}`;
       const projectData = localStorage.getItem(key);
@@ -102,9 +95,9 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
         variant: "destructive",
       });
     }
-  };
+  }, []);
 
-  const handleDelete = (projectId: number) => {
+  const handleDelete = useCallback((projectId: number) => {
     if (confirm("Tem certeza que deseja excluir este projeto?")) {
       try {
         localStorage.removeItem(`project:${projectId}`);
@@ -122,9 +115,9 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
         });
       }
     }
-  };
+  }, []);
 
-  const generateContract = (project: Project) => {
+  const generateContract = useCallback((project: Project) => {
     const contractDate = new Date().toLocaleDateString("pt-BR");
     const projectNameSlug = project.projectName.toLowerCase().replace(/\s+/g, "-");
     
@@ -336,25 +329,14 @@ TESTEMUNHAS (opcional):
         variant: "destructive",
       });
     }
-  };
+  }, []);
 
-  const numberToWords = (num: number): string => {
+  const numberToWords = useCallback((num: number): string => {
     // Função simplificada para converter número em palavras
     const integerPart = Math.floor(num);
     const decimalPart = Math.round((num - integerPart) * 100);
     return `${integerPart} reais e ${decimalPart} centavos`;
-  };
-
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      pending: { label: "Pendente", className: "bg-yellow-500 hover:bg-yellow-600" },
-      approved: { label: "Aprovado", className: "bg-green-500 hover:bg-green-600" },
-      rejected: { label: "Rejeitado", className: "bg-red-500 hover:bg-red-600" },
-      completed: { label: "Concluído", className: "bg-blue-500 hover:bg-blue-600" },
-    };
-    const config = statusConfig[status as keyof typeof statusConfig];
-    return <Badge className={`${config.className} text-white`}>{config.label}</Badge>;
-  };
+  }, []);
 
   if (projects.length === 0) {
     return (
@@ -423,88 +405,14 @@ TESTEMUNHAS (opcional):
 
       <div className="grid gap-4">
         {projects.map((project) => (
-          <Card key={project.id} className="border-2 shadow-lg hover:shadow-xl transition-shadow">
-            <CardContent className="pt-6">
-              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                {/* Informações do Projeto */}
-                <div className="flex-1 space-y-3">
-                  <div className="flex items-start justify-between gap-4">
-                    <h3 className="text-2xl font-bold text-foreground">{project.projectName}</h3>
-                    {getStatusBadge(project.status)}
-                  </div>
-                  
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p>
-                      <span className="font-medium text-foreground">Cliente:</span> {project.clientName}
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="font-medium text-foreground">{project.serviceType}</span>
-                      <span>•</span>
-                      <Clock className="w-4 h-4" />
-                      <span>{project.hoursEstimated}h</span>
-                    </p>
-                  </div>
-                </div>
-
-                {/* Valor */}
-                <div className="text-right lg:min-w-[200px]">
-                  <p className="text-3xl font-bold text-primary">
-                    R$ {project.results.valorFinal.toFixed(2)}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    R$ {project.results.valorHoraEfetivo.toFixed(2)}/hora
-                  </p>
-                </div>
-              </div>
-
-              {/* Ações */}
-              <div className="flex flex-wrap items-center gap-3 mt-6 pt-6 border-t border-border">
-                <div className="flex-1 min-w-[200px]">
-                  <Select
-                    value={project.status}
-                    onValueChange={(value) => handleStatusChange(project.id, value)}
-                  >
-                    <SelectTrigger className="bg-background">
-                      <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white z-50">
-                      <SelectItem value="pending">Pendente</SelectItem>
-                      <SelectItem value="approved">Aprovado</SelectItem>
-                      <SelectItem value="rejected">Rejeitado</SelectItem>
-                      <SelectItem value="completed">Concluído</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Button 
-                  variant="default" 
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                  onClick={() => generateContract(project)}
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Contrato
-                </Button>
-
-                <Button 
-                  variant="default" 
-                  className="bg-primary hover:bg-primary/90"
-                  onClick={() => onEditProject(project)}
-                >
-                  <Pencil className="w-4 h-4 mr-2" />
-                  Editar
-                </Button>
-
-                <Button
-                  variant="destructive"
-                  onClick={() => handleDelete(project.id)}
-                  className="bg-red-600 hover:bg-red-700"
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Excluir
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <ProjectCard
+            key={project.id}
+            project={project}
+            onStatusChange={handleStatusChange}
+            onEdit={onEditProject}
+            onDelete={handleDelete}
+            onGenerateContract={generateContract}
+          />
         ))}
       </div>
     </div>

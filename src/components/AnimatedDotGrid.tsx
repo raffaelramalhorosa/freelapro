@@ -19,62 +19,85 @@ export const AnimatedDotGrid = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
+
+    let animationFrameId: number;
 
     // Set canvas size
     const updateCanvasSize = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
+      createDots();
     };
+
+    // Create grid of dots
+    const createDots = () => {
+      dotsRef.current = [];
+      const spacing = 40;
+      const cols = Math.ceil(canvas.width / spacing) + 1;
+      const rows = Math.ceil(canvas.height / spacing) + 1;
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          dotsRef.current.push({
+            x: i * spacing,
+            y: j * spacing,
+            baseSize: 2,
+            size: 2,
+            opacity: 0.3,
+            phase: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+    };
+
     updateCanvasSize();
     window.addEventListener("resize", updateCanvasSize);
 
-    // Create grid of dots
-    const spacing = 40;
-    const cols = Math.ceil(canvas.width / spacing) + 1;
-    const rows = Math.ceil(canvas.height / spacing) + 1;
-
-    dotsRef.current = [];
-    for (let i = 0; i < cols; i++) {
-      for (let j = 0; j < rows; j++) {
-        dotsRef.current.push({
-          x: i * spacing,
-          y: j * spacing,
-          baseSize: 2,
-          size: 2,
-          opacity: 0.3,
-          phase: Math.random() * Math.PI * 2,
-        });
-      }
-    }
-
-    // Mouse move handler
+    // Mouse move handler with throttling
+    let mouseThrottle: number | null = null;
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      };
+      if (mouseThrottle) return;
+      
+      mouseThrottle = window.setTimeout(() => {
+        const rect = canvas.getBoundingClientRect();
+        mouseRef.current = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        };
+        mouseThrottle = null;
+      }, 16); // ~60fps throttle
     };
 
     canvas.addEventListener("mousemove", handleMouseMove);
 
-    // Animation loop
+    // Animation loop with FPS limit
     const animate = () => {
       if (!ctx || !canvas) return;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
       frameRef.current++;
+      
+      // Limit to 30 FPS for better performance
+      if (frameRef.current % 2 !== 0) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
 
+      ctx.fillStyle = '#0A0A0F';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Render only every 3rd dot for performance
       dotsRef.current.forEach((dot, index) => {
-        // Wave motion (top to bottom)
+        if (index % 3 !== 0) return;
+
+        // Wave motion
         const waveOffset = Math.sin(frameRef.current * 0.02 + dot.y * 0.01) * 0.5;
 
         // Pulse animation
         const pulseScale = 1 + Math.sin(frameRef.current * 0.05 + dot.phase) * 0.3;
 
-        // Glow effect (random dots)
+        // Glow effect
         const glowIntensity =
           Math.sin(frameRef.current * 0.03 + index * 0.1) > 0.7
             ? 0.8
@@ -108,10 +131,10 @@ export const AnimatedDotGrid = () => {
         ctx.fillStyle = `rgba(99, 102, 241, ${finalOpacity})`;
         ctx.fill();
 
-        // Draw connecting lines to nearby dots
-        if (distance < 80 && mouseGlow > 0) {
+        // Draw connecting lines only when mouse is near
+        if (distance < 80 && mouseGlow > 0.3) {
           dotsRef.current.forEach((otherDot, otherIndex) => {
-            if (otherIndex <= index) return;
+            if (otherIndex <= index || otherIndex % 3 !== 0) return;
 
             const odx = otherDot.x - dot.x;
             const ody = otherDot.y - dot.y;
@@ -127,30 +150,9 @@ export const AnimatedDotGrid = () => {
             }
           });
         }
-        
-        // Draw connections between all nearby dots (ambient connections)
-        if (frameRef.current % 3 === 0) { // Only draw every 3 frames for performance
-          dotsRef.current.forEach((otherDot, otherIndex) => {
-            if (otherIndex <= index) return;
-
-            const odx = otherDot.x - dot.x;
-            const ody = otherDot.y - dot.y;
-            const oDist = Math.sqrt(odx * odx + ody * ody);
-
-            if (oDist < 60) {
-              const connectionOpacity = (1 - oDist / 60) * 0.1;
-              ctx.beginPath();
-              ctx.moveTo(dot.x, dot.y);
-              ctx.lineTo(otherDot.x, otherDot.y);
-              ctx.strokeStyle = `rgba(99, 102, 241, ${connectionOpacity})`;
-              ctx.lineWidth = 0.5;
-              ctx.stroke();
-            }
-          });
-        }
       });
 
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
     };
 
     animate();
@@ -158,6 +160,12 @@ export const AnimatedDotGrid = () => {
     return () => {
       window.removeEventListener("resize", updateCanvasSize);
       canvas.removeEventListener("mousemove", handleMouseMove);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      if (mouseThrottle) {
+        clearTimeout(mouseThrottle);
+      }
     };
   }, []);
 
