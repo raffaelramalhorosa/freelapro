@@ -262,13 +262,18 @@ All colors MUST be HSL.
     border-color: rgba(99, 102, 241, 0.8);
   }
   
-  /* Hide default cursor on desktop */
+  /* Hide default cursor on desktop only on landing page with custom cursor */
   @media (pointer: fine) {
-    body {
+    .landing-page-with-custom-cursor {
       cursor: none;
     }
     
-    a, button, input, textarea, select, [role="button"] {
+    .landing-page-with-custom-cursor a,
+    .landing-page-with-custom-cursor button,
+    .landing-page-with-custom-cursor input,
+    .landing-page-with-custom-cursor textarea,
+    .landing-page-with-custom-cursor select,
+    .landing-page-with-custom-cursor [role="button"] {
       cursor: none;
     }
   }
