@@ -74,6 +74,11 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
       value: number;
       description: string;
     }>,
+    benefits: [] as Array<{
+      id: number;
+      name: string;
+      description: string;
+    }>,
   });
 
   // Carregar projetos do localStorage
@@ -382,6 +387,7 @@ TESTEMUNHAS (opcional):
       totalBudget: project.results.valorFinal,
       phases: [],
       fixedCosts: [],
+      benefits: [],
     });
     setShowProposalModal(true);
   }, []);
@@ -444,6 +450,34 @@ TESTEMUNHAS (opcional):
       ...prev,
       fixedCosts: prev.fixedCosts.map(cost =>
         cost.id === id ? { ...cost, [field]: value } : cost
+      )
+    }));
+  }, []);
+
+  // Benefits management functions
+  const addBenefit = useCallback(() => {
+    setProposalData(prev => ({
+      ...prev,
+      benefits: [...prev.benefits, {
+        id: Date.now(),
+        name: '',
+        description: '',
+      }]
+    }));
+  }, []);
+
+  const removeBenefit = useCallback((id: number) => {
+    setProposalData(prev => ({
+      ...prev,
+      benefits: prev.benefits.filter(benefit => benefit.id !== id)
+    }));
+  }, []);
+
+  const updateBenefit = useCallback((id: number, field: string, value: any) => {
+    setProposalData(prev => ({
+      ...prev,
+      benefits: prev.benefits.map(benefit =>
+        benefit.id === id ? { ...benefit, [field]: value } : benefit
       )
     }));
   }, []);
@@ -872,6 +906,65 @@ TESTEMUNHAS (opcional):
                               onChange={(e) => updateCost(cost.id, 'description', e.target.value)}
                               className="bg-white/5 border-purple-500/20 text-white min-h-[60px]"
                               placeholder="Descreva o custo..."
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* 4. Benefícios Esperados */}
+              <section className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-semibold text-white">Benefícios Esperados</h3>
+                  <Button
+                    onClick={addBenefit}
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    size="sm"
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    Adicionar Benefício
+                  </Button>
+                </div>
+
+                {proposalData.benefits.length === 0 ? (
+                  <p className="text-gray-400 text-center py-8">Nenhum benefício adicionado ainda</p>
+                ) : (
+                  <div className="space-y-4">
+                    {proposalData.benefits.map((benefit, index) => (
+                      <Card key={benefit.id} className="bg-white/5 border-purple-500/20">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-start justify-between">
+                            <CardTitle className="text-white text-lg">Benefício {index + 1}</CardTitle>
+                            <Button
+                              onClick={() => removeBenefit(benefit.id)}
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="space-y-2">
+                            <Label className="text-gray-300">Nome do Benefício *</Label>
+                            <Input
+                              value={benefit.name}
+                              onChange={(e) => updateBenefit(benefit.id, 'name', e.target.value)}
+                              className="bg-white/5 border-purple-500/20 text-white"
+                              placeholder="Ex: Aumento de conversão"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-gray-300">Descrição</Label>
+                            <Textarea
+                              value={benefit.description}
+                              onChange={(e) => updateBenefit(benefit.id, 'description', e.target.value)}
+                              className="bg-white/5 border-purple-500/20 text-white min-h-[60px]"
+                              placeholder="Descreva o benefício esperado..."
                             />
                           </div>
                         </CardContent>
