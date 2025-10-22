@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
-import { FolderKanban, Plus, X, Calendar as CalendarIcon, Trash2 } from "lucide-react";
+import { FolderKanban, Plus, X, Calendar as CalendarIcon, Trash2, CheckCircle, Copy, Check, ExternalLink, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CalculatedResults {
   valorBase: number;
@@ -52,6 +53,8 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
   const [projects, setProjects] = useState<Project[]>([]);
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [generatedSlug, setGeneratedSlug] = useState<string>('');
   const [proposalData, setProposalData] = useState({
     projectId: null as number | null,
     projectName: '',
@@ -481,6 +484,70 @@ TESTEMUNHAS (opcional):
       )
     }));
   }, []);
+
+  // Generate proposal page
+  const generateProposalPage = useCallback(async () => {
+    try {
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        toast({
+          title: "Erro",
+          description: "Você precisa estar logado para criar uma proposta.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Generate unique slug
+      const slug = `${proposalData.projectName
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '')}-${Date.now().toString(36)}`;
+
+      // Save to Supabase
+      const { data, error } = await supabase
+        .from('proposals')
+        .insert({
+          user_id: user.id,
+          project_id: null,
+          slug,
+          project_name: proposalData.projectName,
+          client_name: proposalData.clientName,
+          summary: proposalData.projectSummary,
+          total_budget: parseFloat(String(proposalData.totalBudget)),
+          phases: proposalData.phases.map(phase => ({
+            ...phase,
+            startDate: phase.startDate ? phase.startDate.toISOString() : null,
+            endDate: phase.endDate ? phase.endDate.toISOString() : null,
+          })),
+          fixed_costs: proposalData.fixedCosts,
+          benefits: proposalData.benefits,
+          status: 'active',
+          views: 0,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Show success modal
+      setGeneratedSlug(slug);
+      setShowProposalModal(false);
+      setShowSuccessModal(true);
+
+    } catch (error) {
+      console.error('Erro ao gerar proposta:', error);
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro ao gerar a proposta. Tente novamente.",
+        variant: "destructive",
+      });
+    }
+  }, [proposalData]);
 
   // Calculate phase percentages for chart
   const phaseChartData = useMemo(() => {
@@ -985,17 +1052,87 @@ TESTEMUNHAS (opcional):
                 Cancelar
               </Button>
               <Button
-                onClick={() => {
-                  // TODO: Implement proposal generation
-                  toast({
-                    title: "Em desenvolvimento",
-                    description: "A geração da página de proposta será implementada em breve.",
-                  });
-                }}
+                onClick={generateProposalPage}
                 className="bg-gradient-to-r from-purple-600 to-purple-700 hover:opacity-90 text-white"
               >
                 Gerar Página de Proposta
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Sucesso */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-[#1C1C26] border border-green-500/30 rounded-2xl max-w-lg w-full p-8 shadow-2xl">
+            {/* Ícone Sucesso Animado */}
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center">
+              <CheckCircle className="text-green-400 animate-bounce" size={48} />
+            </div>
+
+            <h2 className="text-2xl font-bold text-white text-center mb-2">
+              Proposta Criada! 🎉
+            </h2>
+            <p className="text-gray-400 text-center mb-6">
+              Sua página de proposta está pronta para ser compartilhada com {proposalData.clientName}
+            </p>
+
+            {/* Link */}
+            <div className="bg-[#0F0F14] rounded-xl p-4 mb-6 border border-purple-500/20">
+              <label className="text-xs text-gray-400 mb-2 block">Link da Proposta:</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={`${window.location.origin}/proposta/${generatedSlug}`}
+                  readOnly
+                  className="flex-1 bg-transparent text-purple-400 text-sm outline-none truncate"
+                />
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/proposta/${generatedSlug}`);
+                    toast({
+                      title: "Link copiado!",
+                      description: "O link foi copiado para a área de transferência.",
+                    });
+                  }}
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors flex items-center gap-2 text-white text-sm font-medium"
+                >
+                  <Copy size={16} />
+                  Copiar
+                </button>
+              </div>
+            </div>
+
+            {/* Ações */}
+            <div className="space-y-3">
+              <a
+                href={`/proposta/${generatedSlug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white rounded-xl font-semibold transition-opacity flex items-center justify-center gap-2"
+              >
+                <ExternalLink size={18} />
+                Visualizar Proposta
+              </a>
+
+              <button
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  setGeneratedSlug('');
+                }}
+                className="w-full px-6 py-3 bg-[#0F0F14] hover:bg-[#14141A] text-gray-300 rounded-xl font-medium transition-colors"
+              >
+                Fechar
+              </button>
+            </div>
+
+            {/* Dica */}
+            <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl flex gap-3">
+              <Info className="text-blue-400 flex-shrink-0 mt-0.5" size={18} />
+              <p className="text-xs text-blue-300">
+                Esta página é pública. Qualquer pessoa com o link poderá visualizá-la, mas apenas você pode editá-la ou excluí-la.
+              </p>
             </div>
           </div>
         </div>

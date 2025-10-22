@@ -38,6 +38,68 @@ export type Database = {
         }
         Relationships: []
       }
+      proposals: {
+        Row: {
+          benefits: Json | null
+          client_name: string
+          created_at: string | null
+          fixed_costs: Json | null
+          id: string
+          phases: Json | null
+          project_id: string | null
+          project_name: string
+          slug: string
+          status: string | null
+          summary: string | null
+          total_budget: number
+          updated_at: string | null
+          user_id: string
+          views: number | null
+        }
+        Insert: {
+          benefits?: Json | null
+          client_name: string
+          created_at?: string | null
+          fixed_costs?: Json | null
+          id?: string
+          phases?: Json | null
+          project_id?: string | null
+          project_name: string
+          slug: string
+          status?: string | null
+          summary?: string | null
+          total_budget: number
+          updated_at?: string | null
+          user_id: string
+          views?: number | null
+        }
+        Update: {
+          benefits?: Json | null
+          client_name?: string
+          created_at?: string | null
+          fixed_costs?: Json | null
+          id?: string
+          phases?: Json | null
+          project_id?: string | null
+          project_name?: string
+          slug?: string
+          status?: string | null
+          summary?: string | null
+          total_budget?: number
+          updated_at?: string | null
+          user_id?: string
+          views?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposals_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
