@@ -8,6 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { AnimatedDotGrid } from "@/components/AnimatedDotGrid";
+import { AnimatedGradient } from "@/components/AnimatedGradient";
 
 interface SignupPageProps {
   onNavigate: (page: string) => void;
@@ -25,10 +27,10 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const getPasswordStrength = (pass: string) => {
-    if (pass.length === 0) return { label: "", color: "" };
-    if (pass.length < 6) return { label: "Fraca", color: "text-red-500" };
-    if (pass.length < 10) return { label: "Média", color: "text-yellow-500" };
-    return { label: "Forte", color: "text-green-500" };
+    if (pass.length === 0) return { label: "", color: "", bars: 0 };
+    if (pass.length < 6) return { label: "Fraca", color: "#EF4444", bars: 2 };
+    if (pass.length < 10) return { label: "Média", color: "#F59E0B", bars: 3 };
+    return { label: "Forte", color: "#10B981", bars: 4 };
   };
 
   const passwordStrength = getPasswordStrength(password);
@@ -105,23 +107,31 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-white flex items-center justify-center p-6">
-      <div className="w-full max-w-md animate-fade-in">
+    <div className="min-h-screen bg-[#0F0F14] flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Background Layers */}
+      <div className="absolute inset-0 z-0">
+        <AnimatedDotGrid />
+      </div>
+      <div className="absolute inset-0 z-0">
+        <AnimatedGradient />
+      </div>
+      
+      <div className="w-full max-w-lg animate-fade-in relative z-10">
         <button
           onClick={() => onNavigate("landing")}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
+          className="flex items-center gap-2 text-[#9CA3AF] hover:text-[#F3F4F6] mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Voltar
         </button>
 
-        <Card className="border-2 shadow-xl">
+        <Card className="bg-[rgba(28,28,38,0.8)] backdrop-blur-[20px] border border-[rgba(139,92,246,0.2)] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.5),0_0_80px_rgba(139,92,246,0.15)]">
           <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#8B5CF6] to-[#A855F7] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-[0_8px_24px_rgba(139,92,246,0.4)]">
               <Calculator className="w-8 h-8 text-white" />
             </div>
-            <CardTitle className="text-2xl">Crie sua conta grátis</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-3xl text-[#F3F4F6] font-bold">Crie sua conta grátis</CardTitle>
+            <CardDescription className="text-[#9CA3AF] text-base mt-2">
               Comece a precificar melhor em menos de 1 minuto
             </CardDescription>
           </CardHeader>
@@ -129,114 +139,151 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
           <CardContent>
             <form onSubmit={handleSignup} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
+                <Label htmlFor="name" className="flex items-center gap-2 text-[#D1D5DB] font-medium">
+                  <User className="w-4 h-4 text-[#8B5CF6]" />
                   Nome completo
                 </Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="João Silva"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="transition-all focus:ring-2 focus:ring-primary"
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B5CF6] z-10">
+                    <User className="w-5 h-5" />
+                  </div>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="João Silva"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="bg-[#0F0F14] border border-[rgba(139,92,246,0.25)] rounded-xl pl-12 pr-4 py-3.5 text-[#F3F4F6] text-base placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[4px] focus:ring-[rgba(139,92,246,0.1)] transition-all"
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
+                <Label htmlFor="email" className="flex items-center gap-2 text-[#D1D5DB] font-medium">
+                  <Mail className="w-4 h-4 text-[#8B5CF6]" />
                   Email
                 </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="transition-all focus:ring-2 focus:ring-primary"
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B5CF6] z-10">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-[#0F0F14] border border-[rgba(139,92,246,0.25)] rounded-xl pl-12 pr-4 py-3.5 text-[#F3F4F6] text-base placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[4px] focus:ring-[rgba(139,92,246,0.1)] transition-all"
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
+                <Label htmlFor="password" className="flex items-center gap-2 text-[#D1D5DB] font-medium">
+                  <Lock className="w-4 h-4 text-[#8B5CF6]" />
                   Senha
                 </Label>
                 <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B5CF6] z-10">
+                    <Lock className="w-5 h-5" />
+                  </div>
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="transition-all focus:ring-2 focus:ring-primary pr-10"
+                    className="bg-[#0F0F14] border border-[rgba(139,92,246,0.25)] rounded-xl pl-12 pr-12 py-3.5 text-[#F3F4F6] text-base placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[4px] focus:ring-[rgba(139,92,246,0.1)] transition-all"
                     disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#9CA3AF] transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
                 {password && (
-                  <p className={`text-sm font-medium ${passwordStrength.color}`}>
-                    {passwordStrength.label}
-                  </p>
+                  <div className="space-y-2">
+                    <div className="flex gap-1">
+                      {[...Array(4)].map((_, i) => (
+                        <div
+                          key={i}
+                          className={`h-1 flex-1 rounded-sm transition-all ${
+                            i < passwordStrength.bars
+                              ? `shadow-[0_0_10px_${passwordStrength.color}]`
+                              : 'bg-[rgba(139,92,246,0.2)]'
+                          }`}
+                          style={{ backgroundColor: i < passwordStrength.bars ? passwordStrength.color : undefined }}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-sm font-medium" style={{ color: passwordStrength.color }}>
+                      {passwordStrength.label}
+                    </p>
+                  </div>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
+                <Label htmlFor="confirmPassword" className="flex items-center gap-2 text-[#D1D5DB] font-medium">
+                  <Lock className="w-4 h-4 text-[#8B5CF6]" />
                   Confirmar senha
                 </Label>
                 <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B5CF6] z-10">
+                    <Lock className="w-5 h-5" />
+                  </div>
                   <Input
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="transition-all focus:ring-2 focus:ring-primary pr-10"
+                    className="bg-[#0F0F14] border border-[rgba(139,92,246,0.25)] rounded-xl pl-12 pr-12 py-3.5 text-[#F3F4F6] text-base placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[4px] focus:ring-[rgba(139,92,246,0.1)] transition-all"
                     disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#9CA3AF] transition-colors"
                   >
-                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
-                <Label className="text-sm font-medium">Escolha seu plano</Label>
-                <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan}>
-                  <div className="flex items-center space-x-2 p-3 rounded-md border hover:bg-accent transition-colors">
-                    <RadioGroupItem value="free" id="free" />
+              <div className="space-y-3 p-4 bg-[rgba(139,92,246,0.05)] rounded-xl border border-[rgba(139,92,246,0.1)]">
+                <Label className="text-base font-medium text-[#D1D5DB]">Escolha seu plano</Label>
+                <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan} className="space-y-2">
+                  <div className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all ${
+                    selectedPlan === "free" ? "border-2 border-[#8B5CF6] bg-[rgba(139,92,246,0.1)] shadow-[0_0_20px_rgba(139,92,246,0.2)]" : "border-[rgba(139,92,246,0.2)] hover:bg-[rgba(139,92,246,0.05)]"
+                  }`}>
+                    <RadioGroupItem value="free" id="free" className="border-[rgba(139,92,246,0.4)]" />
                     <Label htmlFor="free" className="flex-1 cursor-pointer">
-                      <div className="font-medium">Free</div>
-                      <div className="text-xs text-muted-foreground">Grátis</div>
+                      <div className="font-semibold text-[#F3F4F6] text-base">Free</div>
+                      <div className="text-sm text-[#10B981]">Grátis</div>
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-2 p-3 rounded-md border hover:bg-accent transition-colors">
-                    <RadioGroupItem value="pro" id="pro" />
+                  <div className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all ${
+                    selectedPlan === "pro" ? "border-2 border-[#8B5CF6] bg-[rgba(139,92,246,0.1)] shadow-[0_0_20px_rgba(139,92,246,0.2)]" : "border-[rgba(139,92,246,0.2)] hover:bg-[rgba(139,92,246,0.05)]"
+                  }`}>
+                    <RadioGroupItem value="pro" id="pro" className="border-[rgba(139,92,246,0.4)]" />
                     <Label htmlFor="pro" className="flex-1 cursor-pointer">
-                      <div className="font-medium">Pro</div>
-                      <div className="text-xs text-muted-foreground">R$ 29/mês - 7 dias grátis</div>
+                      <div className="font-semibold text-[#F3F4F6] text-base">Pro</div>
+                      <div className="text-sm text-[#9CA3AF]">R$ 29/mês - 7 dias grátis</div>
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-2 p-3 rounded-md border hover:bg-accent transition-colors">
-                    <RadioGroupItem value="business" id="business" />
+                  <div className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all ${
+                    selectedPlan === "business" ? "border-2 border-[#8B5CF6] bg-[rgba(139,92,246,0.1)] shadow-[0_0_20px_rgba(139,92,246,0.2)]" : "border-[rgba(139,92,246,0.2)] hover:bg-[rgba(139,92,246,0.05)]"
+                  }`}>
+                    <RadioGroupItem value="business" id="business" className="border-[rgba(139,92,246,0.4)]" />
                     <Label htmlFor="business" className="flex-1 cursor-pointer">
-                      <div className="font-medium">Business</div>
-                      <div className="text-xs text-muted-foreground">R$ 79/mês</div>
+                      <div className="font-semibold text-[#F3F4F6] text-base">Business</div>
+                      <div className="text-sm text-[#9CA3AF]">R$ 79/mês</div>
                     </Label>
                   </div>
                 </RadioGroup>
@@ -247,15 +294,16 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
                   id="terms"
                   checked={acceptedTerms}
                   onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                  className="mt-0.5 border-[rgba(139,92,246,0.4)] data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#8B5CF6] data-[state=checked]:to-[#A855F7]"
                 />
                 <label
                   htmlFor="terms"
-                  className="text-sm text-muted-foreground cursor-pointer leading-relaxed"
+                  className="text-sm text-[#D1D5DB] cursor-pointer leading-relaxed"
                 >
                   Aceito os{" "}
                   <button
                     type="button"
-                    className="text-primary hover:underline"
+                    className="text-[#8B5CF6] hover:text-[#A855F7] hover:underline"
                     onClick={() => toast({ title: "Em breve", description: "Termos de uso em desenvolvimento" })}
                   >
                     termos de uso
@@ -263,7 +311,7 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
                   {" "}e{" "}
                   <button
                     type="button"
-                    className="text-primary hover:underline"
+                    className="text-[#8B5CF6] hover:text-[#A855F7] hover:underline"
                     onClick={() => toast({ title: "Em breve", description: "Política de privacidade em desenvolvimento" })}
                   >
                     política de privacidade
@@ -273,7 +321,7 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 py-6 text-lg"
+                className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] hover:opacity-90 py-4 text-lg font-semibold rounded-xl shadow-[0_8px_24px_rgba(139,92,246,0.4)] transition-all hover:translate-y-[-2px] disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading || !acceptedTerms}
               >
                 {isLoading ? "Criando conta..." : "Criar Conta Grátis"}
@@ -282,10 +330,10 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                <span className="w-full border-t border-[rgba(139,92,246,0.2)]" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">OU</span>
+                <span className="bg-[#1C1C26] px-2 text-[#6B7280]">OU</span>
               </div>
             </div>
 
@@ -293,7 +341,7 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full"
+                className="w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-[#F3F4F6] hover:bg-[rgba(255,255,255,0.1)] rounded-xl py-3"
                 onClick={() => toast({ title: "Em breve", description: "Cadastro com Google em desenvolvimento" })}
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -320,7 +368,7 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full bg-black text-white hover:bg-black/90 hover:text-white"
+                className="w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-[#F3F4F6] hover:bg-[rgba(255,255,255,0.1)] rounded-xl py-3"
                 onClick={() => toast({ title: "Em breve", description: "Cadastro com GitHub em desenvolvimento" })}
               >
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -331,11 +379,11 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
             </div>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-[#9CA3AF]">
                 Já tem uma conta?{" "}
                 <button
                   onClick={() => onNavigate("login")}
-                  className="text-primary hover:underline font-medium"
+                  className="text-[#8B5CF6] hover:text-[#A855F7] hover:underline font-medium transition-colors"
                 >
                   Fazer login
                 </button>

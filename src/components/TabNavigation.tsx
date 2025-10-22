@@ -16,7 +16,7 @@ const tabs = [
 
 export const TabNavigation = ({ activeTab, onTabChange }: TabNavigationProps) => {
   return (
-    <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-2 shadow-sm border border-border">
+    <div className="bg-[#1C1C26] backdrop-blur-sm rounded-2xl p-2 shadow-sm border border-[rgba(139,92,246,0.15)]">
       <div className="flex gap-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -25,10 +25,10 @@ export const TabNavigation = ({ activeTab, onTabChange }: TabNavigationProps) =>
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
               className={cn(
-                "flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-200",
+                "flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300",
                 activeTab === tab.id
-                  ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg shadow-primary/25"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  ? "bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] text-white shadow-[0_4px_15px_rgba(139,92,246,0.4)]"
+                  : "text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[rgba(139,92,246,0.1)]"
               )}
             >
               <Icon className="w-4 h-4" />
