@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Clock, FileText, Pencil, Trash2 } from "lucide-react";
+import { Clock, FileText, Pencil, Trash2, Globe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,6 +45,7 @@ interface ProjectCardProps {
   onEdit: (project: Project) => void;
   onDelete: (projectId: number) => void;
   onGenerateContract: (project: Project) => void;
+  onCreateProposal: (project: Project) => void;
 }
 
 const getStatusBadge = (status: string) => {
@@ -75,7 +76,8 @@ export const ProjectCard = memo<ProjectCardProps>(({
   onStatusChange, 
   onEdit, 
   onDelete, 
-  onGenerateContract 
+  onGenerateContract,
+  onCreateProposal
 }) => {
   return (
     <Card className="bg-[#1C1C26] border border-[rgba(139,92,246,0.15)] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:border-[rgba(139,92,246,0.4)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4),0_0_30px_rgba(139,92,246,0.2)] hover:-translate-y-1 transition-all duration-300">
@@ -139,6 +141,16 @@ export const ProjectCard = memo<ProjectCardProps>(({
           >
             <FileText className="w-4 h-4 mr-2" />
             Contrato
+          </Button>
+
+          <Button
+            onClick={() => onCreateProposal(project)}
+            variant="outline"
+            size="sm"
+            className="bg-[rgba(139,92,246,0.15)] border border-[rgba(139,92,246,0.3)] text-[#A855F7] hover:bg-[rgba(139,92,246,0.25)] hover:text-[#A855F7]"
+          >
+            <Globe className="w-4 h-4 mr-2" />
+            Criar Página
           </Button>
 
           <Button

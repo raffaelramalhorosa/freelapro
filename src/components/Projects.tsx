@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
-import { FolderKanban, Plus } from "lucide-react";
+import { FolderKanban, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
@@ -41,6 +41,22 @@ interface ProjectsProps {
 
 export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "free" }: ProjectsProps) => {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [showProposalModal, setShowProposalModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [proposalData, setProposalData] = useState({
+    projectId: null as number | null,
+    projectName: '',
+    clientName: '',
+    totalValue: 0,
+    valueBreakdown: [],
+    totalTime: 0,
+    timeBreakdown: [],
+    deliverables: [],
+    paymentTerms: '50-50',
+    startDate: '',
+    endDate: '',
+    revisions: 2,
+  });
 
   // Carregar projetos do localStorage
   useEffect(() => {
@@ -338,6 +354,25 @@ TESTEMUNHAS (opcional):
     return `${integerPart} reais e ${decimalPart} centavos`;
   }, []);
 
+  const openProposalModal = useCallback((project: Project) => {
+    setSelectedProject(project);
+    setProposalData({
+      projectId: project.id,
+      projectName: project.projectName,
+      clientName: project.clientName,
+      totalValue: project.results.valorFinal,
+      valueBreakdown: [],
+      totalTime: project.hoursEstimated,
+      timeBreakdown: [],
+      deliverables: [],
+      paymentTerms: '50-50',
+      startDate: '',
+      endDate: '',
+      revisions: 2,
+    });
+    setShowProposalModal(true);
+  }, []);
+
   if (projects.length === 0) {
     return (
       <div className="space-y-6">
@@ -412,9 +447,38 @@ TESTEMUNHAS (opcional):
             onEdit={onEditProject}
             onDelete={handleDelete}
             onGenerateContract={generateContract}
+            onCreateProposal={openProposalModal}
           />
         ))}
       </div>
+
+      {/* Modal de Proposta */}
+      {showProposalModal && selectedProject && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1C1C26] border border-[rgba(139,92,246,0.2)] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Header do Modal */}
+            <div className="flex items-center justify-between p-6 border-b border-[rgba(139,92,246,0.1)]">
+              <div>
+                <h2 className="text-2xl font-bold text-white">Criar Página de Proposta</h2>
+                <p className="text-gray-400 text-sm mt-1">
+                  Configure sua proposta profissional para {selectedProject.clientName}
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowProposalModal(false)}
+                className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+              >
+                <X className="text-gray-400" size={20} />
+              </button>
+            </div>
+
+            {/* Conteúdo */}
+            <div className="p-6">
+              <p className="text-gray-300">Formulário será adicionado nos próximos prompts</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
