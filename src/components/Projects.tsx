@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
-import { FolderKanban, Plus, X, Calendar as CalendarIcon, Trash2, CheckCircle, Copy, Check, ExternalLink, Info } from "lucide-react";
+import { FolderKanban, Plus, X, Calendar as CalendarIcon, Trash2, CheckCircle, Copy, Check, ExternalLink, Info, Edit2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -55,7 +55,7 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [generatedSlug, setGeneratedSlug] = useState<string>('');
-  const [projectProposals, setProjectProposals] = useState<Record<number, any>>({});
+  const [projectProposals, setProjectProposals] = useState<Record<string, any>>({});
   const [existingProposalId, setExistingProposalId] = useState<string | null>(null);
   const [proposalData, setProposalData] = useState({
     projectId: null as number | null,
@@ -99,17 +99,16 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
 
       const { data, error } = await supabase
         .from('proposals')
-        .select('id, project_id, slug')
+        .select('id, project_name, client_name, slug')
         .eq('user_id', user.id);
 
       if (error) throw error;
 
-      // Map proposals by project_id
-      const proposalsMap: Record<number, any> = {};
+      // Map proposals by project name + client name combination
+      const proposalsMap: Record<string, any> = {};
       data?.forEach((proposal: any) => {
-        if (proposal.project_id) {
-          proposalsMap[proposal.project_id] = proposal;
-        }
+        const key = `${proposal.project_name}||${proposal.client_name}`;
+        proposalsMap[key] = proposal;
       });
       setProjectProposals(proposalsMap);
     } catch (error) {
@@ -411,8 +410,9 @@ TESTEMUNHAS (opcional):
   const openProposalModal = useCallback(async (project: Project) => {
     setSelectedProject(project);
 
-    // Check if project already has a proposal
-    const existingProposal = projectProposals[project.id];
+    // Check if project already has a proposal using project name + client name
+    const proposalKey = `${project.projectName}||${project.clientName}`;
+    const existingProposal = projectProposals[proposalKey];
     
     if (existingProposal) {
       // Load existing proposal data
@@ -728,7 +728,6 @@ TESTEMUNHAS (opcional):
           <ProjectCard
             key={project.id}
             project={project}
-            hasProposal={!!projectProposals[project.id]}
             onStatusChange={handleStatusChange}
             onEdit={onEditProject}
             onDelete={handleDelete}
@@ -745,11 +744,20 @@ TESTEMUNHAS (opcional):
             {/* Header do Modal */}
             <div className="flex items-center justify-between p-6 border-b border-[rgba(139,92,246,0.1)] sticky top-0 bg-[#1C1C26] z-10">
               <div>
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   {existingProposalId ? 'Editar Página de Proposta' : 'Criar Página de Proposta'}
+                  {existingProposalId && (
+                    <span className="inline-flex items-center space-x-1 px-3 py-1 bg-[rgba(59,130,246,0.15)] border border-[rgba(59,130,246,0.3)] rounded-full text-[#3B82F6] text-sm font-normal">
+                      <Edit2 size={14} />
+                      <span>Modo Edição</span>
+                    </span>
+                  )}
                 </h2>
                 <p className="text-gray-400 text-sm mt-1">
-                  Configure sua proposta profissional para {selectedProject.clientName}
+                  {existingProposalId 
+                    ? `Atualize as informações da proposta para ${selectedProject.clientName}`
+                    : `Configure sua proposta profissional para ${selectedProject.clientName}`
+                  }
                 </p>
               </div>
               <button 
@@ -1155,7 +1163,7 @@ TESTEMUNHAS (opcional):
                 onClick={generateProposalPage}
                 className="bg-gradient-to-r from-purple-600 to-purple-700 hover:opacity-90 text-white"
               >
-                Gerar Página de Proposta
+                {existingProposalId ? 'Atualizar Proposta' : 'Gerar Página de Proposta'}
               </Button>
             </div>
           </div>
@@ -1172,10 +1180,13 @@ TESTEMUNHAS (opcional):
             </div>
 
             <h2 className="text-2xl font-bold text-white text-center mb-2">
-              Proposta Criada! 🎉
+              {existingProposalId ? 'Proposta Atualizada! ✨' : 'Proposta Criada! 🎉'}
             </h2>
             <p className="text-gray-400 text-center mb-6">
-              Sua página de proposta está pronta para ser compartilhada com {proposalData.clientName}
+              {existingProposalId 
+                ? 'Suas alterações foram salvas com sucesso'
+                : `Sua página de proposta está pronta para ser compartilhada com ${proposalData.clientName}`
+              }
             </p>
 
             {/* Link */}
@@ -1223,7 +1234,7 @@ TESTEMUNHAS (opcional):
                 }}
                 className="w-full px-6 py-3 bg-[#0F0F14] hover:bg-[#14141A] text-gray-300 rounded-xl font-medium transition-colors"
               >
-                Fechar
+                {existingProposalId ? 'Voltar aos Projetos' : 'Fechar'}
               </button>
             </div>
 
@@ -1231,7 +1242,10 @@ TESTEMUNHAS (opcional):
             <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl flex gap-3">
               <Info className="text-blue-400 flex-shrink-0 mt-0.5" size={18} />
               <p className="text-xs text-blue-300">
-                Esta página é pública. Qualquer pessoa com o link poderá visualizá-la, mas apenas você pode editá-la ou excluí-la.
+                {existingProposalId 
+                  ? 'As alterações são refletidas imediatamente na página pública.'
+                  : 'Compartilhe este link com seu cliente. Ele poderá visualizar a proposta sem fazer login.'
+                }
               </p>
             </div>
           </div>

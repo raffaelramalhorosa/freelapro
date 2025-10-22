@@ -1,5 +1,6 @@
-import { memo } from "react";
-import { Clock, FileText, Pencil, Trash2, Globe } from "lucide-react";
+import { memo, useState, useEffect } from "react";
+import { Clock, FileText, Pencil, Trash2, Globe, ExternalLink, CheckCircle, Loader2, Edit2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -41,7 +42,6 @@ interface Project {
 
 interface ProjectCardProps {
   project: Project;
-  hasProposal?: boolean;
   onStatusChange: (projectId: number, status: string) => void;
   onEdit: (project: Project) => void;
   onDelete: (projectId: number) => void;
@@ -74,20 +74,69 @@ const getStatusBadge = (status: string) => {
 
 export const ProjectCard = memo<ProjectCardProps>(({ 
   project,
-  hasProposal = false,
   onStatusChange, 
   onEdit, 
   onDelete, 
   onGenerateContract,
   onCreateProposal
 }) => {
+  const [hasProposal, setHasProposal] = useState(false);
+  const [proposalSlug, setProposalSlug] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkExistingProposal();
+  }, [project.id]);
+
+  const checkExistingProposal = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      // Buscar proposta que corresponda ao nome do projeto e cliente
+      const { data, error } = await supabase
+        .from('proposals')
+        .select('slug')
+        .eq('user_id', user.id)
+        .eq('project_name', project.projectName)
+        .eq('client_name', project.clientName)
+        .maybeSingle();
+
+      if (data && !error) {
+        setHasProposal(true);
+        setProposalSlug(data.slug);
+      } else {
+        setHasProposal(false);
+        setProposalSlug(null);
+      }
+    } catch (error) {
+      console.log('Erro ao verificar proposta:', error);
+      setHasProposal(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <Card className="bg-[#1C1C26] border border-[rgba(139,92,246,0.15)] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:border-[rgba(139,92,246,0.4)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4),0_0_30px_rgba(139,92,246,0.2)] hover:-translate-y-1 transition-all duration-300">
+    <Card className="bg-[#1C1C26] border border-[rgba(139,92,246,0.15)] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:border-[rgba(139,92,246,0.4)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.4),0_0_30px_rgba(139,92,246,0.2)] hover:-translate-y-1 transition-all duration-300 relative">
       <CardContent className="pt-6">
+        {/* Badge de Proposta Ativa */}
+        {hasProposal && (
+          <div className="absolute top-4 right-4">
+            <div className="flex items-center space-x-1 px-2 py-1 bg-[rgba(16,185,129,0.15)] border border-[rgba(16,185,129,0.3)] rounded-full text-[#10B981] text-xs shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+              <CheckCircle size={12} />
+              <span className="font-medium">Com Proposta</span>
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           {/* Informações do Projeto */}
           <div className="flex-1 space-y-3">
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start justify-between gap-4 pr-32">
               <h3 className="text-2xl font-bold text-[#F3F4F6]">{project.projectName}</h3>
               {getStatusBadge(project.status)}
             </div>
@@ -145,15 +194,50 @@ export const ProjectCard = memo<ProjectCardProps>(({
             Contrato
           </Button>
 
-          <Button
-            onClick={() => onCreateProposal(project)}
-            variant="outline"
-            size="sm"
-            className="bg-[rgba(139,92,246,0.15)] border border-[rgba(139,92,246,0.3)] text-[#A855F7] hover:bg-[rgba(139,92,246,0.25)] hover:text-[#A855F7]"
-          >
-            <Globe className="w-4 h-4 mr-2" />
-            {hasProposal ? 'Editar Página' : 'Criar Página'}
-          </Button>
+          {loading ? (
+            <Button
+              disabled
+              variant="outline"
+              size="sm"
+              className="bg-[rgba(139,92,246,0.15)] border border-[rgba(139,92,246,0.3)] text-[#A855F7] opacity-50"
+            >
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Verificando...
+            </Button>
+          ) : hasProposal ? (
+            <>
+              <Button
+                onClick={() => onCreateProposal(project)}
+                variant="outline"
+                size="sm"
+                className="bg-[rgba(59,130,246,0.15)] border border-[rgba(59,130,246,0.3)] text-[#3B82F6] hover:bg-[rgba(59,130,246,0.25)] hover:text-[#3B82F6]"
+              >
+                <Edit2 className="w-4 h-4 mr-2" />
+                Editar Página
+              </Button>
+              {proposalSlug && (
+                <Button
+                  onClick={() => window.open(`/proposta/${proposalSlug}`, '_blank')}
+                  variant="outline"
+                  size="sm"
+                  className="bg-[rgba(16,185,129,0.15)] border border-[rgba(16,185,129,0.3)] text-[#10B981] hover:bg-[rgba(16,185,129,0.25)] hover:text-[#10B981]"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Ver Página
+                </Button>
+              )}
+            </>
+          ) : (
+            <Button
+              onClick={() => onCreateProposal(project)}
+              variant="outline"
+              size="sm"
+              className="bg-[rgba(139,92,246,0.15)] border border-[rgba(139,92,246,0.3)] text-[#A855F7] hover:bg-[rgba(139,92,246,0.25)] hover:text-[#A855F7]"
+            >
+              <Globe className="w-4 h-4 mr-2" />
+              Criar Página
+            </Button>
+          )}
 
           <Button
             onClick={() => onEdit(project)}
