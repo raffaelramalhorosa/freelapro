@@ -121,18 +121,18 @@ export const MainApp = ({ userName, userEmail, userPlan, trialEndsAt, onLogout, 
         }}
         featureName={upgradeFeatureName}
       />
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-white">
+      <div className="min-h-screen bg-[#0F0F14]">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b sticky top-0 z-50 shadow-sm">
+      <header className="bg-[#1C1C26] backdrop-blur-lg border-b border-[rgba(139,92,246,0.1)] sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#8B5CF6] to-[#A855F7] rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.5)]">
                 <Calculator className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">FreelaPro</h1>
-                <p className="text-xs text-muted-foreground">
+                <h1 className="text-xl font-bold text-[#F3F4F6]">FreelaPro</h1>
+                <p className="text-xs text-[#9CA3AF]">
                   Precificação & Contratos Inteligentes
                 </p>
               </div>

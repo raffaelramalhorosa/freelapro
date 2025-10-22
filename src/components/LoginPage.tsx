@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { AnimatedDotGrid } from "@/components/AnimatedDotGrid";
+import { AnimatedGradient } from "@/components/AnimatedGradient";
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
@@ -57,23 +59,31 @@ export const LoginPage = ({ onNavigate }: LoginPageProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-white flex items-center justify-center p-6">
-      <div className="w-full max-w-md animate-fade-in">
+    <div className="min-h-screen bg-[#0F0F14] flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Background Layers */}
+      <div className="absolute inset-0 z-0">
+        <AnimatedDotGrid />
+      </div>
+      <div className="absolute inset-0 z-0">
+        <AnimatedGradient />
+      </div>
+      
+      <div className="w-full max-w-md animate-fade-in relative z-10">
         <button
           onClick={() => onNavigate("landing")}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
+          className="flex items-center gap-2 text-[#9CA3AF] hover:text-[#F3F4F6] mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Voltar
         </button>
 
-        <Card className="border-2 shadow-xl">
+        <Card className="bg-[rgba(28,28,38,0.8)] backdrop-blur-[20px] border border-[rgba(139,92,246,0.2)] rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.5),0_0_80px_rgba(139,92,246,0.15)]">
           <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-[#8B5CF6] to-[#A855F7] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-[0_8px_24px_rgba(139,92,246,0.4)]">
               <Calculator className="w-8 h-8 text-white" />
             </div>
-            <CardTitle className="text-2xl">Bem-vindo de volta!</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-3xl text-[#F3F4F6] font-bold">Bem-vindo de volta!</CardTitle>
+            <CardDescription className="text-[#9CA3AF] text-base mt-2">
               Entre para continuar gerenciando seus projetos
             </CardDescription>
           </CardHeader>
@@ -81,42 +91,50 @@ export const LoginPage = ({ onNavigate }: LoginPageProps) => {
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
+                <Label htmlFor="email" className="flex items-center gap-2 text-[#D1D5DB] font-medium">
+                  <Mail className="w-4 h-4 text-[#8B5CF6]" />
                   Email
                 </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="transition-all focus:ring-2 focus:ring-primary"
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B5CF6] z-10">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-[#0F0F14] border border-[rgba(139,92,246,0.25)] rounded-xl pl-12 pr-4 py-3.5 text-[#F3F4F6] text-base placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[4px] focus:ring-[rgba(139,92,246,0.1)] focus:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all"
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
+                <Label htmlFor="password" className="flex items-center gap-2 text-[#D1D5DB] font-medium">
+                  <Lock className="w-4 h-4 text-[#8B5CF6]" />
                   Senha
                 </Label>
                 <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B5CF6] z-10">
+                    <Lock className="w-5 h-5" />
+                  </div>
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="transition-all focus:ring-2 focus:ring-primary pr-10"
+                    className="bg-[#0F0F14] border border-[rgba(139,92,246,0.25)] rounded-xl pl-12 pr-12 py-3.5 text-[#F3F4F6] text-base placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[4px] focus:ring-[rgba(139,92,246,0.1)] focus:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all"
                     disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#9CA3AF] transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
@@ -127,17 +145,18 @@ export const LoginPage = ({ onNavigate }: LoginPageProps) => {
                     id="remember"
                     checked={rememberMe}
                     onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                    className="border-[rgba(139,92,246,0.4)] data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#8B5CF6] data-[state=checked]:to-[#A855F7]"
                   />
                   <label
                     htmlFor="remember"
-                    className="text-sm text-muted-foreground cursor-pointer"
+                    className="text-sm text-[#D1D5DB] cursor-pointer"
                   >
                     Lembrar de mim
                   </label>
                 </div>
                 <button
                   type="button"
-                  className="text-sm text-primary hover:underline"
+                  className="text-sm text-[#8B5CF6] hover:text-[#A855F7] hover:underline transition-colors"
                   onClick={() => toast({ title: "Em breve", description: "Funcionalidade em desenvolvimento" })}
                 >
                   Esqueceu a senha?
@@ -146,7 +165,7 @@ export const LoginPage = ({ onNavigate }: LoginPageProps) => {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 py-6 text-lg"
+                className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] hover:opacity-90 py-4 text-lg font-semibold rounded-xl shadow-[0_8px_24px_rgba(139,92,246,0.4)] transition-all hover:translate-y-[-2px] hover:shadow-[0_12px_32px_rgba(139,92,246,0.5)] disabled:opacity-80 disabled:cursor-wait"
                 disabled={isLoading}
               >
                 {isLoading ? "Entrando..." : "Entrar"}
@@ -155,10 +174,10 @@ export const LoginPage = ({ onNavigate }: LoginPageProps) => {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                <span className="w-full border-t border-[rgba(139,92,246,0.2)]" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">OU</span>
+                <span className="bg-[#1C1C26] px-2 text-[#6B7280]">OU</span>
               </div>
             </div>
 
@@ -166,7 +185,7 @@ export const LoginPage = ({ onNavigate }: LoginPageProps) => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full"
+                className="w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-[#F3F4F6] hover:bg-[rgba(255,255,255,0.1)] rounded-xl py-3"
                 onClick={() => toast({ title: "Em breve", description: "Login com Google em desenvolvimento" })}
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -193,7 +212,7 @@ export const LoginPage = ({ onNavigate }: LoginPageProps) => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full bg-black text-white hover:bg-black/90 hover:text-white"
+                className="w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-[#F3F4F6] hover:bg-[rgba(255,255,255,0.1)] rounded-xl py-3"
                 onClick={() => toast({ title: "Em breve", description: "Login com GitHub em desenvolvimento" })}
               >
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -204,11 +223,11 @@ export const LoginPage = ({ onNavigate }: LoginPageProps) => {
             </div>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-[#9CA3AF]">
                 Não tem uma conta?{" "}
                 <button
                   onClick={() => onNavigate("signup")}
-                  className="text-primary hover:underline font-medium"
+                  className="text-[#8B5CF6] hover:text-[#A855F7] hover:underline font-medium transition-colors"
                 >
                   Criar conta
                 </button>

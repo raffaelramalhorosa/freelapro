@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dark Mode Base Styles */
+body {
+  background: linear-gradient(180deg, #0F0F14 0%, #1A1A24 100%);
+  min-height: 100vh;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
@@ -414,18 +420,60 @@ All colors MUST be HSL.
   }
   
   .shimmer::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
-    width: 50%;
+    width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    animation: shimmer-slide 3s infinite;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: shimmer-slide 2s infinite;
+  }
+
+  /* Toast Animations */
+  @keyframes slideInRight {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOutRight {
+    to {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes progress-countdown {
+    from {
+      width: 100%;
+    }
+    to {
+      width: 0%;
+    }
   }
   
   @keyframes shimmer-slide {
     0% { left: -100%; }
     100% { left: 200%; }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { 
+      box-shadow: 0 20px 60px rgba(139, 92, 246, 0.4); 
+    }
+    50% { 
+      box-shadow: 0 20px 80px rgba(139, 92, 246, 0.6); 
+    }
   }
 }

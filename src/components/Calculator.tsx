@@ -313,10 +313,10 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
         }}
       />
       <div className="grid lg:grid-cols-2 gap-6">
-      <Card className="border-2 shadow-lg bg-white">
+      <Card className="bg-[#1C1C26] border border-[rgba(139,92,246,0.15)] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-2xl">
-            <CalculatorIcon className="w-6 h-6 text-primary" />
+          <CardTitle className="flex items-center gap-2 text-2xl text-[#F3F4F6] font-bold">
+            <CalculatorIcon className="w-6 h-6 text-[#8B5CF6]" />
             Novo Orçamento
           </CardTitle>
         </CardHeader>
@@ -324,8 +324,8 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
           {/* Cliente e Projeto */}
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="client-name" className="text-gray-700 font-medium flex items-center gap-2">
-                <User className="w-4 h-4 text-primary" />
+              <Label htmlFor="client-name" className="text-[#D1D5DB] text-sm font-medium tracking-wide flex items-center gap-2">
+                <User className="w-4 h-4 text-[#8B5CF6] opacity-60" />
                 Nome do Cliente
               </Label>
               <Input
@@ -334,13 +334,13 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
                 placeholder="Ex: João Silva"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                className="border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary"
+                className="bg-[#0F0F14] border border-[rgba(139,92,246,0.2)] rounded-xl px-4 py-3 text-[#F3F4F6] placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[3px] focus:ring-[rgba(139,92,246,0.1)]"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="project-name" className="text-gray-700 font-medium flex items-center gap-2">
-                <FileText className="w-4 h-4 text-primary" />
+              <Label htmlFor="project-name" className="text-[#D1D5DB] text-sm font-medium tracking-wide flex items-center gap-2">
+                <FileText className="w-4 h-4 text-[#8B5CF6] opacity-60" />
                 Nome do Projeto
               </Label>
               <Input
@@ -349,24 +349,24 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
                 placeholder="Ex: Website Institucional"
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
-                className="border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary"
+                className="bg-[#0F0F14] border border-[rgba(139,92,246,0.2)] rounded-xl px-4 py-3 text-[#F3F4F6] placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[3px] focus:ring-[rgba(139,92,246,0.1)]"
               />
             </div>
           </div>
 
           {/* Tipo de Serviço */}
           <div className="space-y-2">
-            <Label htmlFor="service-type" className="text-gray-700 font-medium flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-primary" />
+            <Label htmlFor="service-type" className="text-[#D1D5DB] text-sm font-medium tracking-wide flex items-center gap-2">
+              <Briefcase className="w-4 h-4 text-[#8B5CF6] opacity-60" />
               Tipo de Serviço
             </Label>
             <Select value={serviceType} onValueChange={setServiceType}>
-              <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary">
+              <SelectTrigger className="bg-[#0F0F14] border border-[rgba(139,92,246,0.2)] rounded-xl px-4 py-3 text-[#F3F4F6] focus:border-[rgba(139,92,246,0.6)] focus:ring-[3px] focus:ring-[rgba(139,92,246,0.1)]">
                 <SelectValue placeholder="Selecione o tipo de serviço" />
               </SelectTrigger>
-              <SelectContent className="bg-white z-50">
+              <SelectContent className="bg-[#1C1C26] border border-[rgba(139,92,246,0.2)] shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50">
                 {serviceTypes.map((type) => (
-                  <SelectItem key={type} value={type}>
+                  <SelectItem key={type} value={type} className="text-[#F3F4F6] hover:bg-[rgba(139,92,246,0.15)] focus:bg-[rgba(139,92,246,0.25)]">
                     {type}
                   </SelectItem>
                 ))}
@@ -377,8 +377,8 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
           {/* Horas e Valor */}
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="estimated-hours" className="text-gray-700 font-medium flex items-center gap-2">
-                <Clock className="w-4 h-4 text-primary" />
+              <Label htmlFor="estimated-hours" className="text-[#D1D5DB] text-sm font-medium tracking-wide flex items-center gap-2">
+                <Clock className="w-4 h-4 text-[#8B5CF6] opacity-60" />
                 Horas Estimadas *
               </Label>
               <Input
@@ -392,20 +392,20 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
                     setErrors({ ...errors, estimatedHours: "" });
                   }
                 }}
-                className={`border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all ${
-                  errors.estimatedHours ? "border-red-500 focus:ring-red-500" : ""
+                className={`bg-[#0F0F14] border rounded-xl px-4 py-3 text-[#F3F4F6] placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[3px] focus:ring-[rgba(139,92,246,0.1)] transition-all ${
+                  errors.estimatedHours ? "border-[#EF4444] focus:ring-[rgba(239,68,68,0.1)]" : "border-[rgba(139,92,246,0.2)]"
                 }`}
                 min="0"
                 step="0.5"
               />
               {errors.estimatedHours && (
-                <p className="text-xs text-red-600 animate-fade-in">{errors.estimatedHours}</p>
+                <p className="text-xs text-[#EF4444] animate-fade-in">{errors.estimatedHours}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="hourly-rate" className="text-gray-700 font-medium flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-primary" />
+              <Label htmlFor="hourly-rate" className="text-[#D1D5DB] text-sm font-medium tracking-wide flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-[#8B5CF6] opacity-60" />
                 Valor por Hora (R$) *
               </Label>
               <Input
@@ -419,14 +419,14 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
                     setErrors({ ...errors, hourlyRate: "" });
                   }
                 }}
-                className={`border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all ${
-                  errors.hourlyRate ? "border-red-500 focus:ring-red-500" : ""
+                className={`bg-[#0F0F14] border rounded-xl px-4 py-3 text-[#F3F4F6] placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[3px] focus:ring-[rgba(139,92,246,0.1)] transition-all ${
+                  errors.hourlyRate ? "border-[#EF4444] focus:ring-[rgba(239,68,68,0.1)]" : "border-[rgba(139,92,246,0.2)]"
                 }`}
                 min="0"
                 step="0.01"
               />
               {errors.hourlyRate && (
-                <p className="text-xs text-red-600 animate-fade-in">{errors.hourlyRate}</p>
+                <p className="text-xs text-[#EF4444] animate-fade-in">{errors.hourlyRate}</p>
               )}
             </div>
           </div>
@@ -434,34 +434,34 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
           {/* Custos */}
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="fixed-costs" className="text-gray-700 font-medium">
+              <Label htmlFor="fixed-costs" className="text-[#D1D5DB] text-sm font-medium tracking-wide">
                 Custos Fixos (R$)
               </Label>
-              <p className="text-xs text-gray-500 mb-1">Internet, software, etc</p>
+              <p className="text-xs text-[#6B7280] italic mb-1">Internet, software, etc</p>
               <Input
                 id="fixed-costs"
                 type="number"
                 placeholder="Ex: 200.00"
                 value={fixedCosts}
                 onChange={(e) => setFixedCosts(e.target.value)}
-                className="border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary"
+                className="bg-[#0F0F14] border border-[rgba(139,92,246,0.2)] rounded-xl px-4 py-3 text-[#F3F4F6] placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[3px] focus:ring-[rgba(139,92,246,0.1)]"
                 min="0"
                 step="0.01"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="variable-costs" className="text-gray-700 font-medium">
+              <Label htmlFor="variable-costs" className="text-[#D1D5DB] text-sm font-medium tracking-wide">
                 Custos Variáveis (R$)
               </Label>
-              <p className="text-xs text-gray-500 mb-1">Fonts, fotos, plugins, etc</p>
+              <p className="text-xs text-[#6B7280] italic mb-1">Fonts, fotos, plugins, etc</p>
               <Input
                 id="variable-costs"
                 type="number"
                 placeholder="Ex: 150.00"
                 value={variableCosts}
                 onChange={(e) => setVariableCosts(e.target.value)}
-                className="border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary"
+                className="bg-[#0F0F14] border border-[rgba(139,92,246,0.2)] rounded-xl px-4 py-3 text-[#F3F4F6] placeholder:text-[#6B7280] focus:border-[rgba(139,92,246,0.6)] focus:ring-[3px] focus:ring-[rgba(139,92,246,0.1)]"
                 min="0"
                 step="0.01"
               />
@@ -470,8 +470,8 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
 
           {/* Regime Tributário */}
           <div className="space-y-2">
-            <Label htmlFor="tax-regime" className="text-gray-700 font-medium flex items-center gap-2">
-              <FileText className="w-4 h-4 text-primary" />
+            <Label htmlFor="tax-regime" className="text-[#D1D5DB] text-sm font-medium tracking-wide flex items-center gap-2">
+              <FileText className="w-4 h-4 text-[#8B5CF6] opacity-60" />
               Regime Tributário *
             </Label>
             <Select 
@@ -483,32 +483,32 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
                 }
               }}
             >
-              <SelectTrigger className={`border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-all ${
-                errors.taxRegime ? "border-red-500 focus:ring-red-500" : ""
+              <SelectTrigger className={`bg-[#0F0F14] border rounded-xl px-4 py-3 text-[#F3F4F6] focus:border-[rgba(139,92,246,0.6)] focus:ring-[3px] focus:ring-[rgba(139,92,246,0.1)] transition-all ${
+                errors.taxRegime ? "border-[#EF4444] focus:ring-[rgba(239,68,68,0.1)]" : "border-[rgba(139,92,246,0.2)]"
               }`}>
                 <SelectValue placeholder="Selecione o regime tributário" />
               </SelectTrigger>
-              <SelectContent className="bg-white z-50">
+              <SelectContent className="bg-[#1C1C26] border border-[rgba(139,92,246,0.2)] shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50">
                 {taxRegimes.map((regime) => (
-                  <SelectItem key={regime.value} value={regime.value}>
+                  <SelectItem key={regime.value} value={regime.value} className="text-[#F3F4F6] hover:bg-[rgba(139,92,246,0.15)] focus:bg-[rgba(139,92,246,0.25)]">
                     {regime.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             {errors.taxRegime && (
-              <p className="text-xs text-red-600 animate-fade-in">{errors.taxRegime}</p>
+              <p className="text-xs text-[#EF4444] animate-fade-in">{errors.taxRegime}</p>
             )}
           </div>
 
           {/* Margem de Lucro */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label className="text-gray-700 font-medium flex items-center gap-2">
-                <Percent className="w-4 h-4 text-primary" />
+              <Label className="text-[#D1D5DB] text-sm font-medium tracking-wide flex items-center gap-2">
+                <Percent className="w-4 h-4 text-[#8B5CF6] opacity-60" />
                 Margem de Lucro
               </Label>
-              <span className="text-2xl font-bold text-primary">{profitMargin[0]}%</span>
+              <span className="text-2xl font-bold text-[#A855F7]">{profitMargin[0]}%</span>
             </div>
             <Slider
               value={profitMargin}
@@ -517,7 +517,7 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
               step={1}
               className="w-full"
             />
-            <div className="flex justify-between text-xs text-gray-500">
+            <div className="flex justify-between text-xs text-[#6B7280]">
               <span>0%</span>
               <span>50%</span>
               <span>100%</span>
@@ -527,7 +527,7 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
           <Button 
             onClick={handleCalculate}
             disabled={isCalculateDisabled}
-            className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 shadow-lg text-white font-medium py-6 text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] hover:opacity-90 shadow-[0_8px_24px_rgba(139,92,246,0.4)] text-white font-semibold py-6 text-lg rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:translate-y-[-2px] active:scale-[0.98]"
           >
             <CalculatorIcon className="w-5 h-5 mr-2" />
             Calcular Preço
@@ -535,113 +535,99 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
         </CardContent>
       </Card>
 
-      <Card className="border-2 shadow-lg bg-gradient-to-br from-primary/5 to-secondary/5">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-2xl">
-            <TrendingUp className="w-6 h-6 text-primary" />
-            Resultado da Precificação
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {calculatedResults ? (
-            <div className="space-y-4 animate-fade-in">
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
-                <p className="text-sm text-gray-600 mb-1">Valor Base (Horas × Taxa)</p>
-                <p className="text-2xl font-bold text-foreground">
-                  {formatCurrency(calculatedResults.valorBase)}
-                </p>
-              </div>
-
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
-                <p className="text-sm text-gray-600 mb-1">Custos Totais (Fixos + Variáveis)</p>
-                <p className="text-2xl font-bold text-foreground">
-                  {formatCurrency(calculatedResults.custosTotais)}
-                </p>
-              </div>
-
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
-                <p className="text-sm text-gray-600 mb-1">Subtotal (Base + Custos)</p>
-                <p className="text-2xl font-bold text-foreground">
-                  {formatCurrency(calculatedResults.subtotal)}
-                </p>
-              </div>
-
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
-                <p className="text-sm text-gray-600 mb-1">Lucro ({profitMargin[0]}%)</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {formatCurrency(calculatedResults.lucro)}
-                </p>
-              </div>
-
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
-                <p className="text-sm text-gray-600 mb-1">Antes dos Impostos</p>
-                <p className="text-2xl font-bold text-foreground">
-                  {formatCurrency(calculatedResults.antesImpostos)}
-                </p>
-              </div>
-
-              <div className="p-4 bg-white/90 backdrop-blur-sm rounded-xl border border-border hover:shadow-md transition-shadow">
-                <p className="text-sm text-gray-600 mb-1">Impostos</p>
-                <p className="text-2xl font-bold text-orange-600">
-                  {formatCurrency(calculatedResults.impostos)}
-                </p>
-              </div>
-
-              <div className="p-6 bg-gradient-to-r from-primary to-secondary rounded-xl shadow-lg hover:shadow-xl transition-shadow animate-scale-in">
-                <p className="text-sm text-white/90 mb-1">💰 Valor Final do Projeto</p>
-                <p className="text-4xl font-bold text-white mb-3">
-                  {formatCurrency(calculatedResults.valorFinal)}
-                </p>
-                <div className="pt-3 border-t border-white/20">
-                  <p className="text-xs text-white/70 mb-1">Valor por Hora Efetivo</p>
-                  <p className="text-xl font-bold text-white">
-                    {formatCurrency(calculatedResults.valorHoraEfetivo)}/hora
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-4 bg-white/70 backdrop-blur-sm rounded-xl border border-dashed border-primary">
-                <p className="text-xs text-gray-600 mb-2">💡 Dica Profissional</p>
-                <p className="text-sm text-foreground">
-                  Seu valor efetivo por hora considera todos os custos, impostos e margem de lucro.
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <Button 
-                  onClick={handleSaveProject}
-                  disabled={!clientName.trim() || !projectName.trim()}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-6 text-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                >
-                  <Save className="w-5 h-5 mr-2" />
-                  {currentEditingId ? "Atualizar Projeto" : "Salvar Projeto"}
-                </Button>
-                
-                {currentEditingId && (
-                  <Button 
-                    onClick={handleCancel}
-                    variant="outline"
-                    className="w-full font-medium py-6 text-lg hover:bg-muted transition-all"
-                  >
-                    <X className="w-5 h-5 mr-2" />
-                    Cancelar
-                  </Button>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center mb-4">
-                <CalculatorIcon className="w-10 h-10 text-primary" />
-              </div>
-              <p className="text-gray-600 font-medium mb-2">Aguardando cálculo</p>
-              <p className="text-sm text-gray-500">
-                Preencha os campos e clique em "Calcular Preço"
+      <div className="space-y-6">
+        {/* Valor Final Card */}
+        {calculatedResults && (
+          <div className="p-8 bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] rounded-2xl shadow-[0_20px_60px_rgba(139,92,246,0.4)] animate-fade-in" style={{ animation: 'glow-pulse 3s ease-in-out infinite' }}>
+            <p className="text-base text-white opacity-90 mb-2">💰 Valor Final do Projeto</p>
+            <p className="text-5xl font-extrabold text-white mb-4 drop-shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
+              {formatCurrency(calculatedResults.valorFinal)}
+            </p>
+            <div className="pt-3 border-t border-white/20">
+              <p className="text-sm text-white/80 mb-1">Valor por Hora Efetivo</p>
+              <p className="text-xl font-bold text-white">
+                {formatCurrency(calculatedResults.valorHoraEfetivo)}/hora
               </p>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        )}
+
+        {/* Details Card */}
+        <Card className="bg-[#1C1C26] border border-[rgba(139,92,246,0.15)] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-2xl text-[#F3F4F6] font-bold">
+              <TrendingUp className="w-6 h-6 text-[#8B5CF6]" />
+              Detalhamento
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {calculatedResults ? (
+              <div className="space-y-1 animate-fade-in">
+                <div className="flex justify-between items-center py-4 border-b border-[rgba(139,92,246,0.1)]">
+                  <span className="text-[#D1D5DB] text-base">Valor Base</span>
+                  <span className="text-[#F3F4F6] text-lg font-semibold">{formatCurrency(calculatedResults.valorBase)}</span>
+                </div>
+                <div className="flex justify-between items-center py-4 border-b border-[rgba(139,92,246,0.1)]">
+                  <span className="text-[#D1D5DB] text-base">Custos Totais</span>
+                  <span className="text-[#F3F4F6] text-lg font-semibold">{formatCurrency(calculatedResults.custosTotais)}</span>
+                </div>
+                <div className="flex justify-between items-center py-4 border-b border-[rgba(139,92,246,0.1)]">
+                  <span className="text-[#D1D5DB] text-base">Subtotal</span>
+                  <span className="text-[#F3F4F6] text-lg font-semibold">{formatCurrency(calculatedResults.subtotal)}</span>
+                </div>
+                <div className="flex justify-between items-center py-4 border-b border-[rgba(139,92,246,0.1)]">
+                  <span className="text-[#D1D5DB] text-base">Lucro ({profitMargin[0]}%)</span>
+                  <span className="text-[#10B981] text-lg font-semibold">{formatCurrency(calculatedResults.lucro)}</span>
+                </div>
+                <div className="flex justify-between items-center py-4 border-b border-[rgba(139,92,246,0.1)]">
+                  <span className="text-[#D1D5DB] text-base">Antes dos Impostos</span>
+                  <span className="text-[#F3F4F6] text-lg font-semibold">{formatCurrency(calculatedResults.antesImpostos)}</span>
+                </div>
+                <div className="flex justify-between items-center py-4 border-b border-[rgba(139,92,246,0.1)]">
+                  <span className="text-[#D1D5DB] text-base">Impostos</span>
+                  <span className="text-[#EF4444] text-lg font-semibold">{formatCurrency(calculatedResults.impostos)}</span>
+                </div>
+                <div className="flex justify-between items-center py-5">
+                  <span className="text-xl font-bold bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent">Total</span>
+                  <span className="text-xl font-bold bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent">{formatCurrency(calculatedResults.valorFinal)}</span>
+                </div>
+
+                <div className="space-y-3 pt-4">
+                  <Button 
+                    onClick={handleSaveProject}
+                    disabled={!clientName.trim() || !projectName.trim()}
+                    className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] hover:opacity-90 text-white font-semibold py-6 text-lg rounded-xl shadow-[0_4px_15px_rgba(16,185,129,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:translate-y-[-2px]"
+                  >
+                    <Save className="w-5 h-5 mr-2" />
+                    {currentEditingId ? "Atualizar Projeto" : "Salvar Projeto"}
+                  </Button>
+                  
+                  {currentEditingId && (
+                    <Button 
+                      onClick={handleCancel}
+                      variant="outline"
+                      className="w-full font-medium py-6 text-lg bg-[#0F0F14] border-[rgba(139,92,246,0.2)] text-[#D1D5DB] hover:bg-[rgba(139,92,246,0.1)] rounded-xl transition-all"
+                    >
+                      <X className="w-5 h-5 mr-2" />
+                      Cancelar
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="w-20 h-20 rounded-full bg-[rgba(139,92,246,0.1)] flex items-center justify-center mb-4">
+                  <CalculatorIcon className="w-10 h-10 text-[#8B5CF6]" />
+                </div>
+                <p className="text-[#D1D5DB] font-medium mb-2">Aguardando cálculo</p>
+                <p className="text-sm text-[#9CA3AF]">
+                  Preencha os campos e clique em "Calcular Preço"
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
     </>
   );
