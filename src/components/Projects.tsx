@@ -5,14 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "@/hooks/use-toast";
 import { ProjectCard } from "@/components/ProjectCard";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { PhaseItem, CostItem, BenefitItem, LazyPhaseChart } from "@/components/ProposalModalItems";
 import { supabase } from "@/integrations/supabase/client";
 
 interface CalculatedResults {
@@ -646,7 +641,7 @@ TESTEMUNHAS (opcional):
     }
   }, [proposalData, existingProposalId]);
 
-  // Calculate phase percentages for chart
+  // Calculate phase percentages for chart - Memoized
   const phaseChartData = useMemo(() => {
     const totalPhaseBudget = proposalData.phases.reduce((sum, phase) => sum + phase.budget, 0);
     return proposalData.phases.map(phase => ({
@@ -655,6 +650,19 @@ TESTEMUNHAS (opcional):
       percentage: totalPhaseBudget > 0 ? ((phase.budget / totalPhaseBudget) * 100).toFixed(1) : 0,
     }));
   }, [proposalData.phases]);
+
+  // Calculate totals - Memoized
+  const totalPhaseBudget = useMemo(() => {
+    return proposalData.phases.reduce((sum, phase) => sum + phase.budget, 0);
+  }, [proposalData.phases]);
+
+  const totalFixedCosts = useMemo(() => {
+    return proposalData.fixedCosts.reduce((sum, cost) => sum + cost.value, 0);
+  }, [proposalData.fixedCosts]);
+
+  const grandTotal = useMemo(() => {
+    return totalPhaseBudget + totalFixedCosts;
+  }, [totalPhaseBudget, totalFixedCosts]);
 
   const CHART_COLORS = ['#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#ede9fe'];
 
@@ -737,10 +745,16 @@ TESTEMUNHAS (opcional):
         ))}
       </div>
 
-      {/* Modal de Proposta */}
+      {/* Modal de Proposta - Optimized */}
       {showProposalModal && selectedProject && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#1C1C26] border border-[rgba(139,92,246,0.2)] rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          style={{ willChange: 'opacity' }}
+        >
+          <div 
+            className="bg-[#1C1C26] border border-[rgba(139,92,246,0.2)] rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto"
+            style={{ willChange: 'transform' }}
+          >
             {/* Header do Modal */}
             <div className="flex items-center justify-between p-6 border-b border-[rgba(139,92,246,0.1)] sticky top-0 bg-[#1C1C26] z-10">
               <div>
@@ -848,169 +862,18 @@ TESTEMUNHAS (opcional):
                 ) : (
                   <div className="space-y-4">
                     {proposalData.phases.map((phase, index) => (
-                      <Card key={phase.id} className="bg-white/5 border-purple-500/20">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between">
-                            <CardTitle className="text-white text-lg">Fase {index + 1}</CardTitle>
-                            <Button
-                              onClick={() => removePhase(phase.id)}
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label className="text-gray-300">Nome da Fase *</Label>
-                              <Input
-                                value={phase.name}
-                                onChange={(e) => updatePhase(phase.id, 'name', e.target.value)}
-                                className="bg-white/5 border-purple-500/20 text-white"
-                                placeholder="Ex: Planejamento"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label className="text-gray-300">Duração</Label>
-                              <div className="flex gap-2">
-                                <Input
-                                  type="number"
-                                  value={phase.duration}
-                                  onChange={(e) => updatePhase(phase.id, 'duration', Number(e.target.value))}
-                                  className="bg-white/5 border-purple-500/20 text-white"
-                                  placeholder="0"
-                                />
-                                <Select
-                                  value={phase.durationUnit}
-                                  onValueChange={(value) => updatePhase(phase.id, 'durationUnit', value)}
-                                >
-                                  <SelectTrigger className="bg-white/5 border-purple-500/20 text-white w-[120px]">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="dias">Dias</SelectItem>
-                                    <SelectItem value="semanas">Semanas</SelectItem>
-                                    <SelectItem value="meses">Meses</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label className="text-gray-300">Resumo da Fase</Label>
-                            <Textarea
-                              value={phase.summary}
-                              onChange={(e) => updatePhase(phase.id, 'summary', e.target.value)}
-                              className="bg-white/5 border-purple-500/20 text-white min-h-[80px]"
-                              placeholder="Descreva as atividades desta fase..."
-                            />
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="space-y-2">
-                              <Label className="text-gray-300">Data Inicial</Label>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    className={cn(
-                                      "w-full justify-start text-left font-normal bg-white/5 border-purple-500/20 text-white hover:bg-white/10",
-                                      !phase.startDate && "text-gray-400"
-                                    )}
-                                  >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {phase.startDate ? format(phase.startDate, "dd/MM/yyyy") : "Selecione"}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                  <Calendar
-                                    mode="single"
-                                    selected={phase.startDate}
-                                    onSelect={(date) => updatePhase(phase.id, 'startDate', date)}
-                                    initialFocus
-                                    className="pointer-events-auto"
-                                  />
-                                </PopoverContent>
-                              </Popover>
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="text-gray-300">Data Final</Label>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    className={cn(
-                                      "w-full justify-start text-left font-normal bg-white/5 border-purple-500/20 text-white hover:bg-white/10",
-                                      !phase.endDate && "text-gray-400"
-                                    )}
-                                  >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {phase.endDate ? format(phase.endDate, "dd/MM/yyyy") : "Selecione"}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                  <Calendar
-                                    mode="single"
-                                    selected={phase.endDate}
-                                    onSelect={(date) => updatePhase(phase.id, 'endDate', date)}
-                                    initialFocus
-                                    className="pointer-events-auto"
-                                  />
-                                </PopoverContent>
-                              </Popover>
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="text-gray-300">Verba da Fase *</Label>
-                              <Input
-                                type="number"
-                                value={phase.budget}
-                                onChange={(e) => updatePhase(phase.id, 'budget', Number(e.target.value))}
-                                className="bg-white/5 border-purple-500/20 text-white"
-                                placeholder="0.00"
-                              />
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                      <PhaseItem
+                        key={phase.id}
+                        phase={phase}
+                        index={index}
+                        onUpdate={updatePhase}
+                        onDelete={removePhase}
+                      />
                     ))}
 
-                    {/* Gráfico de Distribuição de Verba por Fase */}
+                    {/* Gráfico de Distribuição de Verba por Fase - Lazy Loaded */}
                     {proposalData.phases.length > 0 && phaseChartData.some(d => d.value > 0) && (
-                      <Card className="bg-white/5 border-purple-500/20">
-                        <CardHeader>
-                          <CardTitle className="text-white">Distribuição de Verba por Fase</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <ResponsiveContainer width="100%" height={300}>
-                            <PieChart>
-                              <Pie
-                                data={phaseChartData}
-                                cx="50%"
-                                cy="50%"
-                                labelLine={false}
-                                label={({ name, percentage }) => `${name}: ${percentage}%`}
-                                outerRadius={80}
-                                fill="#8884d8"
-                                dataKey="value"
-                              >
-                                {phaseChartData.map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                                ))}
-                              </Pie>
-                              <Tooltip
-                                formatter={(value: number) => `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-                              />
-                              <Legend />
-                            </PieChart>
-                          </ResponsiveContainer>
-                        </CardContent>
-                      </Card>
+                      <LazyPhaseChart phaseChartData={phaseChartData} CHART_COLORS={CHART_COLORS} />
                     )}
                   </div>
                 )}
@@ -1035,56 +898,13 @@ TESTEMUNHAS (opcional):
                 ) : (
                   <div className="space-y-4">
                     {proposalData.fixedCosts.map((cost, index) => (
-                      <Card key={cost.id} className="bg-white/5 border-purple-500/20">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between">
-                            <CardTitle className="text-white text-lg">Custo {index + 1}</CardTitle>
-                            <Button
-                              onClick={() => removeCost(cost.id)}
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label className="text-gray-300">Nome do Custo *</Label>
-                              <Input
-                                value={cost.name}
-                                onChange={(e) => updateCost(cost.id, 'name', e.target.value)}
-                                className="bg-white/5 border-purple-500/20 text-white"
-                                placeholder="Ex: Hospedagem"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label className="text-gray-300">Valor *</Label>
-                              <Input
-                                type="number"
-                                value={cost.value}
-                                onChange={(e) => updateCost(cost.id, 'value', Number(e.target.value))}
-                                className="bg-white/5 border-purple-500/20 text-white"
-                                placeholder="0.00"
-                              />
-                              <p className="text-sm text-gray-400">
-                                R$ {cost.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-gray-300">Descrição</Label>
-                            <Textarea
-                              value={cost.description}
-                              onChange={(e) => updateCost(cost.id, 'description', e.target.value)}
-                              className="bg-white/5 border-purple-500/20 text-white min-h-[60px]"
-                              placeholder="Descreva o custo..."
-                            />
-                          </div>
-                        </CardContent>
-                      </Card>
+                      <CostItem
+                        key={cost.id}
+                        cost={cost}
+                        index={index}
+                        onUpdate={updateCost}
+                        onDelete={removeCost}
+                      />
                     ))}
                   </div>
                 )}
@@ -1109,41 +929,13 @@ TESTEMUNHAS (opcional):
                 ) : (
                   <div className="space-y-4">
                     {proposalData.benefits.map((benefit, index) => (
-                      <Card key={benefit.id} className="bg-white/5 border-purple-500/20">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between">
-                            <CardTitle className="text-white text-lg">Benefício {index + 1}</CardTitle>
-                            <Button
-                              onClick={() => removeBenefit(benefit.id)}
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div className="space-y-2">
-                            <Label className="text-gray-300">Nome do Benefício *</Label>
-                            <Input
-                              value={benefit.name}
-                              onChange={(e) => updateBenefit(benefit.id, 'name', e.target.value)}
-                              className="bg-white/5 border-purple-500/20 text-white"
-                              placeholder="Ex: Aumento de conversão"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-gray-300">Descrição</Label>
-                            <Textarea
-                              value={benefit.description}
-                              onChange={(e) => updateBenefit(benefit.id, 'description', e.target.value)}
-                              className="bg-white/5 border-purple-500/20 text-white min-h-[60px]"
-                              placeholder="Descreva o benefício esperado..."
-                            />
-                          </div>
-                        </CardContent>
-                      </Card>
+                      <BenefitItem
+                        key={benefit.id}
+                        benefit={benefit}
+                        index={index}
+                        onUpdate={updateBenefit}
+                        onDelete={removeBenefit}
+                      />
                     ))}
                   </div>
                 )}
