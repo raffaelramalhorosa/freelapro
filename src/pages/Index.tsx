@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { LandingPage } from "@/components/LandingPage";
-import { LoginPage } from "@/components/LoginPage";
-import { SignupPage } from "@/components/SignupPage";
-import { PricingPage } from "@/components/PricingPage";
-import { AuthenticatedApp } from "@/components/AuthenticatedApp";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
+
+// Lazy loading dos componentes principais
+const LandingPage = lazy(() => import("@/components/LandingPage").then(m => ({ default: m.LandingPage })));
+const LoginPage = lazy(() => import("@/components/LoginPage").then(m => ({ default: m.LoginPage })));
+const SignupPage = lazy(() => import("@/components/SignupPage").then(m => ({ default: m.SignupPage })));
+const PricingPage = lazy(() => import("@/components/PricingPage").then(m => ({ default: m.PricingPage })));
+const AuthenticatedApp = lazy(() => import("@/components/AuthenticatedApp").then(m => ({ default: m.AuthenticatedApp })));
 
 type Page = "landing" | "login" | "signup" | "pricing" | "app";
 
@@ -69,7 +71,13 @@ const Index = () => {
   // Roteamento
   return (
     <SubscriptionProvider>
-      {renderPage()}
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      }>
+        {renderPage()}
+      </Suspense>
     </SubscriptionProvider>
   );
 
