@@ -222,6 +222,26 @@ export default {
             transform: "translateY(-100vh) scale(0.5)",
             opacity: "0"
           }
+        },
+        "blob": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "25%": { transform: "translate(20px, -50px) scale(1.1)" },
+          "50%": { transform: "translate(-20px, 20px) scale(0.9)" },
+          "75%": { transform: "translate(50px, 50px) scale(1.05)" }
+        },
+        "gradient": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" }
+        },
+        "draw": {
+          "to": { strokeDashoffset: "0" }
+        },
+        "growHeight": {
+          "from": { height: "0%" }
+        },
+        "fadeIn": {
+          "from": { opacity: "0", transform: "translateY(20px)" },
+          "to": { opacity: "1", transform: "translateY(0)" }
         }
       },
       animation: {
@@ -244,6 +264,14 @@ export default {
         "float-slow": "float-slow 20s ease-in-out infinite",
         "spin-slow": "spin-slow 30s linear infinite",
         "rise": "rise 10s linear infinite",
+        "blob": "blob 7s infinite",
+        "gradient": "gradient 3s linear infinite",
+        "draw": "draw 2s ease forwards",
+        "growHeight": "growHeight 1s ease-out forwards",
+        "fadeIn": "fadeIn 0.6s ease-out forwards",
+      },
+      backgroundSize: {
+        "300%": "300% 300%",
       },
     },
   },

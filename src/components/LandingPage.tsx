@@ -1,4 +1,5 @@
 import { Calculator, TrendingUp, Shield, Zap, ArrowRight, Users, Star, DollarSign, Play, Sparkles } from "lucide-react";
+import { ProposalFeatureSection } from "@/components/ProposalFeatureSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -473,6 +474,9 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
           </div>
         </div>
       </section>
+
+      {/* Proposal Feature Section */}
+      <ProposalFeatureSection />
 
       {/* Social Proof Section */}
       <section className="py-24">
