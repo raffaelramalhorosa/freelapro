@@ -39,22 +39,22 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
     useRef<HTMLDivElement>(null),
   ];
   const sectionTitleRef = useRef<HTMLDivElement>(null);
-  
+
   // Parallax effects
   useParallax(bgRef, { speed: 0.5 });
   useParallax(mockupRef, { speed: -0.3, direction: "both" });
-  
+
   // Magnetic effect on CTA button
   useMagneticEffect(ctaButtonRef, 0.3);
-  
+
   // Mouse gradient effect
   const heroGradientPosition = useMouseGradient(heroSectionRef);
-  
+
   // Scroll reveal effects
   useScrollReveal([sectionTitleRef], { direction: "up" });
   useScrollReveal([featureRefs[0], featureRefs[2], featureRefs[4]], { direction: "left" });
   useScrollReveal([featureRefs[1], featureRefs[3], featureRefs[5]], { direction: "right" });
-  
+
   // 3D Tilt effect on mockup card
   const handleMockupMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = mockupCardRef.current;
@@ -78,13 +78,13 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
     if (!card) return;
     card.style.transform = "perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)";
   };
-  
+
   // Header scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsHeaderScrolled(window.scrollY > 100);
     };
-    
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -117,13 +117,13 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
       <CustomCursor />
       <MouseTrail />
       <ScrollProgressBar />
-      
+
       {/* Header */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isHeaderScrolled 
-          ? 'bg-[#13131A]/80 shadow-lg shadow-primary/5' 
-          : 'bg-transparent'
-      } backdrop-blur-lg border-b border-white/5`}>
+      <nav
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+          isHeaderScrolled ? "bg-[#13131A]/80 shadow-lg shadow-primary/5" : "bg-transparent"
+        } backdrop-blur-lg border-b border-white/5`}
+      >
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo com glow */}
@@ -139,9 +139,9 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             {/* Menu items */}
             <div className="hidden md:flex items-center space-x-8">
               {[
-                { label: 'Funcionalidades', action: null },
-                { label: 'Preços', action: () => onNavigate("pricing") },
-                { label: 'Login', action: () => onNavigate("login") }
+                { label: "Funcionalidades", action: null },
+                { label: "Preços", action: () => onNavigate("pricing") },
+                { label: "Login", action: () => onNavigate("login") },
               ].map((item) => (
                 <button
                   key={item.label}
@@ -172,10 +172,10 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
         <div ref={bgRef} className="absolute inset-0" style={{ willChange: "transform", zIndex: 0 }}>
           <AnimatedDotGrid />
         </div>
-        
+
         {/* Layer 2: Animated Gradient Overlay */}
         <AnimatedGradient />
-        
+
         {/* Layer 3: Mouse-following gradient spotlight */}
         <div
           className="absolute inset-0 pointer-events-none transition-opacity duration-300"
@@ -184,47 +184,68 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             zIndex: 2,
           }}
         />
-        
+
         {/* Layer 4: Floating Geometric Shapes */}
         <FloatingShapes />
-        
+
         {/* Layer 5: Rising Particles */}
         <RisingParticles />
-        
+
         {/* Floating Particles */}
         <div className="particle particle-1 w-3 h-3 bg-primary/40 top-[10%] left-[15%]" style={{ zIndex: 1 }}></div>
         <div className="particle particle-2 w-4 h-4 bg-secondary/40 top-[30%] right-[20%]" style={{ zIndex: 1 }}></div>
         <div className="particle particle-3 w-2 h-2 bg-tertiary/40 bottom-[25%] left-[25%]" style={{ zIndex: 1 }}></div>
         <div className="particle particle-4 w-3 h-3 bg-primary/40 top-[60%] right-[15%]" style={{ zIndex: 1 }}></div>
-        <div className="particle particle-5 w-4 h-4 bg-secondary/40 bottom-[15%] right-[30%]" style={{ zIndex: 1 }}></div>
-        
+        <div
+          className="particle particle-5 w-4 h-4 bg-secondary/40 bottom-[15%] right-[30%]"
+          style={{ zIndex: 1 }}
+        ></div>
+
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-tertiary/10 opacity-50" style={{ zIndex: 1 }}></div>
-        
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-tertiary/10 opacity-50"
+          style={{ zIndex: 1 }}
+        ></div>
+
         {/* Decorative Elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse" style={{ zIndex: 1 }}></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s", zIndex: 1 }}></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-tertiary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s", zIndex: 1 }}></div>
-        
+        <div
+          className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse"
+          style={{ zIndex: 1 }}
+        ></div>
+        <div
+          className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s", zIndex: 1 }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-tertiary/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "2s", zIndex: 1 }}
+        ></div>
+
         <div className="container mx-auto px-6 py-20 lg:py-32">
           <div className="grid lg:grid-cols-5 gap-12 items-center">
             {/* Coluna Esquerda - 60% */}
             <div className="lg:col-span-3 space-y-8 relative z-10">
-              <Badge className="glass-card text-primary border-primary/20 shadow-lg hover:shadow-primary/30 transition-shadow animate-fade-up" style={{ animationDelay: "0.1s" }}>
+              <Badge
+                className="glass-card text-primary border-primary/20 shadow-lg hover:shadow-primary/30 transition-shadow animate-fade-up"
+                style={{ animationDelay: "0.1s" }}
+              >
                 <Sparkles className="w-3 h-3 mr-1" />
                 Ferramenta #1 para Freelancers no Brasil
               </Badge>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight animate-fade-up text-glow" style={{ animationDelay: "0.15s" }}>
-                Precifique seus projetos com{" "}
-                <span className="gradient-text">
-                  inteligência
-                </span>{" "}
-                e feche mais contratos
+              <h1
+                className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight animate-fade-up text-glow"
+                style={{ animationDelay: "0.15s" }}
+              >
+                Precifique seus projetos com <span className="gradient-text">inteligência</span> e feche mais contratos
               </h1>
 
-              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl animate-fade-up" style={{ animationDelay: "0.2s" }}>
-                Calcule valores justos em segundos, gere contratos profissionais e acompanhe todos os seus projetos em um só lugar.
+              <p
+                className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl animate-fade-up"
+                style={{ animationDelay: "0.2s" }}
+              >
+                Calcule valores justos em segundos, gere contratos profissionais e acompanhe todos os seus projetos em
+                um só lugar.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 animate-fade-up" style={{ animationDelay: "0.3s" }}>
@@ -268,7 +289,8 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                 <div className="flex items-center gap-2 text-foreground">
                   <DollarSign className="w-5 h-5 text-green-600" />
                   <span className="font-semibold">
-                    R$ <AnimatedCounter value={12} />M+
+                    R$ <AnimatedCounter value={12} />
+                    M+
                   </span>
                   <span className="text-muted-foreground">em projetos</span>
                 </div>
@@ -276,9 +298,13 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             </div>
 
             {/* Coluna Direita - 40% */}
-            <div ref={mockupRef} className="lg:col-span-2 relative animate-fade-in-scale z-10" style={{ animationDelay: "0.5s", willChange: "transform" }}>
+            <div
+              ref={mockupRef}
+              className="lg:col-span-2 relative animate-fade-in-scale z-10"
+              style={{ animationDelay: "0.5s", willChange: "transform" }}
+            >
               {/* Main Card - Mockup da Interface */}
-              <Card 
+              <Card
                 ref={mockupCardRef}
                 className="card-glow shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_48px_rgba(99,102,241,0.6)] tilt-card transition-all duration-200"
                 onMouseMove={handleMockupMouseMove}
@@ -294,10 +320,12 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Nome do Projeto</span>
-                      <Badge variant="secondary" className="text-xs glass-card">Website</Badge>
+                      <Badge variant="secondary" className="text-xs glass-card">
+                        Website
+                      </Badge>
                     </div>
                     <div className="h-3 bg-muted rounded-full w-3/4 animate-pulse"></div>
-                    
+
                     <div className="grid grid-cols-2 gap-3 pt-2">
                       <div className="space-y-1">
                         <span className="text-xs text-muted-foreground">Horas</span>
@@ -318,7 +346,10 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                         <span className="text-sm font-medium text-foreground">Valor Final</span>
                         <Calculator className="w-4 h-4 text-primary" />
                       </div>
-                      <div className="text-3xl font-bold gradient-text text-glow-purple animate-bounce-in" style={{ animationDelay: "0.6s" }}>
+                      <div
+                        className="text-3xl font-bold gradient-text text-glow-purple animate-bounce-in"
+                        style={{ animationDelay: "0.6s" }}
+                      >
                         R$ 8.280,00
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">R$ 207,00/hora efetiva</p>
@@ -328,7 +359,10 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
               </Card>
 
               {/* Floating Card - Exemplo de Cálculo */}
-              <Card className="absolute -bottom-6 -left-6 w-48 gradient-border shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.4)] animate-fade-in-scale" style={{ animationDelay: "0.7s" }}>
+              <Card
+                className="absolute -bottom-6 -left-6 w-48 gradient-border shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.4)] animate-fade-in-scale"
+                style={{ animationDelay: "0.7s" }}
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <TrendingUp className="w-4 h-4 text-green-500" />
@@ -354,9 +388,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
               Tudo que você precisa para profissionalizar seu trabalho
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Ferramentas poderosas, simples de usar
-            </p>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Ferramentas poderosas, simples de usar</p>
           </div>
         </div>
 
@@ -365,24 +397,24 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
           <div ref={featureRefs[0]} className="group relative">
             {/* Background gradient glow */}
             <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-tertiary rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-            
+
             {/* Card principal */}
             <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300 hover:scale-105">
               {/* Ícone com glow */}
               <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/50">
                 <Calculator className="text-white" size={28} />
               </div>
-              
+
               {/* Título com gradient text */}
               <h3 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-3">
                 Calculadora Inteligente
               </h3>
-              
+
               {/* Descrição */}
               <p className="text-gray-400 leading-relaxed">
                 Calcule preços justos considerando todos os custos, impostos e margem de lucro
               </p>
-              
+
               {/* Linha decorativa animada */}
               <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary to-secondary w-0 group-hover:w-full transition-all duration-500 rounded-b-2xl"></div>
             </div>
@@ -491,11 +523,11 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             {/* Depoimento 1 */}
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-500"></div>
-              
+
               <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300">
                 {/* Aspas decorativas grandes */}
                 <div className="absolute top-4 right-4 text-6xl text-primary/10 font-serif">"</div>
-                
+
                 <div className="flex items-center gap-4 mb-6 relative z-10">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-primary/30">
                     AS
@@ -505,16 +537,20 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                     <p className="text-sm text-muted-foreground">Designer Gráfica</p>
                   </div>
                 </div>
-                
+
                 {/* Stars com glow dourado */}
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
+                    <Star
+                      key={i}
+                      className="w-5 h-5 text-yellow-500 fill-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]"
+                    />
                   ))}
                 </div>
-                
+
                 <p className="text-gray-300 leading-relaxed italic relative z-10">
-                  "Antes eu cobrava no feeling e sempre tinha prejuízo. Agora consigo precificar com confiança e aumentei meu lucro em 40%!"
+                  "Antes eu cobrava no feeling e sempre tinha prejuízo. Agora consigo precificar com confiança e
+                  aumentei meu lucro em 40%!"
                 </p>
               </div>
             </div>
@@ -522,10 +558,10 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             {/* Depoimento 2 */}
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-500"></div>
-              
+
               <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300">
                 <div className="absolute top-4 right-4 text-6xl text-green-500/10 font-serif">"</div>
-                
+
                 <div className="flex items-center gap-4 mb-6 relative z-10">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-green-500/30">
                     CM
@@ -535,15 +571,19 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                     <p className="text-sm text-muted-foreground">Desenvolvedor Web</p>
                   </div>
                 </div>
-                
+
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
+                    <Star
+                      key={i}
+                      className="w-5 h-5 text-yellow-500 fill-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]"
+                    />
                   ))}
                 </div>
-                
+
                 <p className="text-gray-300 leading-relaxed italic relative z-10">
-                  "Os contratos profissionais me deram muito mais credibilidade com clientes. Fechei 3 projetos grandes no último mês!"
+                  "Os contratos profissionais me deram muito mais credibilidade com clientes. Fechei 3 projetos grandes
+                  no último mês!"
                 </p>
               </div>
             </div>
@@ -551,10 +591,10 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             {/* Depoimento 3 */}
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-500"></div>
-              
+
               <div className="relative bg-[#13131A]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300">
                 <div className="absolute top-4 right-4 text-6xl text-blue-500/10 font-serif">"</div>
-                
+
                 <div className="flex items-center gap-4 mb-6 relative z-10">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-blue-500/30">
                     MC
@@ -564,13 +604,16 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                     <p className="text-sm text-muted-foreground">Redatora</p>
                   </div>
                 </div>
-                
+
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
+                    <Star
+                      key={i}
+                      className="w-5 h-5 text-yellow-500 fill-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]"
+                    />
                   ))}
                 </div>
-                
+
                 <p className="text-gray-300 leading-relaxed italic relative z-10">
                   "Interface simples e intuitiva. Em 5 minutos já estava usando. Economizo horas toda semana!"
                 </p>
@@ -594,7 +637,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
             <RippleButton
               onClick={() => onNavigate("signup")}
               size="lg"
-              className="bg-white text-primary hover:bg-gray-100 shadow-2xl text-lg px-12 py-8 text-xl font-semibold hover:scale-105 transition-transform"
+              className="bg-white text-primary hover:bg-gray-100 text-white shadow-2xl text-lg px-12 py-8 text-xl font-semibold hover:scale-105 transition-transform"
               rippleColor="rgba(99, 102, 241, 0.3)"
             >
               Criar Conta Grátis
@@ -615,7 +658,10 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
       </section>
 
       {/* Footer */}
-      <footer className="relative bg-[#0A0A0F] text-gray-300 py-16 border-t border-transparent overflow-hidden" style={{ borderImage: 'linear-gradient(90deg, hsl(239, 84%, 67%), hsl(271, 91%, 65%), hsl(330, 81%, 60%)) 1' }}>
+      <footer
+        className="relative bg-[#0A0A0F] text-gray-300 py-16 border-t border-transparent overflow-hidden"
+        style={{ borderImage: "linear-gradient(90deg, hsl(239, 84%, 67%), hsl(271, 91%, 65%), hsl(330, 81%, 60%)) 1" }}
+      >
         {/* Partículas sutis flutuando no background */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="particle w-2 h-2 bg-primary/20 top-[20%] left-[10%]"></div>
@@ -636,9 +682,10 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                 </span>
               </div>
               <p className="text-gray-400 leading-relaxed mb-8 max-w-sm">
-                A plataforma completa para freelancers precificarem projetos, gerarem contratos e acompanharem seu crescimento profissional.
+                A plataforma completa para freelancers precificarem projetos, gerarem contratos e acompanharem seu
+                crescimento profissional.
               </p>
-              
+
               {/* Newsletter com glow border */}
               <div className="space-y-3">
                 <h4 className="text-white font-semibold text-sm">Receba novidades</h4>
@@ -727,7 +774,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                   className="w-11 h-11 bg-white/5 hover:bg-gradient-to-br hover:from-primary hover:to-secondary rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-primary/50 border border-white/10 hover:border-transparent"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                   </svg>
                 </a>
                 <a
@@ -735,7 +782,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                   className="w-11 h-11 bg-white/5 hover:bg-gradient-to-br hover:from-primary hover:to-secondary rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-primary/50 border border-white/10 hover:border-transparent"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
                   </svg>
                 </a>
                 <a
@@ -743,7 +790,7 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                   className="w-11 h-11 bg-white/5 hover:bg-gradient-to-br hover:from-primary hover:to-secondary rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-primary/50 border border-white/10 hover:border-transparent"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+                    <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" />
                   </svg>
                 </a>
               </div>
