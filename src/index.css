@@ -133,6 +133,7 @@ All colors MUST be HSL.
   .card-glow {
     position: relative;
     border: 1px solid rgba(99, 102, 241, 0.3);
+    contain: layout style paint;
   }
   
   .card-glow::before {
@@ -422,6 +423,7 @@ All colors MUST be HSL.
   .shimmer {
     position: relative;
     overflow: hidden;
+    contain: layout style paint;
   }
   
   .shimmer::before {
@@ -438,6 +440,38 @@ All colors MUST be HSL.
       transparent
     );
     animation: shimmer-slide 2s infinite;
+    will-change: left;
+  }
+  
+  /* Animações otimizadas com GPU acceleration */
+  .animate-growHeight {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+  
+  .animate-float {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+  
+  .animate-blob {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+  
+  .animate-fadeIn {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
+  
+  .animate-gradient {
+    will-change: background-position;
+    contain: layout style paint;
+  }
+  
+  .animate-shimmer {
+    will-change: background-position;
+    contain: layout style paint;
   }
 
   /* Toast Animations */

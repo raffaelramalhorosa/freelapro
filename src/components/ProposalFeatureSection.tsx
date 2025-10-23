@@ -117,7 +117,13 @@ export const ProposalFeatureSection = () => {
               <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
               
               {/* Mockup da página */}
-              <div className="relative bg-gradient-to-br from-[#1C1C26] to-[#0F0F14] rounded-2xl border border-purple-500/30 overflow-hidden shadow-2xl">
+              <div 
+                className="relative bg-gradient-to-br from-[#1C1C26] to-[#0F0F14] rounded-2xl border border-purple-500/30 overflow-hidden shadow-2xl"
+                style={{ 
+                  willChange: 'transform',
+                  contain: 'layout style paint'
+                }}
+              >
                 {/* Browser bar */}
                 <div className="bg-[#0F0F14] border-b border-purple-500/20 px-4 py-3 flex items-center space-x-2">
                   <div className="flex space-x-2">
@@ -153,10 +159,22 @@ export const ProposalFeatureSection = () => {
                   {/* Gráfico simulado */}
                   <div className="bg-[#1C1C26] rounded-xl p-4 border border-purple-500/20 animate-fadeIn animation-delay-1000">
                     <div className="flex items-end space-x-2 h-24">
-                      <div className="flex-1 bg-gradient-to-t from-purple-600 to-purple-400 rounded-t animate-growHeight" style={{ height: '60%' }} />
-                      <div className="flex-1 bg-gradient-to-t from-pink-600 to-pink-400 rounded-t animate-growHeight animation-delay-200" style={{ height: '80%' }} />
-                      <div className="flex-1 bg-gradient-to-t from-indigo-600 to-indigo-400 rounded-t animate-growHeight animation-delay-400" style={{ height: '40%' }} />
-                      <div className="flex-1 bg-gradient-to-t from-purple-600 to-purple-400 rounded-t animate-growHeight animation-delay-600" style={{ height: '90%' }} />
+                      <div 
+                        className="flex-1 bg-gradient-to-t from-purple-600 to-purple-400 rounded-t animate-growHeight" 
+                        style={{ height: '60%', willChange: 'transform', transformOrigin: 'bottom' }} 
+                      />
+                      <div 
+                        className="flex-1 bg-gradient-to-t from-pink-600 to-pink-400 rounded-t animate-growHeight animation-delay-200" 
+                        style={{ height: '80%', willChange: 'transform', transformOrigin: 'bottom' }} 
+                      />
+                      <div 
+                        className="flex-1 bg-gradient-to-t from-indigo-600 to-indigo-400 rounded-t animate-growHeight animation-delay-400" 
+                        style={{ height: '40%', willChange: 'transform', transformOrigin: 'bottom' }} 
+                      />
+                      <div 
+                        className="flex-1 bg-gradient-to-t from-purple-600 to-purple-400 rounded-t animate-growHeight animation-delay-600" 
+                        style={{ height: '90%', willChange: 'transform', transformOrigin: 'bottom' }} 
+                      />
                     </div>
                   </div>
 
@@ -179,8 +197,14 @@ export const ProposalFeatureSection = () => {
               </div>
 
               {/* Elementos flutuantes decorativos */}
-              <div className="absolute -right-8 -top-8 w-24 h-24 bg-purple-600/20 rounded-full blur-2xl animate-float" />
-              <div className="absolute -left-8 -bottom-8 w-32 h-32 bg-pink-600/20 rounded-full blur-2xl animate-float animation-delay-2000" />
+              <div 
+                className="absolute -right-8 -top-8 w-24 h-24 bg-purple-600/20 rounded-full blur-2xl animate-float"
+                style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
+              />
+              <div 
+                className="absolute -left-8 -bottom-8 w-32 h-32 bg-pink-600/20 rounded-full blur-2xl animate-float animation-delay-2000"
+                style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
+              />
             </div>
           </div>
 

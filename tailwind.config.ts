@@ -2,7 +2,32 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  safelist: [
+    // Animações críticas
+    'animate-fadeIn',
+    'animate-blob',
+    'animate-shimmer',
+    'animate-float',
+    'animate-pulse',
+    'animate-spin',
+    'animate-gradient',
+    'animate-growHeight',
+    // Delays de animação
+    'animation-delay-200',
+    'animation-delay-500',
+    'animation-delay-700',
+    'animation-delay-1000',
+    'animation-delay-2000',
+    'animation-delay-4000',
+    // Cores dinâmicas usadas em gradientes
+    {
+      pattern: /^(bg|text|border|from|to|via)-(primary|secondary|tertiary|purple|pink|indigo|green)/,
+    },
+  ],
   prefix: "",
   theme: {
     container: {
@@ -134,19 +159,19 @@ export default {
         },
         "float": {
           "0%, 100%": { 
-            transform: "translateY(0px) translateX(0px)",
+            transform: "translateY(0px) translateX(0px) translateZ(0)",
             opacity: "0.3"
           },
           "25%": { 
-            transform: "translateY(-20px) translateX(10px)",
+            transform: "translateY(-20px) translateX(10px) translateZ(0)",
             opacity: "0.6"
           },
           "50%": { 
-            transform: "translateY(-40px) translateX(-10px)",
+            transform: "translateY(-40px) translateX(-10px) translateZ(0)",
             opacity: "0.4"
           },
           "75%": { 
-            transform: "translateY(-20px) translateX(-15px)",
+            transform: "translateY(-20px) translateX(-15px) translateZ(0)",
             opacity: "0.5"
           }
         },
@@ -224,10 +249,10 @@ export default {
           }
         },
         "blob": {
-          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
-          "25%": { transform: "translate(20px, -50px) scale(1.1)" },
-          "50%": { transform: "translate(-20px, 20px) scale(0.9)" },
-          "75%": { transform: "translate(50px, 50px) scale(1.05)" }
+          "0%, 100%": { transform: "translate(0, 0) scale(1) translateZ(0)" },
+          "25%": { transform: "translate(20px, -50px) scale(1.1) translateZ(0)" },
+          "50%": { transform: "translate(-20px, 20px) scale(0.9) translateZ(0)" },
+          "75%": { transform: "translate(50px, 50px) scale(1.05) translateZ(0)" }
         },
         "gradient": {
           "0%, 100%": { backgroundPosition: "0% 50%" },
@@ -237,11 +262,18 @@ export default {
           "to": { strokeDashoffset: "0" }
         },
         "growHeight": {
-          "from": { height: "0%" }
+          "from": { 
+            "transform": "scaleY(0) translateZ(0)",
+            "transform-origin": "bottom"
+          },
+          "to": { 
+            "transform": "scaleY(1) translateZ(0)",
+            "transform-origin": "bottom"
+          }
         },
         "fadeIn": {
-          "from": { opacity: "0", transform: "translateY(20px)" },
-          "to": { opacity: "1", transform: "translateY(0)" }
+          "from": { opacity: "0", transform: "translateY(20px) translateZ(0)" },
+          "to": { opacity: "1", transform: "translateY(0) translateZ(0)" }
         }
       },
       animation: {
