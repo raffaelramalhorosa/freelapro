@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useDebounce } from '@/hooks/useDebounce';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 // Phase Item Component - Memoized
 export const PhaseItem = memo(({ 
@@ -369,29 +370,6 @@ export const LazyPhaseChart = memo(({
   phaseChartData: any[]; 
   CHART_COLORS: string[];
 }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    // Delay chart render to avoid blocking UI
-    const timeout = setTimeout(() => {
-      setIsLoaded(true);
-    }, 100);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  if (!isLoaded) {
-    return (
-      <Card className="bg-white/5 border-purple-500/20">
-        <CardContent className="py-16 text-center">
-          <p className="text-gray-400">Carregando gráfico...</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Lazy import recharts
-  const { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } = require('recharts');
-
   return (
     <Card className="bg-white/5 border-purple-500/20">
       <CardHeader>
