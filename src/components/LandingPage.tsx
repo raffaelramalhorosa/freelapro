@@ -1,4 +1,5 @@
-import { Calculator, TrendingUp, Shield, Zap, ArrowRight, Users, Star, DollarSign, Play, Sparkles, ChevronDown, LayoutDashboard, CreditCard, LogOut } from "lucide-react";
+import { Calculator, TrendingUp, Shield, Zap, ArrowRight, Users, Star, DollarSign, Play, Sparkles, ChevronDown, LayoutDashboard, CreditCard, LogOut, Crown } from "lucide-react";
+import { PricingModal } from "@/components/PricingModal";
 import { ProposalFeatureSection } from "@/components/ProposalFeatureSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,7 +28,9 @@ interface LandingPageProps {
 export const LandingPage = ({ onNavigate }: LandingPageProps) => {
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [pricingModalOpen, setPricingModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const bgRef = useRef<HTMLDivElement>(null);
@@ -86,12 +89,22 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
     card.style.transform = "perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)";
   };
 
-  // Check authentication status
+  // Check authentication status and load user data
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         setUser(session?.user || null);
+        
+        if (session?.user) {
+          const { data } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          
+          setUserData(data);
+        }
       } catch (error) {
         console.error("Error checking auth:", error);
       } finally {
@@ -101,8 +114,20 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
       setUser(session?.user || null);
+      
+      if (session?.user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        
+        setUserData(data);
+      } else {
+        setUserData(null);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -250,8 +275,16 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
                       <div className="text-white font-semibold truncate">
                         {user.email}
                       </div>
-                      <div className="text-sm text-gray-400 mt-1">
-                        Plano Free
+                      <div className="text-sm text-gray-400 mt-1 flex items-center gap-2">
+                        <span>Plano</span>
+                        <span className={`
+                          px-2 py-0.5 rounded text-xs font-semibold uppercase
+                          ${!userData?.plan || userData.plan === 'free' ? 'bg-gray-500/20 text-gray-400' : ''}
+                          ${userData?.plan === 'pro' ? 'bg-amber-500/20 text-amber-400' : ''}
+                          ${userData?.plan === 'business' ? 'bg-purple-500/20 text-purple-400' : ''}
+                        `}>
+                          {userData?.plan || 'free'}
+                        </span>
                       </div>
                     </div>
 
@@ -269,13 +302,23 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
                       <button
                         onClick={() => {
-                          onNavigate('pricing');
+                          setPricingModalOpen(true);
                           setShowUserMenu(false);
                         }}
-                        className="w-full px-4 py-2 text-left text-gray-300 hover:bg-primary/10 rounded-lg transition-colors flex items-center space-x-3"
+                        className="w-full px-4 py-2 text-left text-gray-300 hover:bg-primary/10 rounded-lg transition-colors flex items-center justify-between"
                       >
-                        <CreditCard size={16} />
-                        <span>Meu Plano</span>
+                        <div className="flex items-center space-x-3">
+                          <CreditCard size={16} />
+                          <span>Meu Plano</span>
+                        </div>
+                        <span className={`
+                          px-2 py-0.5 rounded text-xs font-semibold uppercase
+                          ${!userData?.plan || userData.plan === 'free' ? 'bg-gray-500/20 text-gray-400' : ''}
+                          ${userData?.plan === 'pro' ? 'bg-amber-500/20 text-amber-400' : ''}
+                          ${userData?.plan === 'business' ? 'bg-purple-500/20 text-purple-400' : ''}
+                        `}>
+                          {userData?.plan || 'free'}
+                        </span>
                       </button>
 
                       <div className="my-2 border-t border-primary/10" />
@@ -794,6 +837,20 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
           </div>
         </div>
       </section>
+
+      {/* Modal de Pricing */}
+      <PricingModal
+        isOpen={pricingModalOpen}
+        onClose={() => setPricingModalOpen(false)}
+        currentPlan={userData?.plan || 'free'}
+        onUpgradeClick={(planId) => {
+          toast({
+            title: "Redirecionando para pagamento...",
+            description: `Processando upgrade para o plano ${planId}`,
+          });
+          onNavigate('pricing');
+        }}
+      />
 
       {/* Footer */}
       <footer
