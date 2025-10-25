@@ -1,4 +1,4 @@
-import { Calculator, TrendingUp, Shield, Zap, ArrowRight, Users, Star, DollarSign, Play, Sparkles } from "lucide-react";
+import { Calculator, TrendingUp, Shield, Zap, ArrowRight, Users, Star, DollarSign, Play, Sparkles, ChevronDown, LayoutDashboard, CreditCard, LogOut } from "lucide-react";
 import { ProposalFeatureSection } from "@/components/ProposalFeatureSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +17,8 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useMagneticEffect } from "@/hooks/useMagneticEffect";
 import { useMouseGradient } from "@/hooks/useMouseGradient";
 import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 interface LandingPageProps {
   onNavigate: (page: string) => void;
@@ -24,7 +26,12 @@ interface LandingPageProps {
 
 export const LandingPage = ({ onNavigate }: LandingPageProps) => {
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   const bgRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const mockupRef = useRef<HTMLDivElement>(null);
   const mockupCardRef = useRef<HTMLDivElement>(null);
   const heroSectionRef = useRef<HTMLElement>(null);
@@ -79,6 +86,28 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
     card.style.transform = "perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)";
   };
 
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user || null);
+      } catch (error) {
+        console.error("Error checking auth:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   // Header scroll effect
   useEffect(() => {
     const handleScroll = () => {
@@ -88,6 +117,37 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    if (showUserMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserMenu]);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setShowUserMenu(false);
+      toast({
+        title: "Logout realizado",
+        description: "Até logo!",
+      });
+      onNavigate("landing");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   const features = [
     {
@@ -138,30 +198,108 @@ export const LandingPage = ({ onNavigate }: LandingPageProps) => {
 
             {/* Menu items */}
             <div className="hidden md:flex items-center space-x-8">
-              {[
-                { label: "Funcionalidades", action: null },
-                { label: "Preços", action: () => onNavigate("pricing") },
-                { label: "Login", action: () => onNavigate("login") },
-              ].map((item) => (
+              <button
+                onClick={() => window.location.hash = "funcionalidades"}
+                className="text-gray-300 hover:text-white transition-colors relative group"
+              >
+                Funcionalidades
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-secondary group-hover:w-full transition-all duration-300"></span>
+              </button>
+              <button
+                onClick={() => onNavigate("pricing")}
+                className="text-gray-300 hover:text-white transition-colors relative group"
+              >
+                Preços
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-secondary group-hover:w-full transition-all duration-300"></span>
+              </button>
+              {!user && (
                 <button
-                  key={item.label}
-                  onClick={item.action || undefined}
+                  onClick={() => onNavigate("login")}
                   className="text-gray-300 hover:text-white transition-colors relative group"
                 >
-                  {item.label}
+                  Login
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-secondary group-hover:w-full transition-all duration-300"></span>
                 </button>
-              ))}
+              )}
             </div>
 
-            {/* CTA Button */}
-            <button
-              onClick={() => onNavigate("signup")}
-              className="relative px-6 py-2.5 bg-gradient-to-r from-primary to-secondary rounded-lg font-semibold text-white overflow-hidden group"
-            >
-              <span className="relative z-10">Começar Grátis</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-secondary to-tertiary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </button>
+            {/* User Menu or CTA Button */}
+            {loading ? (
+              <div className="w-32 h-10 bg-primary/20 rounded-lg animate-pulse" />
+            ) : user ? (
+              <div ref={menuRef} className="relative">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center space-x-3 px-4 py-2 bg-white/5 hover:bg-white/10 border border-primary/30 rounded-lg transition-colors group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-sm font-semibold">
+                    {user.email?.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="text-white font-medium hidden sm:block max-w-[150px] truncate">
+                    {user.email}
+                  </span>
+                  <ChevronDown 
+                    size={16} 
+                    className={`text-gray-400 transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-64 bg-[#1C1C26] border border-primary/20 rounded-xl shadow-2xl backdrop-blur-xl overflow-hidden z-50">
+                    <div className="p-4 border-b border-primary/10">
+                      <div className="text-white font-semibold truncate">
+                        {user.email}
+                      </div>
+                      <div className="text-sm text-gray-400 mt-1">
+                        Plano Free
+                      </div>
+                    </div>
+
+                    <div className="p-2">
+                      <button
+                        onClick={() => {
+                          onNavigate('app');
+                          setShowUserMenu(false);
+                        }}
+                        className="w-full px-4 py-2 text-left text-gray-300 hover:bg-primary/10 rounded-lg transition-colors flex items-center space-x-3"
+                      >
+                        <LayoutDashboard size={16} />
+                        <span>Ir para o App</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          onNavigate('pricing');
+                          setShowUserMenu(false);
+                        }}
+                        className="w-full px-4 py-2 text-left text-gray-300 hover:bg-primary/10 rounded-lg transition-colors flex items-center space-x-3"
+                      >
+                        <CreditCard size={16} />
+                        <span>Meu Plano</span>
+                      </button>
+
+                      <div className="my-2 border-t border-primary/10" />
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-2 text-left text-red-400 hover:bg-red-500/10 rounded-lg transition-colors flex items-center space-x-3"
+                      >
+                        <LogOut size={16} />
+                        <span>Sair</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => onNavigate("signup")}
+                className="relative px-6 py-2.5 bg-gradient-to-r from-primary to-secondary rounded-lg font-semibold text-white overflow-hidden group"
+              >
+                <span className="relative z-10">Começar Grátis</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-secondary to-tertiary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </button>
+            )}
           </div>
         </div>
       </nav>
