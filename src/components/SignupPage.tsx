@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { AnimatedDotGrid } from "@/components/AnimatedDotGrid";
@@ -23,7 +22,6 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState("free");
   const [isLoading, setIsLoading] = useState(false);
 
   const getPasswordStrength = (pass: string) => {
@@ -84,7 +82,7 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
             name,
-            plan: selectedPlan,
+            plan: 'free',
           },
         },
       });
@@ -275,37 +273,25 @@ export const SignupPage = ({ onNavigate }: SignupPageProps) => {
                 </div>
               </div>
 
-              <div className="space-y-3 p-4 bg-[rgba(139,92,246,0.05)] rounded-xl border border-[rgba(139,92,246,0.1)]">
-                <Label className="text-base font-medium text-[#D1D5DB]">Escolha seu plano</Label>
-                <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan} className="space-y-2">
-                  <div className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all ${
-                    selectedPlan === "free" ? "border-2 border-[#8B5CF6] bg-[rgba(139,92,246,0.1)] shadow-[0_0_20px_rgba(139,92,246,0.2)]" : "border-[rgba(139,92,246,0.2)] hover:bg-[rgba(139,92,246,0.05)]"
-                  }`}>
-                    <RadioGroupItem value="free" id="free" className="border-[rgba(139,92,246,0.4)]" />
-                    <Label htmlFor="free" className="flex-1 cursor-pointer">
-                      <div className="font-semibold text-[#F3F4F6] text-base">Free</div>
-                      <div className="text-sm text-[#10B981]">Grátis</div>
-                    </Label>
+              <div className="p-4 bg-[rgba(16,185,129,0.1)] rounded-xl border border-[rgba(16,185,129,0.2)]">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[rgba(16,185,129,0.2)] flex items-center justify-center mt-0.5">
+                    <svg className="w-3 h-3 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
                   </div>
-                  <div className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all ${
-                    selectedPlan === "pro" ? "border-2 border-[#8B5CF6] bg-[rgba(139,92,246,0.1)] shadow-[0_0_20px_rgba(139,92,246,0.2)]" : "border-[rgba(139,92,246,0.2)] hover:bg-[rgba(139,92,246,0.05)]"
-                  }`}>
-                    <RadioGroupItem value="pro" id="pro" className="border-[rgba(139,92,246,0.4)]" />
-                    <Label htmlFor="pro" className="flex-1 cursor-pointer">
-                      <div className="font-semibold text-[#F3F4F6] text-base">Pro</div>
-                      <div className="text-sm text-[#9CA3AF]">R$ 29/mês - 7 dias grátis</div>
-                    </Label>
+                  <div>
+                    <div className="text-[#10B981] font-semibold text-sm mb-1">
+                      Plano Gratuito Incluído
+                    </div>
+                    <ul className="text-xs text-[#6EE7B7] space-y-1">
+                      <li>✓ 5 projetos por mês</li>
+                      <li>✓ Calculadora completa</li>
+                      <li>✓ Contratos básicos</li>
+                      <li>✓ Páginas de proposta</li>
+                    </ul>
                   </div>
-                  <div className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all ${
-                    selectedPlan === "business" ? "border-2 border-[#8B5CF6] bg-[rgba(139,92,246,0.1)] shadow-[0_0_20px_rgba(139,92,246,0.2)]" : "border-[rgba(139,92,246,0.2)] hover:bg-[rgba(139,92,246,0.05)]"
-                  }`}>
-                    <RadioGroupItem value="business" id="business" className="border-[rgba(139,92,246,0.4)]" />
-                    <Label htmlFor="business" className="flex-1 cursor-pointer">
-                      <div className="font-semibold text-[#F3F4F6] text-base">Business</div>
-                      <div className="text-sm text-[#9CA3AF]">R$ 79/mês</div>
-                    </Label>
-                  </div>
-                </RadioGroup>
+                </div>
               </div>
 
               <div className="flex items-start space-x-2">
