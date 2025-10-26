@@ -24,7 +24,7 @@ interface CalculatedResults {
 }
 
 interface Project {
-  id: number;
+  id: string;
   clientName: string;
   projectName: string;
   serviceType: string;
@@ -42,9 +42,9 @@ interface Project {
 
 interface ProjectCardProps {
   project: Project;
-  onStatusChange: (projectId: number, status: string) => void;
+  onStatusChange: (projectId: string, status: string) => void;
   onEdit: (project: Project) => void;
-  onDelete: (projectId: number) => void;
+  onDelete: (projectId: string) => void;
   onGenerateContract: (project: Project) => void;
   onCreateProposal: (project: Project) => void;
 }

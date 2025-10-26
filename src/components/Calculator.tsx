@@ -15,6 +15,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { formatCurrency } from "@/lib/formatters";
 import { PlanLimitModal } from "@/components/PlanLimitModal";
+import { supabase } from "@/integrations/supabase/client";
 
 const serviceTypes = [
   "Design Gráfico",
@@ -43,7 +44,7 @@ interface CalculatedResults {
 }
 
 interface Project {
-  id: number;
+  id: string;
   clientName: string;
   projectName: string;
   serviceType: string;
@@ -78,7 +79,7 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
   const [profitMargin, setProfitMargin] = useState([20]);
   const [calculatedResults, setCalculatedResults] = useState<CalculatedResults | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [currentEditingId, setCurrentEditingId] = useState<number | null>(null);
+  const [currentEditingId, setCurrentEditingId] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showLimitModal, setShowLimitModal] = useState(false);
 
@@ -119,25 +120,51 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
     }
   }, [editingProject]);
 
-  // Carregar projetos do localStorage ao montar o componente
+  // Carregar projetos do Supabase ao montar o componente
   useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
     try {
-      const loadedProjects: Project[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith("project:")) {
-          const projectData = localStorage.getItem(key);
-          if (projectData) {
-            loadedProjects.push(JSON.parse(projectData));
-          }
-        }
-      }
-      setProjects(loadedProjects);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const mappedProjects = data?.map(p => ({
+        id: p.id,
+        clientName: p.client_name,
+        projectName: p.project_name,
+        serviceType: p.service_type || '',
+        hoursEstimated: Number(p.hours_estimated),
+        desiredHourlyRate: Number(p.desired_hourly_rate),
+        fixedCosts: Number(p.fixed_costs),
+        variableCosts: Number(p.variable_costs),
+        taxType: p.tax_type,
+        profitMargin: Number(p.profit_margin),
+        results: p.results as unknown as CalculatedResults,
+        status: p.status as "pending" | "approved" | "rejected" | "completed",
+        createdAt: p.created_at,
+        updatedAt: p.updated_at,
+      })) || [];
+
+      setProjects(mappedProjects);
     } catch (error) {
       console.error("Erro ao carregar projetos:", error);
-      alert("Erro ao carregar projetos salvos.");
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar os projetos.",
+        variant: "destructive",
+      });
     }
-  }, []);
+  };
 
   const handleCalculate = () => {
     if (!validateFields()) {
@@ -180,7 +207,7 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
     });
   };
 
-  const handleSaveProject = () => {
+  const handleSaveProject = async () => {
     if (!clientName.trim() || !projectName.trim()) {
       toast({
         title: "Erro",
@@ -200,75 +227,81 @@ export const Calculator = ({ editingProject, onEditComplete, userPlan = "free", 
     }
 
     try {
-      const now = new Date().toISOString();
-      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Erro",
+          description: "Você precisa estar logado para salvar projetos.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       if (currentEditingId) {
         // Modo de edição - atualizar projeto existente
-        const existingProject = localStorage.getItem(`project:${currentEditingId}`);
-        if (existingProject) {
-          const parsedProject = JSON.parse(existingProject);
-          
-          const updatedProject: Project = {
-            id: currentEditingId,
-            clientName,
-            projectName,
-            serviceType,
-            hoursEstimated: parseFloat(estimatedHours) || 0,
-            desiredHourlyRate: parseFloat(hourlyRate) || 0,
-            fixedCosts: parseFloat(fixedCosts) || 0,
-            variableCosts: parseFloat(variableCosts) || 0,
-            taxType: taxRegime,
-            profitMargin: profitMargin[0],
-            results: calculatedResults,
-            status: parsedProject.status,
-            createdAt: parsedProject.createdAt,
-            updatedAt: now,
-          };
+        const { error } = await supabase
+          .from('projects')
+          .update({
+            client_name: clientName,
+            project_name: projectName,
+            service_type: serviceType,
+            hours_estimated: parseFloat(estimatedHours) || 0,
+            desired_hourly_rate: parseFloat(hourlyRate) || 0,
+            fixed_costs: parseFloat(fixedCosts) || 0,
+            variable_costs: parseFloat(variableCosts) || 0,
+            tax_type: taxRegime,
+            profit_margin: profitMargin[0],
+            results: calculatedResults as unknown as any,
+          })
+          .eq('id', currentEditingId)
+          .eq('user_id', user.id);
 
-          localStorage.setItem(`project:${currentEditingId}`, JSON.stringify(updatedProject));
-          
-          toast({
-            title: "Sucesso!",
-            description: "Projeto atualizado com sucesso.",
-          });
+        if (error) throw error;
 
-          // Limpar formulário e sair do modo de edição
-          handleCancel();
-          
-          // Voltar para a tab de projetos
-          if (onEditComplete) {
-            onEditComplete();
-          }
+        toast({
+          title: "Sucesso!",
+          description: "Projeto atualizado com sucesso.",
+        });
+
+        // Limpar formulário e sair do modo de edição
+        handleCancel();
+        
+        // Recarregar projetos
+        await loadProjects();
+        
+        // Voltar para a tab de projetos
+        if (onEditComplete) {
+          onEditComplete();
         }
       } else {
         // Modo de criação - novo projeto
         // Check plan limits
-        if (userPlan.toLowerCase() === "free" && projects.length >= 2) {
+        if (userPlan.toLowerCase() === "free" && projects.length >= 5) {
           setShowLimitModal(true);
           return;
         }
 
-        const timestamp = Date.now();
-        
-        const project: Project = {
-          id: timestamp,
-          clientName,
-          projectName,
-          serviceType,
-          hoursEstimated: parseFloat(estimatedHours) || 0,
-          desiredHourlyRate: parseFloat(hourlyRate) || 0,
-          fixedCosts: parseFloat(fixedCosts) || 0,
-          variableCosts: parseFloat(variableCosts) || 0,
-          taxType: taxRegime,
-          profitMargin: profitMargin[0],
-          results: calculatedResults,
-          status: "pending",
-          createdAt: now,
-          updatedAt: now,
-        };
+        const { error } = await supabase
+          .from('projects')
+          .insert({
+            user_id: user.id,
+            client_name: clientName,
+            project_name: projectName,
+            service_type: serviceType,
+            hours_estimated: parseFloat(estimatedHours) || 0,
+            desired_hourly_rate: parseFloat(hourlyRate) || 0,
+            fixed_costs: parseFloat(fixedCosts) || 0,
+            variable_costs: parseFloat(variableCosts) || 0,
+            tax_type: taxRegime,
+            profit_margin: profitMargin[0],
+            results: calculatedResults as unknown as any,
+            status: "pending",
+          });
 
-        localStorage.setItem(`project:${timestamp}`, JSON.stringify(project));
-        setProjects([...projects, project]);
+        if (error) throw error;
+
+        // Recarregar projetos
+        await loadProjects();
         
         toast({
           title: "Sucesso!",

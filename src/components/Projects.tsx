@@ -22,7 +22,7 @@ interface CalculatedResults {
 }
 
 interface Project {
-  id: number;
+  id: string;
   clientName: string;
   projectName: string;
   serviceType: string;
@@ -53,7 +53,7 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
   const [projectProposals, setProjectProposals] = useState<Record<string, any>>({});
   const [existingProposalId, setExistingProposalId] = useState<string | null>(null);
   const [proposalData, setProposalData] = useState({
-    projectId: null as number | null,
+    projectId: null as string | null,
     projectName: '',
     clientName: '',
     projectSummary: '',
@@ -111,21 +111,37 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
     }
   };
 
-  const loadProjects = () => {
+  const loadProjects = async () => {
     try {
-      const loadedProjects: Project[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith("project:")) {
-          const projectData = localStorage.getItem(key);
-          if (projectData) {
-            loadedProjects.push(JSON.parse(projectData));
-          }
-        }
-      }
-      // Ordenar por data de criação (mais recente primeiro)
-      loadedProjects.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      setProjects(loadedProjects);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const mappedProjects = data?.map(p => ({
+        id: p.id,
+        clientName: p.client_name,
+        projectName: p.project_name,
+        serviceType: p.service_type || '',
+        hoursEstimated: Number(p.hours_estimated),
+        desiredHourlyRate: Number(p.desired_hourly_rate),
+        fixedCosts: Number(p.fixed_costs),
+        variableCosts: Number(p.variable_costs),
+        taxType: p.tax_type,
+        profitMargin: Number(p.profit_margin),
+        results: p.results as unknown as CalculatedResults,
+        status: p.status as "pending" | "approved" | "rejected" | "completed",
+        createdAt: p.created_at,
+        updatedAt: p.updated_at,
+      })) || [];
+
+      setProjects(mappedProjects);
     } catch (error) {
       console.error("Erro ao carregar projetos:", error);
       toast({
@@ -136,21 +152,24 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
     }
   };
 
-  const handleStatusChange = useCallback((projectId: number, newStatus: string) => {
+  const handleStatusChange = useCallback(async (projectId: string, newStatus: string) => {
     try {
-      const key = `project:${projectId}`;
-      const projectData = localStorage.getItem(key);
-      if (projectData) {
-        const project = JSON.parse(projectData);
-        project.status = newStatus;
-        project.updatedAt = new Date().toISOString();
-        localStorage.setItem(key, JSON.stringify(project));
-        loadProjects();
-        toast({
-          title: "Sucesso!",
-          description: "Status do projeto atualizado.",
-        });
-      }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('projects')
+        .update({ status: newStatus })
+        .eq('id', projectId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      await loadProjects();
+      toast({
+        title: "Sucesso!",
+        description: "Status do projeto atualizado.",
+      });
     } catch (error) {
       console.error("Erro ao atualizar status:", error);
       toast({
@@ -161,11 +180,21 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
     }
   }, []);
 
-  const handleDelete = useCallback((projectId: number) => {
+  const handleDelete = useCallback(async (projectId: string) => {
     if (confirm("Tem certeza que deseja excluir este projeto?")) {
       try {
-        localStorage.removeItem(`project:${projectId}`);
-        loadProjects();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { error } = await supabase
+          .from('projects')
+          .delete()
+          .eq('id', projectId)
+          .eq('user_id', user.id);
+
+        if (error) throw error;
+
+        await loadProjects();
         toast({
           title: "Sucesso!",
           description: "Projeto excluído.",

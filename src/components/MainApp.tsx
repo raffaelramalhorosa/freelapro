@@ -31,7 +31,7 @@ interface CalculatedResults {
 }
 
 interface Project {
-  id: number;
+  id: string;
   clientName: string;
   projectName: string;
   serviceType: string;
