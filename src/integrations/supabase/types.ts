@@ -38,6 +38,60 @@ export type Database = {
         }
         Relationships: []
       }
+      projects: {
+        Row: {
+          client_name: string
+          created_at: string
+          desired_hourly_rate: number
+          fixed_costs: number
+          hours_estimated: number
+          id: string
+          profit_margin: number
+          project_name: string
+          results: Json
+          service_type: string | null
+          status: string
+          tax_type: string
+          updated_at: string
+          user_id: string
+          variable_costs: number
+        }
+        Insert: {
+          client_name: string
+          created_at?: string
+          desired_hourly_rate?: number
+          fixed_costs?: number
+          hours_estimated?: number
+          id?: string
+          profit_margin?: number
+          project_name: string
+          results?: Json
+          service_type?: string | null
+          status?: string
+          tax_type: string
+          updated_at?: string
+          user_id: string
+          variable_costs?: number
+        }
+        Update: {
+          client_name?: string
+          created_at?: string
+          desired_hourly_rate?: number
+          fixed_costs?: number
+          hours_estimated?: number
+          id?: string
+          profit_margin?: number
+          project_name?: string
+          results?: Json
+          service_type?: string | null
+          status?: string
+          tax_type?: string
+          updated_at?: string
+          user_id?: string
+          variable_costs?: number
+        }
+        Relationships: []
+      }
       proposals: {
         Row: {
           benefits: Json | null
