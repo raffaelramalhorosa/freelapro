@@ -9,6 +9,8 @@ import { toast } from "@/hooks/use-toast";
 import { ProjectCard } from "@/components/ProjectCard";
 import { PhaseItem, CostItem, BenefitItem, LazyPhaseChart } from "@/components/ProposalModalItems";
 import { supabase } from "@/integrations/supabase/client";
+import { useCache } from "@/hooks/useCache";
+import { useCacheInvalidation } from "@/hooks/useCacheInvalidation";
 
 interface CalculatedResults {
   valorBase: number;
@@ -45,13 +47,84 @@ interface ProjectsProps {
 }
 
 export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "free" }: ProjectsProps) => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [generatedSlug, setGeneratedSlug] = useState<string>('');
-  const [projectProposals, setProjectProposals] = useState<Record<string, any>>({});
   const [existingProposalId, setExistingProposalId] = useState<string | null>(null);
+  const { invalidateProjectsCache, invalidateProposalsCache } = useCacheInvalidation();
+
+  // Obter userId
+  useEffect(() => {
+    const getUserId = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id || null);
+    };
+    getUserId();
+  }, []);
+
+  // Usar cache para carregar projetos
+  const { data: projects, refresh: refreshProjects } = useCache<Project[]>(
+    `projects-${userId}`,
+    async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const mappedProjects = data?.map(p => ({
+        id: p.id,
+        clientName: p.client_name,
+        projectName: p.project_name,
+        serviceType: p.service_type || '',
+        hoursEstimated: Number(p.hours_estimated),
+        desiredHourlyRate: Number(p.desired_hourly_rate),
+        fixedCosts: Number(p.fixed_costs),
+        variableCosts: Number(p.variable_costs),
+        taxType: p.tax_type,
+        profitMargin: Number(p.profit_margin),
+        results: p.results as unknown as CalculatedResults,
+        status: p.status as "pending" | "approved" | "rejected" | "completed",
+        createdAt: p.created_at,
+        updatedAt: p.updated_at,
+      })) || [];
+
+      return mappedProjects;
+    },
+    [userId]
+  );
+
+  // Usar cache para carregar propostas
+  const { data: projectProposals, refresh: refreshProposals } = useCache<Record<string, any>>(
+    `proposals-${userId}`,
+    async () => {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) return {};
+
+      const { data, error } = await supabase
+        .from('proposals')
+        .select('id, project_name, client_name, slug')
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      // Map proposals by project name + client name combination
+      const proposalsMap: Record<string, any> = {};
+      data?.forEach((proposal: any) => {
+        const key = `${proposal.project_name}||${proposal.client_name}`;
+        proposalsMap[key] = proposal;
+      });
+      return proposalsMap;
+    },
+    [userId]
+  );
   const [proposalData, setProposalData] = useState({
     projectId: null as string | null,
     projectName: '',
@@ -81,77 +154,6 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
     }>,
   });
 
-  // Carregar projetos do localStorage e propostas do Supabase
-  useEffect(() => {
-    loadProjects();
-    loadProjectProposals();
-  }, []);
-
-  const loadProjectProposals = async () => {
-    try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user) return;
-
-      const { data, error } = await supabase
-        .from('proposals')
-        .select('id, project_name, client_name, slug')
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-
-      // Map proposals by project name + client name combination
-      const proposalsMap: Record<string, any> = {};
-      data?.forEach((proposal: any) => {
-        const key = `${proposal.project_name}||${proposal.client_name}`;
-        proposalsMap[key] = proposal;
-      });
-      setProjectProposals(proposalsMap);
-    } catch (error) {
-      console.error('Erro ao carregar propostas:', error);
-    }
-  };
-
-  const loadProjects = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      const mappedProjects = data?.map(p => ({
-        id: p.id,
-        clientName: p.client_name,
-        projectName: p.project_name,
-        serviceType: p.service_type || '',
-        hoursEstimated: Number(p.hours_estimated),
-        desiredHourlyRate: Number(p.desired_hourly_rate),
-        fixedCosts: Number(p.fixed_costs),
-        variableCosts: Number(p.variable_costs),
-        taxType: p.tax_type,
-        profitMargin: Number(p.profit_margin),
-        results: p.results as unknown as CalculatedResults,
-        status: p.status as "pending" | "approved" | "rejected" | "completed",
-        createdAt: p.created_at,
-        updatedAt: p.updated_at,
-      })) || [];
-
-      setProjects(mappedProjects);
-    } catch (error) {
-      console.error("Erro ao carregar projetos:", error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível carregar os projetos.",
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleStatusChange = useCallback(async (projectId: string, newStatus: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -165,7 +167,10 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
 
       if (error) throw error;
 
-      await loadProjects();
+      // Invalidar cache e recarregar
+      await invalidateProjectsCache();
+      await refreshProjects();
+      
       toast({
         title: "Sucesso!",
         description: "Status do projeto atualizado.",
@@ -178,7 +183,7 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
         variant: "destructive",
       });
     }
-  }, []);
+  }, [invalidateProjectsCache, refreshProjects]);
 
   const handleDelete = useCallback(async (projectId: string) => {
     if (confirm("Tem certeza que deseja excluir este projeto?")) {
@@ -194,7 +199,10 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
 
         if (error) throw error;
 
-        await loadProjects();
+        // Invalidar cache e recarregar
+        await invalidateProjectsCache();
+        await refreshProjects();
+        
         toast({
           title: "Sucesso!",
           description: "Projeto excluído.",
@@ -208,7 +216,7 @@ export const Projects = ({ onNavigateToCalculator, onEditProject, userPlan = "fr
         });
       }
     }
-  }, []);
+  }, [invalidateProjectsCache, refreshProjects]);
 
   const generateContract = useCallback((project: Project) => {
     const contractDate = new Date().toLocaleDateString("pt-BR");
@@ -436,7 +444,7 @@ TESTEMUNHAS (opcional):
 
     // Check if project already has a proposal using project name + client name
     const proposalKey = `${project.projectName}||${project.clientName}`;
-    const existingProposal = projectProposals[proposalKey];
+    const existingProposal = projectProposals?.[proposalKey];
     
     if (existingProposal) {
       // Load existing proposal data
@@ -658,7 +666,8 @@ TESTEMUNHAS (opcional):
       }
 
       // Reload proposals to update UI
-      loadProjectProposals();
+      await invalidateProposalsCache();
+      await refreshProposals();
 
     } catch (error) {
       console.error('Erro ao salvar proposta:', error);
@@ -668,7 +677,7 @@ TESTEMUNHAS (opcional):
         variant: "destructive",
       });
     }
-  }, [proposalData, existingProposalId]);
+  }, [proposalData, existingProposalId, invalidateProposalsCache, refreshProposals]);
 
   // Calculate phase percentages for chart - Memoized
   const phaseChartData = useMemo(() => {
