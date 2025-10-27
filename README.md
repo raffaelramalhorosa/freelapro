@@ -386,4 +386,4 @@ Comunidade open source 💜
 Feito com 💜 por freelancers, para freelancers
 ⭐ Se este projeto te ajudou, considere dar uma estrela!
 Mostrar Imagem
-</div>Tentar novamenteClaude ainda não tem a capacidade de executar o código que gera.
+</div>
