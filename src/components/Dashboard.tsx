@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { LayoutDashboard, TrendingUp, FileText, Calculator, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CalculatedResults {
   valorBase: number;
@@ -14,7 +15,7 @@ interface CalculatedResults {
 }
 
 interface Project {
-  id: number;
+  id: string;
   clientName: string;
   projectName: string;
   serviceType: string;
@@ -33,24 +34,49 @@ interface Project {
 export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
   const [projects, setProjects] = useState<Project[]>([]);
 
-  // Carregar projetos do localStorage
+  // Carregar projetos do Supabase
   useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
     try {
-      const loadedProjects: Project[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith("project:")) {
-          const projectData = localStorage.getItem(key);
-          if (projectData) {
-            loadedProjects.push(JSON.parse(projectData));
-          }
-        }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Erro ao carregar projetos:", error);
+        return;
       }
+
+      const loadedProjects: Project[] = (data || []).map((project) => ({
+        id: project.id,
+        clientName: project.client_name,
+        projectName: project.project_name,
+        serviceType: project.service_type || "",
+        hoursEstimated: Number(project.hours_estimated),
+        desiredHourlyRate: Number(project.desired_hourly_rate),
+        fixedCosts: Number(project.fixed_costs),
+        variableCosts: Number(project.variable_costs),
+        taxType: project.tax_type,
+        profitMargin: Number(project.profit_margin),
+        results: project.results as unknown as CalculatedResults,
+        status: project.status as "pending" | "approved" | "rejected" | "completed",
+        createdAt: project.created_at,
+        updatedAt: project.updated_at,
+      }));
+
       setProjects(loadedProjects);
     } catch (error) {
       console.error("Erro ao carregar projetos:", error);
     }
-  }, []);
+  };
 
   // Calcular estatísticas com useMemo
   const stats = useMemo(() => {
