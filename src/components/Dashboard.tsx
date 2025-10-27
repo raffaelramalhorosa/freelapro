@@ -151,9 +151,9 @@ export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
         {statCards.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <Card key={index} className="bg-white border-2 shadow-sm hover:shadow-md transition-shadow">
+            <Card key={index} className="bg-card border-2 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
                   {stat.label}
                 </CardTitle>
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.colorClass} flex items-center justify-center`}>
@@ -168,7 +168,7 @@ export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
         })}
       </div>
 
-      <Card className="border-2 shadow-sm bg-white">
+      <Card className="border-2 shadow-sm bg-card">
         <CardHeader>
           <CardTitle>Resumo dos Projetos</CardTitle>
         </CardHeader>
@@ -176,27 +176,27 @@ export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
           {projects.length > 0 ? (
             <div className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-                  <p className="text-sm text-gray-600 mb-1">Pendentes</p>
-                  <p className="text-2xl font-bold text-yellow-600">
+                <div className="p-4 rounded-lg bg-card border border-yellow-500/30">
+                  <p className="text-sm text-muted-foreground mb-1">Pendentes</p>
+                  <p className="text-2xl font-bold text-yellow-400">
                     {stats.pendingCount}
                   </p>
                 </div>
-                <div className="p-4 rounded-lg bg-green-50 border border-green-200">
-                  <p className="text-sm text-gray-600 mb-1">Aprovados</p>
-                  <p className="text-2xl font-bold text-green-600">
+                <div className="p-4 rounded-lg bg-card border border-green-500/30">
+                  <p className="text-sm text-muted-foreground mb-1">Aprovados</p>
+                  <p className="text-2xl font-bold text-green-400">
                     {stats.approvedProjects}
                   </p>
                 </div>
-                <div className="p-4 rounded-lg bg-red-50 border border-red-200">
-                  <p className="text-sm text-gray-600 mb-1">Rejeitados</p>
-                  <p className="text-2xl font-bold text-red-600">
+                <div className="p-4 rounded-lg bg-card border border-red-500/30">
+                  <p className="text-sm text-muted-foreground mb-1">Rejeitados</p>
+                  <p className="text-2xl font-bold text-red-400">
                     {stats.rejectedCount}
                   </p>
                 </div>
-                <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
-                  <p className="text-sm text-gray-600 mb-1">Concluídos</p>
-                  <p className="text-2xl font-bold text-blue-600">
+                <div className="p-4 rounded-lg bg-card border border-blue-500/30">
+                  <p className="text-sm text-muted-foreground mb-1">Concluídos</p>
+                  <p className="text-2xl font-bold text-blue-400">
                     {stats.completedProjects}
                   </p>
                 </div>
