@@ -77,7 +77,7 @@ export const UserDropdown = ({
             <ChevronDown className="w-4 h-4 text-muted-foreground hidden md:block" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 bg-white">
+        <DropdownMenuContent align="end" className="w-56 bg-[#1C1C26] border-purple-500/20">
           <DropdownMenuLabel>
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium">{userName}</p>
