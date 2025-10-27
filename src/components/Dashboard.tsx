@@ -1,7 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { LayoutDashboard, TrendingUp, FileText, Calculator, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { useCache } from "@/hooks/useCache";
 
 interface CalculatedResults {
   valorBase: number;
@@ -32,17 +33,23 @@ interface Project {
 }
 
 export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
 
-  // Carregar projetos do Supabase
+  // Obter userId
   useEffect(() => {
-    loadProjects();
+    const getUserId = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id || null);
+    };
+    getUserId();
   }, []);
 
-  const loadProjects = async () => {
-    try {
+  // Usar cache para carregar projetos
+  const { data: projects } = useCache<Project[]>(
+    `dashboard-stats-${userId}`,
+    async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) return [];
 
       const { data, error } = await supabase
         .from("projects")
@@ -52,7 +59,7 @@ export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
 
       if (error) {
         console.error("Erro ao carregar projetos:", error);
-        return;
+        return [];
       }
 
       const loadedProjects: Project[] = (data || []).map((project) => ({
@@ -72,28 +79,27 @@ export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
         updatedAt: project.updated_at,
       }));
 
-      setProjects(loadedProjects);
-    } catch (error) {
-      console.error("Erro ao carregar projetos:", error);
-    }
-  };
+      return loadedProjects;
+    },
+    [userId]
+  );
 
   // Calcular estatísticas com useMemo
   const stats = useMemo(() => {
-    const totalProjects = projects.length;
-    const approvedProjects = projects.filter(p => p.status === "approved").length;
-    const completedProjects = projects.filter(p => p.status === "completed").length;
+    const totalProjects = projects?.length || 0;
+    const approvedProjects = projects?.filter(p => p.status === "approved").length || 0;
+    const completedProjects = projects?.filter(p => p.status === "completed").length || 0;
     
     const totalValue = projects
-      .filter(p => p.status === "approved" || p.status === "completed")
-      .reduce((sum, project) => sum + project.results.valorFinal, 0);
+      ?.filter(p => p.status === "approved" || p.status === "completed")
+      .reduce((sum, project) => sum + project.results.valorFinal, 0) || 0;
     
     const pendingValue = projects
-      .filter(p => p.status === "pending")
-      .reduce((sum, p) => sum + p.results.valorFinal, 0);
+      ?.filter(p => p.status === "pending")
+      .reduce((sum, p) => sum + p.results.valorFinal, 0) || 0;
     
-    const pendingCount = projects.filter(p => p.status === "pending").length;
-    const rejectedCount = projects.filter(p => p.status === "rejected").length;
+    const pendingCount = projects?.filter(p => p.status === "pending").length || 0;
+    const rejectedCount = projects?.filter(p => p.status === "rejected").length || 0;
     
     return {
       totalProjects,
@@ -173,7 +179,7 @@ export const Dashboard = ({ userPlan = "free" }: { userPlan?: string }) => {
           <CardTitle>Resumo dos Projetos</CardTitle>
         </CardHeader>
         <CardContent>
-          {projects.length > 0 ? (
+          {projects && projects.length > 0 ? (
             <div className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div className="p-4 rounded-lg bg-card border border-yellow-500/30">

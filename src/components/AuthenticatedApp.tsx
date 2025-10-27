@@ -4,6 +4,7 @@ import { MainApp } from "./MainApp";
 import { OnboardingModal } from "./OnboardingModal";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useToast } from "@/hooks/use-toast";
+import { clearAllCache } from "@/hooks/useCache";
 
 interface AuthenticatedAppProps {
   onLogout: () => void;
@@ -58,6 +59,10 @@ export const AuthenticatedApp = ({ onLogout, onNavigateToPricing }: Authenticate
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    
+    // Limpar todo o cache ao fazer logout
+    clearAllCache();
+    
     onLogout();
     toast({
       title: "Até logo!",
