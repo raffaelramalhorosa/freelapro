@@ -1,389 +1,439 @@
-📊 FreelaPro - Precificação & Contratos Inteligentes
 <div align="center">
-Mostrar Imagem
-A ferramenta #1 para freelancers precificarem projetos e gerarem contratos profissionais
-
-Demo ao Vivo • Reportar Bug • Solicitar Feature
+  <img src="https://img.shields.io/badge/FreelaPro-v1.0.0-purple?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" alt="Status">
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License">
 </div>
 
-📋 Índice
+<h1 align="center">
+  <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/calculator.svg" width="100" height="100" alt="FreelaPro Logo">
+  <br>
+  FreelaPro
+</h1>
 
-Sobre o Projeto
-Funcionalidades
-Demo & Screenshots
-Tecnologias
-Pré-requisitos
-Instalação
-Configuração
-Uso
-Estrutura do Projeto
-Roadmap
-Contribuindo
-Licença
-Contato
+<p align="center">
+  <strong>Precificação & Contratos Inteligentes para Freelancers</strong>
+  <br>
+  Calcule valores justos, gere contratos profissionais e crie páginas de proposta impactantes
+</p>
 
-
-🎯 Sobre o Projeto
-FreelaPro é uma plataforma SaaS completa desenvolvida para freelancers brasileiros que precisam precificar projetos de forma profissional, considerando todos os custos, impostos e margem de lucro. Além da calculadora inteligente, o sistema gera contratos personalizados e cria páginas de proposta comercial interativas para impressionar clientes.
-💡 Por que FreelaPro?
-
-Precificação Justa: Calcule valores considerando horas de trabalho, custos fixos/variáveis, impostos (MEI, Simples, PJ) e margem de lucro desejada
-Profissionalização: Gere contratos profissionais em segundos com templates personalizáveis
-Impressione Clientes: Crie páginas de proposta web modernas com gráficos interativos e timeline de entregas
-Gestão Completa: Acompanhe todos os projetos, orçamentos e propostas em um dashboard centralizado
-Performance: Sistema otimizado com cache inteligente, lazy loading e animações GPU-accelerated
-
-
-✨ Funcionalidades
-🧮 Calculadora Inteligente
-
-✅ Cálculo automático de preços baseado em horas, custos e margem
-✅ Suporte a 3 regimes tributários (MEI, Simples Nacional, Lucro Presumido)
-✅ Detalhamento completo de composição do valor
-✅ Comparação de cenários
-✅ Cálculo de valor/hora efetivo
-
-📄 Geração de Contratos
-
-✅ Templates profissionais personalizáveis
-✅ Preenchimento automático com dados do projeto
-✅ Cláusulas editáveis
-✅ Download em TXT/PDF
-✅ Histórico de contratos gerados
-
-🌐 Páginas de Proposta
-
-✅ Criação de páginas web profissionais para enviar ao cliente
-✅ Gráficos interativos de distribuição de investimento
-✅ Timeline visual de fases do projeto
-✅ Detalhamento de custos e benefícios
-✅ Link compartilhável (sem necessidade de login do cliente)
-✅ Contador de visualizações
-✅ Design responsivo e moderno
-
-📊 Dashboard Completo
-
-✅ Visão geral de projetos (total, aprovados, concluídos)
-✅ Valor total faturado
-✅ Histórico de orçamentos
-✅ Filtros e busca avançada
-
-🔐 Autenticação & Planos
-
-✅ Cadastro/Login com email e senha
-✅ Login social (Google, GitHub)
-✅ Plano Free: 5 projetos/mês
-✅ Plano Pro: Projetos ilimitados + recursos avançados
-✅ Plano Business: Multi-usuários + white-label
-
-⚡ Performance & UX
-
-✅ Cache inteligente que elimina requisições repetidas
-✅ Lazy loading de componentes
-✅ Animações otimizadas (GPU-accelerated)
-✅ Debounce em inputs para cálculos em tempo real
-✅ Skeleton loaders
-✅ Toast notifications
-✅ Dark mode nativo
-
-
-🖼️ Demo & Screenshots
-Landing Page
-Mostrar Imagem
-Calculadora de Precificação
-Mostrar Imagem
-Página de Proposta
-Mostrar Imagem
-Dashboard
-Mostrar Imagem
-
-🛠️ Tecnologias
-Frontend
-
-React 18 - Biblioteca UI
-Vite - Build tool e dev server
-Tailwind CSS - Framework CSS utility-first
-Lucide React - Ícones
-Date-fns - Manipulação de datas
-
-Backend & Database
-
-Supabase - Backend as a Service
-
-PostgreSQL database
-Authentication
-Row Level Security (RLS)
-Real-time subscriptions
-
-
-
-Hospedagem & Deploy
-
-Vercel / Netlify - Hospedagem frontend
-Supabase Cloud - Hospedagem do banco de dados
-
-Ferramentas de Desenvolvimento
-
-ESLint - Linting
-Prettier - Formatação de código
-Git - Controle de versão
-
-
-📦 Pré-requisitos
-Antes de começar, certifique-se de ter instalado:
-
-Node.js (versão 16.x ou superior)
-npm ou yarn
-Git
-Conta no Supabase (gratuita)
-
-
-🚀 Instalação
-1. Clone o repositório
-bashgit clone https://github.com/seu-usuario/freelapro.git
-cd freelapro
-2. Instale as dependências
-bashnpm install
-# ou
-yarn install
-3. Configure as variáveis de ambiente
-Crie um arquivo .env na raiz do projeto:
-envVITE_SUPABASE_URL=sua_url_do_supabase
-VITE_SUPABASE_ANON_KEY=sua_chave_anonima
-
-💡 Dica: Copie o arquivo .env.example e renomeie para .env
-
-4. Configure o banco de dados
-Execute os scripts SQL fornecidos em /database/schema.sql no Supabase SQL Editor:
-sql-- Criar tabelas
--- Ver arquivo completo em /database/schema.sql
-5. Inicie o servidor de desenvolvimento
-bashnpm run dev
-# ou
-yarn dev
-Acesse http://localhost:5173 no navegador.
-
-⚙️ Configuração
-Supabase Setup
-
-Crie um projeto no Supabase
-
-Acesse supabase.com
-Clique em "New Project"
-Anote a URL e a chave anônima
-
-
-Execute o schema SQL
-
-Vá em SQL Editor no painel do Supabase
-Cole e execute o conteúdo de /database/schema.sql
-
-
-Configure Row Level Security (RLS)
-
-As políticas RLS já estão incluídas no schema
-Verifique em Authentication > Policies
-
-
-Configure Authentication Providers (opcional)
-
-Para login social, configure Google/GitHub em Authentication > Providers
-
-
-
-Customização
-Alterar cores do tema
-Edite o arquivo tailwind.config.js:
-javascriptmodule.exports = {
-  theme: {
-    extend: {
-      colors: {
-        primary: '#8B5CF6',   // Roxo principal
-        secondary: '#A855F7', // Roxo secundário
-        accent: '#EC4899',    // Rosa
-      }
-    }
-  }
-}
-Ajustar cache duration
-Edite hooks/useCache.js:
-javascriptconst CACHE_DURATION = 5 * 60 * 1000; // 5 minutos (padrão)
-```
+<p align="center">
+  <a href="#-funcionalidades">Funcionalidades</a> •
+  <a href="#-tecnologias">Tecnologias</a> •
+  <a href="#-instalação">Instalação</a> •
+  <a href="#-uso">Uso</a> •
+  <a href="#-estrutura">Estrutura</a> •
+  <a href="#-contribuindo">Contribuindo</a> •
+  <a href="#-licença">Licença</a>
+</p>
 
 ---
 
-## 📖 Uso
+## 📋 Sobre o Projeto
 
-### Criando seu primeiro projeto
+**FreelaPro** é uma plataforma completa para freelancers gerenciarem seus projetos, calcularem preços de forma inteligente e criarem propostas comerciais profissionais. Desenvolvido com React e Supabase, oferece uma experiência moderna, rápida e intuitiva.
 
-1. **Cadastre-se** na plataforma
-2. Vá para **Calculadora**
-3. Preencha os dados:
+### 🎯 Problema Resolvido
+
+Freelancers frequentemente:
+- ❌ Precificam projetos de forma incorreta (no "feeling")
+- ❌ Esquecem de considerar impostos e custos operacionais
+- ❌ Enviam propostas amadoras em PDFs estáticos
+- ❌ Perdem projetos por falta de profissionalismo
+
+### ✅ Solução
+
+- ✅ Calculadora inteligente que considera TODOS os custos
+- ✅ Geração automática de contratos personalizáveis
+- ✅ Páginas de proposta web interativas e profissionais
+- ✅ Gestão completa de projetos e histórico
+
+---
+
+## 🚀 Funcionalidades
+
+### 💰 Calculadora de Precificação
+- **Cálculo Inteligente**: Considera horas, custos fixos, variáveis, impostos e margem de lucro
+- **Múltiplos Regimes Tributários**: MEI, Simples Nacional e Lucro Presumido
+- **Margem de Lucro Ajustável**: Slider de 0% a 100%
+- **Breakdown Completo**: Visualização detalhada de todos os componentes do preço
+
+### 📄 Gerador de Contratos
+- **Templates Prontos**: Contratos para diferentes tipos de serviço
+- **Personalização Automática**: Preenche com dados do projeto
+- **Exportação em TXT**: Download instantâneo
+- **Cláusulas Editáveis**: Adapte conforme necessário
+
+### 🌐 Páginas de Proposta
+- **Design Profissional**: Layout moderno e responsivo
+- **Gráficos Interativos**: Visualização da distribuição de investimento
+- **Timeline de Fases**: Cronograma visual do projeto
+- **Compartilhamento Simples**: Link único para cada proposta
+- **Sem Login Necessário**: Cliente visualiza sem cadastro
+
+### 📊 Dashboard Completo
+- **Estatísticas em Tempo Real**: Total de projetos, aprovados, concluídos
+- **Valor Total Faturado**: Acompanhe seu crescimento
+- **Histórico Completo**: Todos os projetos em um só lugar
+- **Filtros e Busca**: Encontre projetos rapidamente
+
+### 🎨 Gestão de Projetos
+- **CRUD Completo**: Criar, visualizar, editar e excluir projetos
+- **Status Personalizados**: Pendente, Aprovado, Rejeitado, Concluído
+- **Histórico Ilimitado** (Pro/Business): Acesse projetos antigos
+- **Exportação de Dados**: Relatórios em PDF (Pro/Business)
+
+---
+
+## 🛠️ Tecnologias
+
+### Frontend
+- **[React 18](https://react.dev/)** - Biblioteca JavaScript para interfaces
+- **[Vite](https://vitejs.dev/)** - Build tool ultrarrápido
+- **[Tailwind CSS](https://tailwindcss.com/)** - Framework CSS utility-first
+- **[Lucide React](https://lucide.dev/)** - Ícones modernos
+
+### Backend & Database
+- **[Supabase](https://supabase.com/)** - Backend as a Service
+  - PostgreSQL Database
+  - Authentication
+  - Row Level Security (RLS)
+  - Real-time subscriptions
+
+### Bibliotecas Auxiliares
+- **date-fns** - Manipulação de datas
+- **React Router** (sistema customizado) - Navegação
+
+### DevOps & Deploy
+- **[Lovable.ai](https://lovable.dev/)** - Plataforma de desenvolvimento
+- **Vercel / Netlify** - Hospedagem e CI/CD
+
+---
+
+## 📦 Instalação
+
+### Pré-requisitos
+
+- Node.js 18+ 
+- npm ou yarn
+- Conta no Supabase
+
+### 1. Clone o repositório
+```bash
+git clone https://github.com/seu-usuario/freelapro.git
+cd freelapro
+```
+
+### 2. Instale as dependências
+```bash
+npm install
+# ou
+yarn install
+```
+
+### 3. Configure as variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto:
+```env
+VITE_SUPABASE_URL=sua_url_do_supabase
+VITE_SUPABASE_ANON_KEY=sua_chave_anonima
+```
+
+### 4. Configure o banco de dados
+
+Execute o SQL no Supabase SQL Editor:
+```sql
+-- Tabela de usuários
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'pro', 'business')),
+  trial_ends_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabela de projetos
+CREATE TABLE projects (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  client_name TEXT NOT NULL,
+  project_name TEXT NOT NULL,
+  service_type TEXT NOT NULL,
+  hours_estimated DECIMAL(10,2) NOT NULL,
+  hourly_rate DECIMAL(10,2) NOT NULL,
+  fixed_costs DECIMAL(10,2) DEFAULT 0,
+  variable_costs DECIMAL(10,2) DEFAULT 0,
+  tax_type TEXT NOT NULL,
+  profit_margin INTEGER NOT NULL,
+  calculated_results JSONB NOT NULL,
+  status TEXT DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabela de propostas
+CREATE TABLE proposals (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  project_id UUID REFERENCES projects(id) ON DELETE SET NULL,
+  slug TEXT UNIQUE NOT NULL,
+  project_name TEXT NOT NULL,
+  client_name TEXT NOT NULL,
+  summary TEXT,
+  total_budget DECIMAL(10,2) NOT NULL,
+  phases JSONB DEFAULT '[]'::jsonb,
+  fixed_costs JSONB DEFAULT '[]'::jsonb,
+  benefits JSONB DEFAULT '[]'::jsonb,
+  status TEXT DEFAULT 'active',
+  views INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabela de contratos
+CREATE TABLE contracts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+  contract_text TEXT NOT NULL,
+  generated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Habilitar RLS
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE proposals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE contracts ENABLE ROW LEVEL SECURITY;
+
+-- Políticas de segurança (exemplo para projects)
+CREATE POLICY "Users can view own projects" ON projects
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own projects" ON projects
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+```
+
+### 5. Inicie o servidor de desenvolvimento
+```bash
+npm run dev
+# ou
+yarn dev
+```
+
+O aplicativo estará disponível em `http://localhost:5173`
+
+---
+
+## 🎯 Uso
+
+### 1. Criar Conta
+
+Acesse a página de cadastro e crie uma conta gratuita. Todas as contas começam no plano **Free**.
+
+### 2. Calcular Preço de Projeto
+
+1. Vá para a aba **Calculadora**
+2. Preencha os dados do projeto:
    - Nome do cliente
    - Nome do projeto
    - Horas estimadas
    - Valor/hora desejado
-   - Custos fixos e variáveis
-   - Regime tributário
-   - Margem de lucro
-4. Clique em **Calcular Preço**
-5. Revise os resultados e clique em **Salvar Projeto**
+3. Configure custos e impostos
+4. Ajuste a margem de lucro
+5. Clique em **Calcular Preço**
 
-### Gerando uma proposta comercial
+### 3. Salvar Projeto
 
-1. Na aba **Projetos**, encontre seu projeto
-2. Clique em **Criar Página de Proposta**
-3. Configure:
-   - Informações gerais
+Após calcular, clique em **Salvar Projeto** para adicionar ao histórico.
+
+### 4. Gerar Contrato
+
+Na lista de projetos, clique em **Contrato** para gerar e baixar um contrato personalizado.
+
+### 5. Criar Página de Proposta
+
+1. Na lista de projetos, clique em **Criar Página**
+2. Configure:
+   - Informações básicas
    - Fases do projeto
    - Custos fixos
    - Benefícios esperados
-4. Clique em **Gerar Proposta**
-5. Copie o link e envie para seu cliente
-
-### Exportando um contrato
-
-1. Na lista de projetos, clique em **Contrato**
-2. O contrato será gerado automaticamente
-3. Revise e faça download
+3. Clique em **Gerar Página de Proposta**
+4. Compartilhe o link com seu cliente
 
 ---
 
 ## 📁 Estrutura do Projeto
 ```
 freelapro/
-├── public/              # Arquivos públicos estáticos
 ├── src/
-│   ├── components/      # Componentes React reutilizáveis
-│   │   ├── Calculator/  # Componentes da calculadora
-│   │   ├── Dashboard/   # Componentes do dashboard
-│   │   ├── Modals/      # Modais da aplicação
-│   │   └── UI/          # Componentes de UI genéricos
-│   ├── contexts/        # React Context (Auth, Theme)
-│   ├── hooks/           # Custom hooks (useCache, useAuth)
-│   ├── lib/             # Configurações (Supabase)
-│   ├── pages/           # Páginas da aplicação
-│   │   ├── Landing.jsx  # Landing page
-│   │   ├── Login.jsx    # Página de login
-│   │   ├── Signup.jsx   # Página de cadastro
-│   │   ├── App.jsx      # App principal (logado)
-│   │   └── ProposalView.jsx # Visualização pública de proposta
-│   ├── utils/           # Funções auxiliares
-│   ├── App.jsx          # Componente raiz
-│   ├── main.jsx         # Entry point
-│   └── index.css        # Estilos globais
-├── database/
-│   └── schema.sql       # Schema do banco de dados
-├── .env.example         # Exemplo de variáveis de ambiente
+│   ├── components/           # Componentes React
+│   │   ├── Calculator/       # Calculadora de preços
+│   │   ├── Projects/         # Gestão de projetos
+│   │   ├── Dashboard/        # Dashboard e estatísticas
+│   │   ├── Proposals/        # Páginas de proposta
+│   │   └── ui/               # Componentes UI reutilizáveis
+│   │
+│   ├── contexts/             # Contexts (Auth, etc)
+│   │   └── AuthContext.jsx
+│   │
+│   ├── hooks/                # Custom Hooks
+│   │   ├── useCache.js       # Sistema de cache
+│   │   └── useAuth.js
+│   │
+│   ├── lib/                  # Bibliotecas e configs
+│   │   └── supabase.js       # Cliente Supabase
+│   │
+│   ├── pages/                # Páginas principais
+│   │   ├── Landing.jsx       # Landing page
+│   │   ├── Login.jsx         # Autenticação
+│   │   ├── Signup.jsx        # Cadastro
+│   │   ├── App.jsx           # Aplicação principal
+│   │   └── ProposalView.jsx  # Visualização pública
+│   │
+│   ├── utils/                # Funções utilitárias
+│   │   ├── formatters.js     # Formatação de dados
+│   │   └── validators.js     # Validações
+│   │
+│   ├── App.jsx               # Componente raiz
+│   ├── main.jsx              # Entry point
+│   └── index.css             # Estilos globais
+│
+├── public/                   # Assets estáticos
+├── .env.example              # Exemplo de variáveis
+├── tailwind.config.js        # Config do Tailwind
+├── vite.config.js            # Config do Vite
 ├── package.json
-├── tailwind.config.js   # Configuração do Tailwind
-├── vite.config.js       # Configuração do Vite
 └── README.md
 ```
 
 ---
 
-## 🗺️ Roadmap
+## 🎨 Screenshots
 
-### Em Desenvolvimento
-- [ ] Exportação de contratos em PDF
-- [ ] Integração com Stripe para pagamentos
-- [ ] Integração com WhatsApp para envio de propostas
-- [ ] Templates de proposta customizáveis
-- [ ] Multi-idiomas (EN, ES)
+### Landing Page
+![Landing Page](https://via.placeholder.com/800x400/8B5CF6/FFFFFF?text=Landing+Page)
 
-### Planejado
-- [ ] App mobile (React Native)
-- [ ] Integrações com Trello/Notion/Asana
-- [ ] Relatórios avançados e analytics
-- [ ] API pública para integrações
-- [ ] Sistema de time/colaboradores
-- [ ] White-label completo
+### Calculadora de Preços
+![Calculadora](https://via.placeholder.com/800x400/A855F7/FFFFFF?text=Calculadora)
 
-### Concluído ✅
-- [x] Calculadora de precificação
-- [x] Geração de contratos
-- [x] Páginas de proposta
-- [x] Dashboard completo
-- [x] Sistema de autenticação
-- [x] Planos Free/Pro/Business
-- [x] Cache inteligente
-- [x] Dark mode
-- [x] Responsividade completa
+### Lista de Projetos
+![Projetos](https://via.placeholder.com/800x400/EC4899/FFFFFF?text=Projetos)
+
+### Página de Proposta
+![Proposta](https://via.placeholder.com/800x400/6366F1/FFFFFF?text=Proposta)
+
+### Dashboard
+![Dashboard](https://via.placeholder.com/800x400/F59E0B/FFFFFF?text=Dashboard)
+
+---
+
+## 💎 Planos
+
+### 🆓 Free
+- 5 projetos por mês
+- Calculadora completa
+- Contratos básicos
+- Páginas de proposta
+- Histórico de 30 dias
+
+### 👑 Pro - R$ 29/mês
+- Projetos ilimitados
+- Dashboard completo
+- Histórico ilimitado
+- Exportação em PDF
+- Múltiplos regimes tributários
+- Suporte por email
+
+### 🚀 Business - R$ 79/mês
+- Tudo do Pro
+- Até 5 usuários
+- White-label
+- Integrações via API
+- Suporte prioritário
+- Gerente de conta
 
 ---
 
 ## 🤝 Contribuindo
 
-Contribuições são sempre bem-vindas!
+Contribuições são sempre bem-vindas! Siga os passos:
 
-### Como contribuir
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-1. **Fork** o projeto
-2. Crie uma **branch** para sua feature (`git checkout -b feature/MinhaFeature`)
-3. **Commit** suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. **Push** para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um **Pull Request**
+### 📋 Guidelines
 
-### Diretrizes
-
-- Siga o padrão de código existente
-- Escreva commits descritivos
+- Siga os padrões de código do projeto
+- Escreva mensagens de commit claras
 - Adicione testes quando possível
 - Atualize a documentação se necessário
-- Seja respeitoso nos comentários e reviews
-
-### Reportar Bugs
-
-Encontrou um bug? Abra uma [issue](https://github.com/seu-usuario/freelapro/issues) incluindo:
-
-- Descrição clara do problema
-- Passos para reproduzir
-- Comportamento esperado vs. atual
-- Screenshots (se aplicável)
-- Ambiente (browser, OS, versão)
 
 ---
 
-## 📄 Licença
+## 🐛 Reportar Bugs
 
-Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-```
-MIT License
+Encontrou um bug? Abra uma [issue](https://github.com/raffaelramalhorosa/freelapro/issues) com:
 
-Copyright (c) 2024 FreelaPro
+- Descrição clara do problema
+- Passos para reproduzir
+- Comportamento esperado vs atual
+- Screenshots (se aplicável)
+- Ambiente (navegador, OS, etc)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+---
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+## 🗺️ Roadmap
 
-📞 Contato
-Rafael Ramalho Rosa
+- [ ] Integração com Stripe para pagamentos
+- [ ] App mobile (React Native)
+- [ ] Exportação de propostas em PDF
+- [ ] Integração com calendários (Google, Outlook)
+- [ ] Sistema de notificações
+- [ ] Multi-idioma (EN, ES)
+- [ ] Modo offline
+- [ ] Assinatura digital de contratos
+- [ ] Integrações com CRMs
+- [ ] Relatórios avançados
 
-Email: rafael.ramalho.rosa@gmail.com
-LinkedIn: linkedin.com/in/seu-perfil
-Portfolio: seuportfolio.com
+---
 
-Link do Projeto: https://github.com/seu-usuario/freelapro
+## 📝 Licença
 
-🙏 Agradecimentos
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-React - Biblioteca incrível
-Supabase - Backend simplificado
-Tailwind CSS - Estilização rápida
-Lucide - Ícones lindos
-Lovable.dev - Plataforma de desenvolvimento
-Comunidade open source 💜
+---
 
+## 👨‍💻 Autor
+
+**Rafael Ramalho Rosa**
+
+- GitHub: [@raffael.ramalho](https://github.com/raffaelramalhorosa)
+- LinkedIn: [Rafael Ramalho](https://www.linkedin.com/in/raffaelramalhorosa/)
+- Email: raffael.ramalho.rosa@email.com
+
+---
+
+## 🙏 Agradecimentos
+
+- [Lovable.ai](https://lovable.dev/) - Plataforma de desenvolvimento
+- [Supabase](https://supabase.com/) - Backend e banco de dados
+- [Lucide](https://lucide.dev/) - Biblioteca de ícones
+- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS
+- Comunidade open source ❤️
+
+---
 
 <div align="center">
-Feito com 💜 por freelancers, para freelancers
-⭐ Se este projeto te ajudou, considere dar uma estrela!
-Mostrar Imagem
+  <p>Feito com ❤️ e ☕ por freelancers, para freelancers</p>
+  
+  <p>
+    <a href="#-sobre-o-projeto">Voltar ao topo ⬆️</a>
+  </p>
+
+  ⭐ Se este projeto te ajudou, considere dar uma estrela!
 </div>
